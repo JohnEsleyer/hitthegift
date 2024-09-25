@@ -1,7 +1,7 @@
 'use client'
 
-import MyListLeftSection from "./_components/MyListLeftSection"
-import MyListRightSection from "./_components/MyListRightSection"
+import MyListLeftSection from "./(sections)/MyListLeftSection"
+import MyListRightSection from "./(sections)/MyListRightSection"
 
 export default function MyListPage(){
     return (

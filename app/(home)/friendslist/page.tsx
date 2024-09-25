@@ -1,18 +1,17 @@
-'use client'
+"use client";
 
-import FriendsListLeftSection from "./_components/FriendsListLeftSection"
-import FriendsListRightSection from "./_components/FriendsListRightSection"
+import FriendsListLeftSection from "./(sections)/FriendsListLeftSection";
+import FriendsListRightSection from "./(sections)/FriendsListRightSection";
 
-
-export default function FriendsListPage(){
-    return (
-        <div className="w-screen h-screen flex">
-           <div className="w-72">
-            <FriendsListLeftSection/>
-           </div>
-           <div className="flex-1 ">
-            <FriendsListRightSection/>
-           </div>
-        </div>
-    )
+export default function FriendsListPage() {
+  return (
+    <div className="w-screen h-screen flex">
+      <div className="w-72">
+        <FriendsListLeftSection />
+      </div>
+      <div className="flex-1 ">
+        <FriendsListRightSection />
+      </div>
+    </div>
+  );
 }
