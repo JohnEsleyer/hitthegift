@@ -1,9 +1,18 @@
+'use client'
 
 
+
+import { mongo_client } from "@/lib/mongodb";
 import Link from "next/link";
 
-
 export default function LoginPage(){
+
+    const login = async () => {
+        // const datebase = mongo_client.db;
+
+    }
+
+
     return (
         <div className="h-screen w-screen flex items-center justify-center">
             <div className="flex flex-col border-2 border-black rounded-2xl p-8">
@@ -23,9 +32,9 @@ export default function LoginPage(){
                     name="fname"/>
                 
                 <div className="pt-4 flex gap-2">
-                    <Link href="" className="p-2 border-2 rounded border-black rounded">
+                    <button  onClick={login} className="p-2 border-2 rounded border-black rounded">
                         Log In
-                    </Link>
+                    </button>
                     <Link href="/register" className="p-2 border-2 rounded border-black rounded">
                         Create an Account
                     </Link>
