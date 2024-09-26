@@ -9,3 +9,9 @@ export type UserData = {
     hobbyInfo: string;
     showInterest: boolean;
 }
+
+
+export type LoginData = {
+    email: string;
+    password: string;
+}

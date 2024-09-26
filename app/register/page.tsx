@@ -1,7 +1,7 @@
 'use client'
 import {FormEvent, useState, useTransition} from 'react';
-import { createUserAction } from '../actions/mongoActions';
-import { UserData } from '@/lib/types/userdata';
+import { createUserAction } from '../actions/auth/createUser';
+import { UserData } from '@/lib/types/authTypes';
 import { termsAndConditions } from './constants';
 import { useRouter } from 'next/navigation';
 import Loading from '/public/loading.svg';
@@ -10,7 +10,6 @@ import Image from 'next/image';
 export default function RegisterPage() {
   const router = useRouter();
 
-  const [isPending, startTransition] = useTransition();
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showTermsNConditions, setShowTermsNConditions] = useState<boolean>(false);
   const [didReadTerms, setDidReadTerms] = useState<boolean>(false);
@@ -52,9 +51,9 @@ export default function RegisterPage() {
       
     }
 
-    startTransition(() => {
+
       registerUser();
-    });
+
 
 
   }
