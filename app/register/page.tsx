@@ -3,15 +3,19 @@ import {FormEvent, useState, useTransition} from 'react';
 import { createUserAction } from '../actions/mongoActions';
 import { UserData } from '@/lib/types/userdata';
 import { termsAndConditions } from './constants';
-
+import { useRouter } from 'next/navigation';
+import Loading from '/public/loading.svg';
+import Image from 'next/image';
 
 export default function RegisterPage() {
-
+  const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showTermsNConditions, setShowTermsNConditions] = useState(false);
-  const [didReadTerms, setDidReadTerms] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [showTermsNConditions, setShowTermsNConditions] = useState<boolean>(false);
+  const [didReadTerms, setDidReadTerms] = useState<boolean>(false);
+  const [responseMessage, setResponseMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState<UserData>({
       firstName: '',
       lastName: '',
@@ -23,13 +27,11 @@ export default function RegisterPage() {
 
   });
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
+  const handleSubmit = async () => {
+    setIsLoading(true);
 
     const registerUser = async () => {
-      createUserAction({
+      const response = await createUserAction({
         firstName: userData?.firstName as string,
         lastName: userData?.lastName as string,
         email: userData?.email as string,
@@ -37,7 +39,17 @@ export default function RegisterPage() {
         hobbyInfo: userData?.hobbyInfo as string,
         birthday: userData?.birthday as string,
         showInterest: userData?.showInterest as boolean
-      })
+      });
+      if (response){
+        setResponseMessage(response.message);
+        setTimeout(()=>{
+          setIsLoading(false);
+        
+          router.push('/mylist');
+        }, 3000);
+       
+      }
+      
     }
 
     startTransition(() => {
@@ -58,7 +70,7 @@ export default function RegisterPage() {
           <p className="text-2xl font-bold">Terms and conditions</p>
           <div style={{height: 500}} className='overflow-auto '>
             <p>{termsAndConditions}</p>
-            <div>
+            <div className="flex justify-center">
           <button onClick={() => {setShowTermsNConditions(false)}} className="flex justify-center bg-blue-600 p-2 text-white font-bold rounded mt-4">Read</button>
           </div>
           </div>
@@ -68,7 +80,7 @@ export default function RegisterPage() {
     <div 
       style={{zIndex: 1, position: 'relative'}}
       className=" flex flex-col items-center justify-center w-screen h-screen ">
-      <form onSubmit={handleSubmit} className="gap-4 p-4 flex flex-col border border-black rounded-2xl">
+      <div className="gap-4 p-4 flex flex-col border border-black rounded-2xl">
         <div className="flex gap-2">
           {/*Name */}
           <label>Name:</label>
@@ -76,8 +88,6 @@ export default function RegisterPage() {
             className="border-2 border-black rounded"
             type="text"
             placeholder="First Name"
-            id="fname"
-            name="fname"
             onChange={(e) => {
               setUserData((prev) => (
                 {
@@ -94,8 +104,6 @@ export default function RegisterPage() {
             className="border-2 border-black rounded"
             type="text"
             placeholder="Last Name"
-            id="lname"
-            name="lname"
             onChange={(e) => {
               setUserData((prev) => (
                 {
@@ -113,7 +121,6 @@ export default function RegisterPage() {
           <input
             className="border-2 border-black rounded"
             type="text"
-            name="email"
             placeholder="firstname@email.com"
             onChange={(e) => {
               setUserData((prev) => (
@@ -190,7 +197,6 @@ export default function RegisterPage() {
           <div>
             <textarea 
               className="border border-black" 
-              name="hobbyInfo"
               onChange={(e) => {
                 setUserData((prev) => ({
                   ...prev,
@@ -206,7 +212,6 @@ export default function RegisterPage() {
           <div className="flex gap-1">
           <input 
             type="checkbox" 
-            name="terms" 
             checked={didReadTerms} 
             onChange={(e) => {
               setDidReadTerms(e.target.checked);
@@ -225,16 +230,26 @@ export default function RegisterPage() {
 
         </div>
         {/** Buttons */}
-
         <div className="flex gap-4 justify-center">
-          <button className="bg-blue-500 pl-2 pr-2 rounded text-white">
+          <button onClick={handleSubmit} className="bg-blue-500 pl-2 pr-2 rounded text-white">
             Create
           </button>
           <button className="bg-black pl-2 pr-2 rounded text-white">
             Cancel
           </button>
         </div>
-      </form>
+        <div className="flex justify-center h-8">
+        {isLoading && <Image
+          src={Loading}
+          height={50}
+          width={50}
+          alt=''
+        />}
+        <p>{responseMessage}</p>
+        
+        </div>
+      </div>
+      
     </div>
     </div>
   );

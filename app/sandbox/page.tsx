@@ -1,6 +1,6 @@
 'use client'
 import { useTransition } from "react"
-import { testAction } from "../actions/mongoActions";
+import { deleteAllUsers, testAction, testMongo } from "../actions/mongoActions";
 
 export default function Homepage(){
 
@@ -10,7 +10,7 @@ export default function Homepage(){
   return (
     <div>
       <button onClick={() => {
-        startTransition(() => testAction("Earth"));
+        startTransition(() => deleteAllUsers());
       }}
       disabled={isPending}
       >
