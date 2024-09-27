@@ -8,6 +8,7 @@ import { useState } from "react";
 import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import {useRouter} from 'next/navigation';
+import BackgroundImage from '/public/background.png';
 
 type ResponseData = {
     message: string;
@@ -74,11 +75,13 @@ export default function LoginPage(){
 
 
     return (
-        <div className="h-screen w-screen flex items-center justify-center">
-            <div className="flex flex-col border-2 border-black rounded-2xl p-8">
+        <div 
+           
+        className='h-screen w-screen bg-[url("/background.png")] flex items-center justify-center'>
+            <div className="flex flex-col bg-white rounded-2xl p-8">
                 <label>Email:</label>
                 <input 
-                    className="border-2 border-black rounded"
+                    className="border-2 p-2 rounded-2xl border-black rounded"
                     type="text" 
                     placeholder="firstname@email.com"
                     value={loginData.email}
@@ -89,9 +92,10 @@ export default function LoginPage(){
                         }));
                     }}
                 />
-                <label>Password:</label>
+                <label className="pt-8">Password:</label>
                 <input 
-                    className="border-2 border-black rounded"
+                
+                    className="border-2 p-2 rounded-2xl border-black rounded"
                     type="password" 
                     placeholder="******"
                     value={loginData.password}
@@ -102,16 +106,26 @@ export default function LoginPage(){
                         }));
                     }}
                />
+               {/**Check box */}
+               <div className=" flex items-center pt-2">
+                <input type="checkbox" onChange={(e) => {
+                // setUserData((prev) => ({
+                //   ...prev,
+                //   showInterest: e.target.checked,
+                // }));
+                 }}/>
+                 <span className="pl-2">Remember me</span>
+                </div>
                 
-                <div className="pt-4 flex gap-2">
-                    <button  onClick={handleSubmit} className="p-2 border-2 rounded border-black rounded">
+                <div className="pt-4 flex gap-2 flex justify-center">
+                    <button style={{fontSize: 13}}  onClick={handleSubmit} className=" p-2 pl-8 pr-8 bg-blue-500 text-white rounded border-black rounded-2xl">
                         Log In
                     </button>
-                    <Link href="/register" className="p-2 border-2 rounded border-black rounded">
+                    <Link style={{fontSize: 13}} href="/register" className="p-2 border-2 pl-8 pr-8 rounded bg-black text-white rounded-2xl">
                         Create an Account
                     </Link>
                 </div>
-                <span className="pt-8 underline">Forgot Password</span>
+             
                 {/*Loading */}
                 <div className="flex justify-center h-12">
                     {isLoading && <Image 
@@ -124,6 +138,7 @@ export default function LoginPage(){
                 {responseMessage && <p className="flex justify-center text-red-500">
                     {responseMessage}
                 </p>}
+                <span className="pt-8 underline ">Forgot Password</span>
 
             </div>
         </div>
