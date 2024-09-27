@@ -50,16 +50,12 @@ export default function RegisterPage() {
       }
       
     }
-
-
       registerUser();
-
-
 
   }
   
   return (
-    <div>
+    <div className={`bg-[url("/background.png")]`}>
       {/*Terms and conditions */}
       {showTermsNConditions && <div 
         style={{zIndex: 100, position: 'absolute'}}
@@ -79,12 +75,13 @@ export default function RegisterPage() {
     <div 
       style={{zIndex: 1, position: 'relative'}}
       className=" flex flex-col items-center justify-center w-screen h-screen ">
-      <div className="gap-4 p-4 flex flex-col border border-black rounded-2xl">
+      <div className="gap-4 p-4 flex flex-col border bg-white rounded-2xl">
         <div className="flex gap-2">
           {/*Name */}
+          <div className="flex flex-col">
           <label>Name:</label>
           <input
-            className="border-2 border-black rounded"
+            className="border-2 p-2 border-gray-300 rounded"
             type="text"
             placeholder="First Name"
             onChange={(e) => {
@@ -97,10 +94,13 @@ export default function RegisterPage() {
             }}
             required
           />
+          </div>
+
           {/*Last Name */}
+          <div className="flex flex-col">
           <label>Last Name:</label>
           <input
-            className="border-2 border-black rounded"
+            className="border-2 p-2 border-gray-300 rounded"
             type="text"
             placeholder="Last Name"
             onChange={(e) => {
@@ -113,12 +113,14 @@ export default function RegisterPage() {
             }}
             required
           ></input>
+          </div>
         </div>
         <div>
           {/*Email */}
+          <div className="flex flex-col">
           <label>Email:</label>
           <input
-            className="border-2 border-black rounded"
+            className="p-2 border-2 border-gray-300 rounded"
             type="text"
             placeholder="firstname@email.com"
             onChange={(e) => {
@@ -131,12 +133,14 @@ export default function RegisterPage() {
             }}
             required
           />
+          </div>
         </div>
         <div>
           {/*Password */}
+          <div className="flex flex-col">
           <label>Password:</label>
           <input
-            className="border-2 border-black rounded"
+            className="border-2 border-gray-300 p-2 rounded"
             type="password"
             placeholder="*******"
             onChange={(e) => {
@@ -149,12 +153,15 @@ export default function RegisterPage() {
             }}
             required
           />
+          </div>
         </div>
         <div>
           {/*Confirm Password */}
+          <div className="flex flex-col">
           <label>Confirm Password:</label>
+          
           <input
-            className="border-2 border-black rounded"
+            className="border-2 p-2 border-gray-300 rounded"
             type="password"
             placeholder="*******"
             onChange={(e) => {
@@ -162,12 +169,13 @@ export default function RegisterPage() {
             }}
             required
           />
+          </div>
         </div>
         {/**Date of Birth and Toggle On/Off */}
         <div className="flex gap-4 ">
           <div className="flex flex-col">
             <label>Date of Birth</label>
-            <input type="date" onChange={(e) => {
+            <input className="border-2 border-gray-300" type="date" onChange={(e) => {
               setUserData((prev) => (
                 {
                   ...prev,
@@ -177,14 +185,19 @@ export default function RegisterPage() {
             }}/>
           </div>
           <div className="flex flex-col">
-            <div className="flex gap-2">
+            <div className="flex justify-between">
               <span>On/Off</span>
+              <label className="switch">
               <input type="checkbox" onChange={(e) => {
                 setUserData((prev) => ({
                   ...prev,
                   showInterest: e.target.checked,
                 }));
               }}/>
+              
+              <span className="slider round"></span>
+              </label>
+      
       
             </div>
             <p>You want your friends to see your interests</p>
@@ -195,6 +208,7 @@ export default function RegisterPage() {
           <span>Hobbies and interests</span>
           <div>
             <textarea 
+              style={{width:550, height: 140}}
               className="border border-black" 
               onChange={(e) => {
                 setUserData((prev) => ({
@@ -230,10 +244,10 @@ export default function RegisterPage() {
         </div>
         {/** Buttons */}
         <div className="flex gap-4 justify-center">
-          <button onClick={handleSubmit} className="bg-blue-500 pl-2 pr-2 rounded text-white">
+          <button onClick={handleSubmit} className="bg-blue-500 p-4 pl-16 pr-16 rounded-full text-white">
             Create
           </button>
-          <button className="bg-black pl-2 pr-2 rounded text-white">
+          <button className="bg-black p-4 pl-16 pr-16 rounded-full text-white">
             Cancel
           </button>
         </div>
