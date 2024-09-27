@@ -5,7 +5,7 @@ import { UserData } from "@/lib/types/authTypes";
 
 
 export async function testAction(data: string){
-    console.log("Hello " +data);
+    console.log("Hello "+data);
 }
 
 export async function testMongo(){
