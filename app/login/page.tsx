@@ -135,7 +135,7 @@ export default function LoginPage(){
                         height={30}
                     />}
                 </div>
-                {responseMessage && <p className="flex justify-center text-red-500">
+                {responseMessage && <p className={`flex justify-center ${responseMessage && 'Login Successful' ? 'text-green-600' : 'text-red-300'} `}>
                     {responseMessage}
                 </p>}
                 <span className="pt-8 underline ">Forgot Password</span>

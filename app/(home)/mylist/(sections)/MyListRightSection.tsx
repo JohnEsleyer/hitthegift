@@ -17,11 +17,13 @@ export default function HomeRightSection(){
     
     return (
         <div className="w-full">
-            {/**Search bar */}
-            <div className="mt-12 p-4 rounded-full bg-slate-200 w-64">
-                <span>Friend{"'s"} name</span>
+            {/**Buttons*/}
+            <div className="mt-12 flex gap-2">
+                <button className="bg-blue-500 text-white pl-2 pr-2 rounded-full">Add Product</button>
+                <button className="bg-blue-500 text-white pl-2 pr-2 rounded-full">Share list</button>
             </div>
-            <div className="pt-4 flex flex-wrap gap-2">
+            {/**Body */}
+            <div className="mt-4 pt-4 flex flex-wrap gap-2">
                     <WishItem/>
                     <WishItem/>
                     <WishItem/>

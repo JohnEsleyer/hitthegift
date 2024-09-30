@@ -3,63 +3,96 @@
 import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import AddEventPopUp from "../(components)/AddEventPopUp";
 
 export default function HomeLeftSection() {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
-//   const [hobbiesInfo, setHobbiesInfo] = useState("");
+  const [dateSelected, setDateSelected] = React.useState<Date | undefined>(new Date());
+  const [hobbiesInfo, setHobbiesInfo] = useState("");
 
-//   const [textareaHobby, setTextareaHobby] = useState(hobbiesInfo);
-//   const textareaHobbyRef =
-//     useRef<React.ChangeEvent<HTMLTextAreaElement> | null>(null);
+  const [textareaHobby, setTextareaHobby] = useState(hobbiesInfo);
+  const textareaHobbyRef =
+    useRef<React.ChangeEvent<HTMLTextAreaElement> | null>(null);
 
-//   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-//     setHobbiesInfo(event.target.value);
+  const [showAddEventUI, setShowAddEventUI] = useState<boolean>(false);
 
-//     // Focus the textarea back after a short delay to avoid flickering
-//     setTimeout(() => {
-//       if (textareaHobbyRef.current) {
-//         textareaHobbyRef.current.target.focus();
-//       }
-//     }, 3000);
-//   };
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setHobbiesInfo(event.target.value);
+
+    // Focus the textarea back after a short delay to avoid flickering
+    setTimeout(() => {
+      if (textareaHobbyRef.current) {
+        textareaHobbyRef.current.target.focus();
+      }
+    }, 3000);
+  };
+
+  useEffect(() => {
+
+    
+
+  },[]);
+
 
   return (
-    <div className="h-full">
-      <div className="flex justify-center gap-2">
+    
+    <div className="h-full ml-2 ">
+        {/*Terms and conditions */}
+        {showAddEventUI && <div 
+        style={{zIndex: 100, position: 'absolute', top: 20}}
+        className=" flex justify-center items-center w-screen h-screen"
+        >
+          <AddEventPopUp setShowAddEventUI={setShowAddEventUI} dateSelected={dateSelected} setDateSelected={setDateSelected}/>
+      </div>}
+      <div className="border-b border-blue-400 flex justify-center gap-2 pt-2 gap-8">
         <Link
           href="/mylist"
+          className="text-blue-500"
         >
           My List
         </Link>
         <Link
+          className=""
           href="/friendslist"
         >
           Friends List
         </Link>
       </div>
       <div>
-        <div className="p-2 flex flex-col">
+        <div className="mt-4 p-2 flex flex-col">
           {/* <span>{hobbiesInfo}</span> */}
           {/** My hobbies and interests */}
-          <div className="flex flex-col h-40 ">
-            <span>My hobbies and interest</span>
+          <div className="flex flex-col border p-2 rounded-2xl">
+            <span className="text-xl mb-6">My hobbies and interest</span>
             <Textarea
               key={"hobbiesInfo"}
-              className="h-32"
+              style={{height: 200}}
+              className="border border-2xl rounded-2xl"
               placeholder={
                 "Welcome to my wish list! These are the things I would love to have, and I would be so happy if you could gift me something from here."
               }
-              value={''}
-              onChange={()=>{}}
+              value={hobbiesInfo}
+              onChange={(e)=>{
+                setHobbiesInfo(e.target.value);
+              }}
             />
+            <span 
+              className="text-gray-600 flex justify-end"
+              >
+              {hobbiesInfo.length + "/500"}
+              </span>
           </div>
           {/**My events section */}
           <div className="mt-4">
             <div className="flex justify-between">
               <span>My Events</span>
-              <button className="pl-2 pr-2 bg-blue-600 text-white rounded-full">
+              <button 
+                className="pl-2 pr-2 bg-blue-600 text-white rounded-full"
+                onClick={() => {
+                  setShowAddEventUI(true);
+                }}
+                >
                 Add event
               </button>
             </div>
@@ -100,8 +133,6 @@ export default function HomeLeftSection() {
           <div className="flex items-center justify-center mt-2 w-full  border border-black">
             <Calendar
               mode="single"
-              selected={date}
-              onSelect={setDate}
               className="rounded-md border"
             />
           </div>
