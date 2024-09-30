@@ -1,5 +1,6 @@
 'use client'
 import { Calendar } from "@/components/ui/calendar";
+import { useState } from "react";
 
 interface AddEventProps{
     setShowAddEventUI: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,8 +28,11 @@ export default function AddEventPopUp({
     setDateSelected,
     
 }: AddEventProps){
+  
+  const [meridiem, setMeridiem] = useState('AM');
+
     return (
-        <div style={{width: 500, height: 600}} className=" p-4 bg-gray-100 rounded-2xl border-2 border-black">
+        <div style={{width: 500, height: 630}} className=" p-4 bg-gray-100 rounded-2xl border-2 border-black">
         {/* <p className="text-2xl font-bold">Add Event</p> */}
         <p className=" flex justify-between">
           <div className="text-2xl font-bold flex gap-2">
@@ -62,24 +66,62 @@ export default function AddEventPopUp({
             className="m-2 rounded-md border"
           />
         {/**Ends Section **/ }
-        <div className="flex justify-between">
+        <div className="flex justify-between mb-8">
           <span>Ends</span>
           <div className="flex gap-2">
             <span className="rounded border bg-gray-200 pl-2 pr-2">8:00</span>
             <div className="flex bg-gray-200 rounded border">
-              <span className="bg-white pl-4 pr-4 rounded ">AM</span>
-              <span className="pl-4 pr-4 rounded">PM</span>
+              <button 
+                className={`${meridiem == "AM" && "bg-white"}  pl-4 pr-4 rounded `}
+                onClick={() => {
+                  setMeridiem('AM');
+                }}
+                >
+                AM
+              </button>
+              <button 
+                className={`${meridiem == "PM" && "bg-white"} pl-4 pr-4 rounded`}
+                onClick={() => {
+                  setMeridiem('PM');
+                }}
+                >
+                PM
+              </button>
             </div>
           </div>
         </div>
             {/**Event title section **/ }
-        <div className="flex flex-col">
+        <div className="flex flex-col mb-4">
           <span>Event title</span>
           <input className="bg-white rounded-full p-2 w-64 pl-4" placeholder="Event title"/>
         </div>
             {/**Friends Section **/ }
         <div>
-          
+            <span className="text-xl pt-2">Friends you'll share this event</span>
+            <div className="flex gap-2 overflow-auto w-96 ">
+              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+           
+
+            </div>
+            <span className="text-xl pt-2">Selected friends</span>
+            <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+        </div>
+        <div className="flex justify-center gap-8">
+          <button className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white">Accept</button>
+          <button 
+            className="bg-black rounded-2xl pl-12 pr-12  text-white"
+            onClick={() => {
+              setShowAddEventUI(false);
+            }}
+            >
+            Cancel
+          </button>
         </div>
      </div>
     )

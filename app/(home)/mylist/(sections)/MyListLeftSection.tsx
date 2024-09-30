@@ -6,16 +6,18 @@ import { Textarea } from "@/components/ui/textarea";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import AddEventPopUp from "../(components)/AddEventPopUp";
+import { useDispatch } from "react-redux";
+import { updateUserData } from "@/lib/features/userData";
 
 export default function HomeLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(new Date());
   const [hobbiesInfo, setHobbiesInfo] = useState("");
-
   const [textareaHobby, setTextareaHobby] = useState(hobbiesInfo);
   const textareaHobbyRef =
     useRef<React.ChangeEvent<HTMLTextAreaElement> | null>(null);
-
   const [showAddEventUI, setShowAddEventUI] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setHobbiesInfo(event.target.value);
@@ -30,9 +32,12 @@ export default function HomeLeftSection() {
 
   useEffect(() => {
 
-    
-
   },[]);
+
+
+  useEffect(() => {
+    dispatch(updateUserData(textareaHobby));
+  }, [textareaHobby]);
 
 
   return (
@@ -40,7 +45,7 @@ export default function HomeLeftSection() {
     <div className="h-full ml-2 ">
         {/*Terms and conditions */}
         {showAddEventUI && <div 
-        style={{zIndex: 100, position: 'absolute', top: 20}}
+        style={{zIndex: 100, position: 'absolute'}}
         className=" flex justify-center items-center w-screen h-screen"
         >
           <AddEventPopUp setShowAddEventUI={setShowAddEventUI} dateSelected={dateSelected} setDateSelected={setDateSelected}/>
