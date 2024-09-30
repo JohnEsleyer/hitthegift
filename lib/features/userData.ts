@@ -1,6 +1,6 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface UserDataState{
+export interface UserDataState {
     id: string;
     firstName: string;
     lastName: string;
@@ -18,25 +18,26 @@ const initialState: UserDataState = {
     username: '',
     verified: false, 
     email: '',
-    hobbyInfo: '',
+    hobbyInfo: 'This is the value of hobbyInfo in redux',
     showInterest: true,
-}
+};
 
 const userDataSlice = createSlice({
     name: 'userData',
     initialState,
     reducers: {
-        updateUserData: (state, action) => {
+        updateUserData: (state, action: PayloadAction<UserDataState>) => {
             return action.payload;
         },
         updateHobbyInfo: (state, action: PayloadAction<string>) => {
+            console.log('updating from state...' + action.payload);
             return {
                 ...state,
                 hobbyInfo: action.payload,
-            }
+            };
         }
     }
 });
 
-export const {updateUserData} = userDataSlice.actions;
-export default userDataSlice.reducer;
+export const { updateUserData, updateHobbyInfo } = userDataSlice.actions;
+export default userDataSlice.reducer; // Ensure this exports the reducer

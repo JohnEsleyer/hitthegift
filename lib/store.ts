@@ -1,16 +1,25 @@
-import {configureStore} from '@reduxjs/toolkit'
-import userData from './features/userData';
-
+// store.ts
+import { configureStore } from '@reduxjs/toolkit';
+import userDataSlice, { UserDataState } from './features/userData';
+import { loadState, saveState } from '@/utils/localStorage';
 
 export const makeStore = () => {
-    return configureStore({
+    const persistedState = loadState() as { userData: UserDataState }; // Cast the loaded state to the correct type
+
+    const store = configureStore({
         reducer: {
-            userData: userData,
-        }
+            userData: userDataSlice,
+        },
+        preloadedState: persistedState,
     });
-}
 
-export type AppStore = ReturnType<typeof makeStore>
+    store.subscribe(() => {
+        saveState(store.getState()); // Save state on every change
+    });
 
-export type RootState = ReturnType<AppStore['getState']>
-export type AppDispatch = AppStore['dispatch']
+    return store;
+};
+
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore['getState']>;
+export type AppDispatch = AppStore['dispatch'];

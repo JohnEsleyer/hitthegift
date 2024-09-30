@@ -4,7 +4,6 @@ import { AppStore, makeStore } from '@/lib/store';
 import {useRef} from 'react';
 import {Provider} from 'react-redux';
 
-
 interface StoreProviderProps{
     children: React.ReactNode;
 }

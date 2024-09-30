@@ -6,38 +6,37 @@ import { Textarea } from "@/components/ui/textarea";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import AddEventPopUp from "../(components)/AddEventPopUp";
-import { useDispatch } from "react-redux";
-import { updateUserData } from "@/lib/features/userData";
+import { useDispatch, useSelector } from "react-redux";
+import { updateHobbyInfo, updateUserData } from "@/lib/features/userData";
+import { RootState } from "@/lib/store";
+import Image from 'next/image';
+import Loading from '/public/loading.svg';
 
 export default function HomeLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(new Date());
-  const [hobbiesInfo, setHobbiesInfo] = useState("");
-  const [textareaHobby, setTextareaHobby] = useState(hobbiesInfo);
-  const textareaHobbyRef =
-    useRef<React.ChangeEvent<HTMLTextAreaElement> | null>(null);
+  const hobbiesInfo = useSelector((state: RootState) => state.userData.hobbyInfo);
+ 
   const [showAddEventUI, setShowAddEventUI] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setHobbiesInfo(event.target.value);
+    console.log("Value to dispatch: " + event.target.value);
+    dispatch(updateHobbyInfo(event.target.value));
+    console.log('dispatch() for updateUserData executed!');
 
-    // Focus the textarea back after a short delay to avoid flickering
-    setTimeout(() => {
-      if (textareaHobbyRef.current) {
-        textareaHobbyRef.current.target.focus();
-      }
-    }, 3000);
+    // setTimeout(() => {
+    //   if (textareaHobbyRef.current) {
+    //     textareaHobbyRef.current.target.focus();
+    //   }
+    // }, 3000);
   };
 
   useEffect(() => {
+    
+    console.log('useEffect for textareaHobby executed!');
+  }, [hobbiesInfo]);
 
-  },[]);
-
-
-  useEffect(() => {
-    dispatch(updateUserData(textareaHobby));
-  }, [textareaHobby]);
 
 
   return (
@@ -73,20 +72,18 @@ export default function HomeLeftSection() {
             <Textarea
               key={"hobbiesInfo"}
               style={{height: 200}}
-              className="border border-2xl rounded-2xl"
-              placeholder={
-                "Welcome to my wish list! These are the things I would love to have, and I would be so happy if you could gift me something from here."
-              }
+              className="border border-2xl rounded-2xl "
+         
               value={hobbiesInfo}
               onChange={(e)=>{
-                setHobbiesInfo(e.target.value);
+                handleInputChange(e);
               }}
             />
-            <span 
+            {/* <span 
               className="text-gray-600 flex justify-end"
               >
               {hobbiesInfo.length + "/500"}
-              </span>
+              </span> */}
           </div>
           {/**My events section */}
           <div className="mt-4">
