@@ -1,6 +1,7 @@
 'use client'
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
+import HourSelector from "./HourSelector";
 
 interface AddEventProps{
     setShowAddEventUI: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,6 +31,7 @@ export default function AddEventPopUp({
 }: AddEventProps){
   
   const [meridiem, setMeridiem] = useState('AM');
+  const [hourSelected, setHourSelected] = useState(8);
 
     return (
         <div style={{width: 500, height: 630}} className=" p-4 bg-gray-100 rounded-2xl border-2 border-black">
@@ -69,7 +71,9 @@ export default function AddEventPopUp({
         <div className="flex justify-between mb-8">
           <span>Ends</span>
           <div className="flex gap-2">
-            <span className="rounded border bg-gray-200 pl-2 pr-2">8:00</span>
+            <HourSelector initialHour={8} onSelect={(selectedHour)=> {
+              setHourSelected(selectedHour);
+            }}/>
             <div className="flex bg-gray-200 rounded border">
               <button 
                 className={`${meridiem == "AM" && "bg-white"}  pl-4 pr-4 rounded `}

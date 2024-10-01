@@ -4,17 +4,18 @@ import React, { useState } from 'react';
 
 interface HourSelectorProps {
   initialHour?: number;
-  onSelect: () => void;
+  onSelect: (selectedHour: number) => void;
 }
 
 function HourSelector({ initialHour = 8, onSelect}: HourSelectorProps) {
   const [selectedHour, setSelectedHour] = useState<number | null>(initialHour);
   const [showOptions, setShowOptions] = useState(false);
 
+  
   const handleHourClick = (hour: number) => {
     setSelectedHour(hour);
     setShowOptions(false);
-    onSelect();
+    onSelect(hour);
   };
 
   const handleOptionsClick = () => {
@@ -23,14 +24,14 @@ function HourSelector({ initialHour = 8, onSelect}: HourSelectorProps) {
 
   return (
     <div>
-      <span
+      <button
         className="rounded border bg-gray-200 pl-2 pr-2"
         onClick={handleOptionsClick}
       >
         {selectedHour !== null ? `${selectedHour}:00` : '8:00'}
-      </span>
+      </button>
       {showOptions && (
-        <ul className="absolute mt-2 bg-white border rounded shadow-md">
+        <ul className="h-52 overflow-auto absolute mt-2 bg-white border rounded shadow-md">
           {Array.from({ length: 12 }, (_, index) => index + 1).map((hour) => (
             <li
               key={hour}
