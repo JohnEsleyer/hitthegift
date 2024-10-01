@@ -3,6 +3,7 @@
 import { ReactNode, useState } from "react";
 import Image from 'next/image';
 import Friends from '/public/friends.png';
+import { Search } from "lucide-react";
 
 interface FriendsSidebar{
     children: ReactNode;
@@ -40,11 +41,14 @@ export default function FriendsSidebar({children}: FriendsSidebar){
             >
                 Close
             </button>
+        <div className="flex items-center rounded-xl p-2 bg-white w-fulls">
            <input 
-                className="rounded-xl p-2 w-fulls"
                 type="text" 
+                style={{width: 230}}
                 placeholder="Search friend" 
            /> 
+           <Search style={{width: 26, height: 20, strokeWidth: 3}}/>
+           </div>
            {/**Friends Section */}
            <div>
             {/*Example Friend*/}
