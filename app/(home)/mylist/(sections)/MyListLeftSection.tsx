@@ -3,7 +3,7 @@
 import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import AddEventPopUp from "../(components)/AddEventPopUp";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,32 +11,31 @@ import { updateHobbyInfo, updateUserData } from "@/lib/features/userData";
 import { RootState } from "@/lib/store";
 import Image from 'next/image';
 import Loading from '/public/loading.svg';
+import getUserHobbies from "@/app/actions/user/getUserHobbies";
+import EditableHobbyArea from "../(components)/EditableHobbyArea";
 
 export default function HomeLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(new Date());
-  const hobbiesInfo = useSelector((state: RootState) => state.userData.hobbyInfo);
- 
+//   const hobbiesInfo = useSelector((state: RootState) => state.userData.hobbyInfo);
+  const [hobbiesInfo, setHobbiesInfo] = useState('');
   const [showAddEventUI, setShowAddEventUI] = useState<boolean>(false);
+  const userId = useSelector((state: RootState) => state.userData.id);
 
   const dispatch = useDispatch();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log("Value to dispatch: " + event.target.value);
-    dispatch(updateHobbyInfo(event.target.value));
-    console.log('dispatch() for updateUserData executed!');
-
-    // setTimeout(() => {
-    //   if (textareaHobbyRef.current) {
-    //     textareaHobbyRef.current.target.focus();
-    //   }
-    // }, 3000);
-  };
 
   useEffect(() => {
-    
-    console.log('useEffect for textareaHobby executed!');
-  }, [hobbiesInfo]);
+    const fetchHobbyData = async () => {
+        const hobbyData = await getUserHobbies(userId);
+        if (hobbyData.status == 200){
+            setHobbiesInfo(hobbyData.hobbiesInfo as string);
+            console.log(hobbyData.message);
+        }
+    };
 
+    fetchHobbyData();
+
+  }, []);
 
 
   return (
@@ -67,24 +66,7 @@ export default function HomeLeftSection() {
         <div className="mt-4 p-2 flex flex-col">
           {/* <span>{hobbiesInfo}</span> */}
           {/** My hobbies and interests */}
-          <div className="flex flex-col border p-2 rounded-2xl">
-            <span className="text-xl mb-6">My hobbies and interest</span>
-            <Textarea
-              key={"hobbiesInfo"}
-              style={{height: 200}}
-              className="border border-2xl rounded-2xl "
-         
-              value={hobbiesInfo}
-              onChange={(e)=>{
-                handleInputChange(e);
-              }}
-            />
-            {/* <span 
-              className="text-gray-600 flex justify-end"
-              >
-              {hobbiesInfo.length + "/500"}
-              </span> */}
-          </div>
+          <EditableHobbyArea/>
           {/**My events section */}
           <div className="mt-4">
             <div className="flex justify-between">

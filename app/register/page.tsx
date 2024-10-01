@@ -209,7 +209,7 @@ export default function RegisterPage() {
           <div>
             <textarea 
               style={{width:550, height: 140}}
-              className="border border-black" 
+              className="border border-black p-2" 
               onChange={(e) => {
                 setUserData((prev) => ({
                   ...prev,

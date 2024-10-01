@@ -9,16 +9,25 @@ import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import {useRouter} from 'next/navigation';
 import BackgroundImage from '/public/background.png';
+import { useDispatch } from "react-redux";
+import { updateUserData, updateUserId } from "@/lib/features/userData";
 
 type ResponseData = {
     message: string;
+    status: number;
+    userId: string;
 }
 
 export default function LoginPage(){
-    const router = useRouter();
+    const dispatch = useDispatch();
 
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [responseMessage, setResponseMessage] = useState('');
+    const [responseData, setResponseData] = useState<ResponseData>({
+        message: '',
+        status: 200,
+        userId: '',
+    });
     const [isError, setIsError] = useState(false);
     const [loginData, setLoginData] = useState<LoginData>(
         {
@@ -46,10 +55,24 @@ export default function LoginPage(){
                 const data: ResponseData = await response.json();
 
                 if (data){
-                    setResponseMessage(data.message);
+                    setResponseData(data);
 
                     setTimeout(()=>{
                         if (response.status == 200){
+                            
+                            // interface UserDataState {
+                            //     id: string;
+                            //     firstName: string;
+                            //     lastName: string;
+                            //     username: string;
+                            //     verified: boolean;
+                            //     email: string;
+                            //     hobbyInfo: string;
+                            //     showInterest: boolean;
+                            // }
+
+                            dispatch(updateUserId(data.userId));
+                            
                             setIsError(false);
                             router.push('/mylist');
                             console.log('push(mylist)');
@@ -65,7 +88,11 @@ export default function LoginPage(){
                 }
             }catch(e){
                 console.log(`Client Error: ${e}`);
-                setResponseMessage('Authentication failed. Please try again later');
+                setResponseData({
+                    message: 'Authentication failed. Please try again later',
+                    status: 500,
+                    userId: '',
+                });
             }
         }
 
@@ -135,8 +162,8 @@ export default function LoginPage(){
                         height={30}
                     />}
                 </div>
-                {responseMessage && <p className={`flex justify-center ${responseMessage && 'Login Successful' ? 'text-green-600' : 'text-red-300'} `}>
-                    {responseMessage}
+                {responseData.message && <p className={`flex justify-center ${responseData.status == 200 ? 'text-green-600' : 'text-red-500'} `}>
+                    {responseData.message}
                 </p>}
                 <span className="pt-8 underline ">Forgot Password</span>
 

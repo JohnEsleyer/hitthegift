@@ -12,6 +12,7 @@ export async function POST(req: Request){
         const requestData: LoginData = await req.json();
 
         const {email, password} = requestData;
+        console.log(`Password received from server: ${password}`);
         const db = mongoClient.db('hitmygift');
         
         // Find the user by email
@@ -31,8 +32,10 @@ export async function POST(req: Request){
         }
 
         // Compare password entered to the hashed password 
-        const isMatch = comparePassword(password, user.password)
+        const isMatch = await comparePassword(password, user.password)
+        console.log(`isMatch value: ${isMatch}`);
         if (!isMatch){
+            console.log("Passwords don't match");
             return new Response(JSON.stringify({
                 message: 'Invalid email or password',
                 status: 401,
@@ -43,6 +46,7 @@ export async function POST(req: Request){
                 },
             });
         }
+        console.log("Passwords match");
 
         console.log(`_id: ${user._id.toString()}`)
         const payload = {userId: user._id};
@@ -55,6 +59,7 @@ export async function POST(req: Request){
 
         return new Response(JSON.stringify({
             message: 'Login successful',
+            userId: user._id,
         }), {
             status: 200,
             headers: {
