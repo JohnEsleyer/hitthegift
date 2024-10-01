@@ -14,10 +14,20 @@ export default function FriendsListLeftSection(){
 
     return (
         <div className="h-full">
-            <div className="flex justify-center gap-2">
-                <Link href="/mylist">My List</Link>
-                <Link href="/friends-list">Friends List</Link>
-            </div>
+              <div className="border-b border-blue-400 flex justify-center gap-2 pt-2 gap-8">
+        <Link
+          href="/mylist"
+         
+        >
+          My List
+        </Link>
+        <Link
+           className="text-blue-500"
+          href="/friendslist"
+        >
+          Friends List
+        </Link>
+      </div>
             <div>
             <div className="p-2 flex flex-col gap-4 ">
                  {/**Calendar Section */}

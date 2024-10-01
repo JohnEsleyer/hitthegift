@@ -2,6 +2,7 @@
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import HourSelector from "./HourSelector";
+import Avvvatars from "avvvatars-react";
 
 interface AddEventProps{
     setShowAddEventUI: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,6 +33,8 @@ export default function AddEventPopUp({
   
   const [meridiem, setMeridiem] = useState('AM');
   const [hourSelected, setHourSelected] = useState(8);
+  const [eventTitle, setEventTitle] = useState('');
+
 
     return (
         <div style={{width: 500, height: 630}} className=" p-4 bg-gray-100 rounded-2xl border-2 border-black">
@@ -103,18 +106,32 @@ export default function AddEventPopUp({
         <div>
             <span className="text-xl pt-2">Friends you'll share this event</span>
             <div className="flex gap-2 overflow-auto w-96 ">
-              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full">
+                <Avvvatars value="best_user2@gmail.com" style="shape"/>
+              </div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full">
+                <Avvvatars value="best_user3@gmail.com" style="shape"/>
+              </div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full">
+                <Avvvatars value="best_user4@gmail.com" style="shape"/>
+              </div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full">
+                <Avvvatars value="best_user5@gmail.com" style="shape"/>
+              </div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full">
+                <Avvvatars value="best_user6@gmail.com" style="shape"/>
+              </div>
+              <div className="w-8 h-8 bg-blue-400 rounded-full">
+                <Avvvatars value="best_user7@gmail.com" style="shape"/>
+              </div>
+           
            
 
             </div>
             <span className="text-xl pt-2">Selected friends</span>
-            <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+            <div className="w-8 h-8 bg-blue-400 rounded-full">
+                <Avvvatars value="best_user2@gmail.com" style="shape"/>
+              </div>
         </div>
         <div className="flex justify-center gap-8">
           <button className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white">Accept</button>

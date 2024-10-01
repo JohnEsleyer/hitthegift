@@ -55,7 +55,7 @@ export default function RegisterPage() {
   }
   
   return (
-    <div className={`bg-[url("/background.png")]`}>
+    <div className={`bg-[url("/background.png")] h-screen w-screen`}>
       {/*Terms and conditions */}
       {showTermsNConditions && <div 
         style={{zIndex: 100, position: 'absolute'}}
@@ -74,12 +74,12 @@ export default function RegisterPage() {
       </div>}
     <div 
       style={{zIndex: 1, position: 'relative'}}
-      className=" flex flex-col items-center justify-center w-screen h-screen ">
-      <div className="gap-4 p-4 flex flex-col border bg-white rounded-2xl">
+      className="overflow-auto flex flex-col items-center justify-center w-screen h-screen ">
+      <div className="text-xs gap-4 p-4 flex flex-col border bg-white rounded-2xl">
         <div className="flex gap-2">
           {/*Name */}
-          <div className="flex flex-col">
-          <label>Name:</label>
+          <div className="flex-1 flex flex-col">
+          <label>First Name:</label>
           <input
             className="border-2 p-2 border-gray-300 rounded"
             type="text"
@@ -97,7 +97,7 @@ export default function RegisterPage() {
           </div>
 
           {/*Last Name */}
-          <div className="flex flex-col">
+          <div className="flex-1 flex flex-col">
           <label>Last Name:</label>
           <input
             className="border-2 p-2 border-gray-300 rounded"
@@ -244,10 +244,10 @@ export default function RegisterPage() {
         </div>
         {/** Buttons */}
         <div className="flex gap-4 justify-center">
-          <button onClick={handleSubmit} className="bg-blue-500 p-4 pl-16 pr-16 rounded-full text-white">
+          <button onClick={handleSubmit} className="bg-blue-500 p-2 pl-16 pr-16 rounded-full text-white">
             Create
           </button>
-          <button className="bg-black p-4 pl-16 pr-16 rounded-full text-white">
+          <button className="bg-black p-2 pl-16 pr-16 rounded-full text-white">
             Cancel
           </button>
         </div>
