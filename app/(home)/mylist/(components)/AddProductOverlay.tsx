@@ -1,18 +1,50 @@
 'use client'
+import { createProduct } from "@/app/actions/products/createProduct";
 import { Calendar } from "@/components/ui/calendar";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useDispatch } from "react-redux";
 
-interface AddProductProps{
-    setShowAddProductUI: Dispatch<SetStateAction<boolean>>;
+
+type ResponseData = {
+    message: string;
+    status: number;
 }
 
 
-export default function AddEventOverlay({
-    setShowAddProductUI, 
-}: AddProductProps){
+export default function AddEventOverlay(){
     const dispatch = useDispatch();
+    const [productName, setProductName] = useState('');
+    const [productUrl, setProductUrl] = useState('');
+    const [autoFill, setAutoFill] = useState('');
+    const [productDescription, setProductDescription] = useState('');
+    const [response, setResponse] = useState<ResponseData>({
+        message: '',
+        status: 0,
+    });
+
+
+    const clickAddProduct = async () => {
+        try{
+            const data = await createProduct({
+                title: productName,
+                productUrl: productUrl,
+                imageUrl: '',
+                description: productDescription,
+            });
+
+            if (data){
+                console.log(data.message);
+                setResponse(data);
+            }
+            
+        }catch(e){
+            console.log(e);
+        }
+
+        dispatch(updateCurrentOverlay('none'));
+    }
+
 
     return (
         <div style={{width: 500, height: 630}} className=" p-4 bg-gray-100 rounded-2xl border-2 border-black">
@@ -30,16 +62,24 @@ export default function AddEventOverlay({
             <input
                 className="rounded-full p-2 pl-4" 
                 placeholder={"Product name"}
+                value={productName}
+                onChange={(e) => {
+                    setProductName(e.target.value);
+                }}
             />
         </div>
         </div>
         {/*Link input */} 
         <div className="mt-4 flex justify-center ">
         <div>
-            <p>Link</p>
+            <p>Product URL</p>
             <input
                 className="rounded-full p-2 pl-4" 
-                placeholder={"Product name"}
+                placeholder={"Product URL"}
+                value={productUrl}
+                onChange={(e) => {
+                    setProductUrl(e.target.value);
+                }}
             />
         </div>
         </div>
@@ -67,13 +107,20 @@ export default function AddEventOverlay({
             <p>Description</p>
             <textarea
                 className="w-full h-full"
+                value={productDescription}
+                onChange={(e) => {
+                    setProductDescription(e.target.value);
+                }}
             />
         </div>
         </div>
 
         {/*Buttons */}
         <div className="mt-4  flex justify-center gap-8">
-          <button className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white">Add product</button>
+          <button 
+            className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white"
+            onClick={clickAddProduct}
+            >Add product</button>
           <button 
             className="bg-black rounded-2xl pl-12 pr-12  text-white"
             onClick={() => {

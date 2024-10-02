@@ -45,9 +45,7 @@ interface OverlayPageProps{
           style={{zIndex: 100, position: 'absolute'}}
           className=" flex justify-center items-center w-screen h-screen"
           >
-              <AddProductOverlay setShowAddProductUI={() => {
-                dispatch(updateCurrentOverlay('addProduct'));
-              }}/>
+              <AddProductOverlay/>
              
         </div>}
         

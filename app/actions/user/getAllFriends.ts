@@ -19,26 +19,26 @@ export default async function getAllFriends(userId: string){
         if (user){
             console.log(`Server received userId: ${user._id}`);
 
-            const userFriendsList: string[] = user.friendsList.map((friendId) => (friendId.toString()));
+            const userFriendsIdList: string[] = user.friendsList.map((friendId) => (friendId.toString()));
             
             // Fetch the names of friends 
             let userFriends: UserFriends[] = [];
             
-            userFriendsList.map(async (friendIdStr) => {
+            userFriendsIdList.map(async (friendIdStr) => {
+                console.log(`MAP: ${friendIdStr}`);
                 const friend = await db.collection<UserData>('users').findOne({
                     _id: new ObjectId(friendIdStr)
                 });
                 
+                console.log("After getting 1 friend");
              
                 if (friend){
-                   
                     userFriends.push({
                         id: friendIdStr,
                         firstName: friend.firstName,
                         lastName: friend.lastName,
                     });
                 }
-
             });
 
             console.log(`id: ${userFriends[0].id}`);

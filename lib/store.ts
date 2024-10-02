@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import userDataSlice, { UserDataState } from './features/userData';
 import { loadState, saveState } from '@/utils/localStorage';
 import overlaysSlice from './features/overlays';
+import wishlist from './features/wishlist';
 
 export const makeStore = () => {
     let persistedState;
@@ -14,6 +15,7 @@ export const makeStore = () => {
         reducer: {
             userData: userDataSlice,
             overlays: overlaysSlice,
+            wishlist: wishlist,
         },
         preloadedState: persistedState,
     });

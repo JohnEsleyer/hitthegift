@@ -1,6 +1,7 @@
 'use server'
 
 import { mongoClient } from "@/lib/mongodb";
+import { ProductType } from "@/lib/types/products";
 
 export async function createProduct(data: ProductType) {
     try {

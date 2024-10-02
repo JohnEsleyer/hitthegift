@@ -1,5 +1,6 @@
-type ProductType = {
-    id: string;
+
+
+export type ProductType = {
     title: string;
     productUrl: string;
     imageUrl: string;

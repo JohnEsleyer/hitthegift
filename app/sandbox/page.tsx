@@ -60,9 +60,7 @@ export function OverlayPage({ children }: OverlayPageProps) {
           className=" flex justify-center items-center w-screen h-screen"
         >
           <AddProductOverlay
-            setShowAddProductUI={() => {
-              dispatch(updateCurrentOverlay("addProduct"));
-            }}
+          
           />
         </div>
       )}
