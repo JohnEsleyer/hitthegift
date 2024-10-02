@@ -7,6 +7,7 @@ import { ObjectId } from "mongodb";
 type RequestPayload = {
     userId: string;
     title: string;
+    price: string;
     productUrl: string;
     imageUrl: string;
     description: string;

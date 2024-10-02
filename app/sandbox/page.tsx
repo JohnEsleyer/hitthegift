@@ -1,136 +1,68 @@
-"use client";
+'use client'
+import React, { useState } from "react";
 
-import Avvvatars from "avvvatars-react";
-import { Search } from "lucide-react";
-import { ReactNode, useState } from "react";
-import Image from "next/image";
-import Friends from "/public/friends.png";
-import { Overlay } from "@radix-ui/react-alert-dialog";
-import TempSidebar from "./temp/tempSidebar";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
-import AddProductOverlay from "../(home)/mylist/(components)/AddProductOverlay";
-import AddEventOverlay from "../(home)/mylist/(components)/AddEventOverlay";
+type Currency = {
+  symbol: string;
+  name: string;
+};
 
-interface OverlayPageProps {
-  children: ReactNode;
-}
+const currencies: Currency[] = [
+  { symbol: "$", name: "USD" },
+  { symbol: "€", name: "EUR" },
+  { symbol: "¥", name: "JPY" },
+  { symbol: "₱", name: "PHP" },
+  { symbol: "£", name: "GBP" },
+];
 
-export function OverlayPage({ children }: OverlayPageProps) {
-  const currentOverlay = useSelector(
-    (state: RootState) => state.overlays.currentOverlay
-  );
-  const dispatch = useDispatch();
+const PriceInput: React.FC = () => {
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(currencies[0]);
+  const [price, setPrice] = useState<string>("");
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
-  return (
-    <div className="flex h-screen w-screen">
-      <div
-        className={`flex h-full w-full ${
-          currentOverlay !== "none" && "blurcontent"
-        }`}
-      >
-        {children}
-      </div>
-      {currentOverlay == "friends" && (
-        <div
-          className="rounded-2xl p-2 bg-slate-100 border border-gray-300 border-2 rounded"
-          style={{
-            position: "absolute",
-            top: 60,
-            right: 0,
-            bottom: 0,
-            width: 300,
-            zIndex: 999,
-            transition: "transform 0.3s ease-in-out",
-            transform:
-              currentOverlay == "friends"
-                ? "translateX(0)"
-                : "translateX(100%)",
-          }}
-        >
-          <TempSidebar onClick={() => dispatch(updateCurrentOverlay("none"))} />
-        </div>
-      )}
-
-      {/**Add Product Overlay */}
-      {currentOverlay == "addProduct" && (
-        <div
-          style={{ zIndex: 100, position: "absolute" }}
-          className=" flex justify-center items-center w-screen h-screen"
-        >
-          <AddProductOverlay
-          
-          />
-        </div>
-      )}
-
-      {/**Add Event Overlay*/}
-      {currentOverlay == "addEvent" && (
-        <div
-          style={{ zIndex: 100, position: "absolute" }}
-          className=" flex justify-center items-center w-screen h-screen"
-        >
-          <AddEventOverlay />
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default function Sandbox() {
-  // const [currentPage, setCurrentpage] = useState('friends');
-  const currentOverlay = useSelector(
-    (state: RootState) => state.overlays.currentOverlay
-  );
-  const dispatch = useDispatch();
+  const handleCurrencyChange = (currency: Currency) => {
+    setSelectedCurrency(currency);
+    setShowDropdown(false); // Close dropdown when a currency is selected
+  };
 
   return (
     <div>
-      <OverlayPage>
-        <div className="flex flex-col justify-center items-center w-screen h-screen bg-green-300">
-          This is the body
-          <p>Current: {currentOverlay}</p>
-          <button
-            onClick={() => {
-              dispatch(updateCurrentOverlay("addEvent"));
-            }}
-            className="underline"
-          >
-            Show add event{" "}
-          </button>
-          <button
-            onClick={() => {
-              dispatch(updateCurrentOverlay("addProduct"));
-            }}
-            className="underline"
-          >
-            Show add product{" "}
-          </button>
-          <div
-            className="flex justify-end items-center"
-            style={{
-              position: "absolute",
-              top: 60,
-              right: 0,
-              bottom: 0,
-              width: 90,
-              zIndex: 999,
-            }}
-          >
-            <div className=" text-white flex justify-end">
-              <button
-                className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg "
-                onClick={() => {
-                  dispatch(updateCurrentOverlay("friends"));
-                }}
-              >
-                <Image alt="" width={30} src={Friends} />
+    <div className="flex rounded-full p-2 pl-4 bg-red-300">
+      <div className="" >
+        <button style={{height:50}} className="bg-blue-300 text-xs w-12 items-center flex gap-2 " onClick={() => setShowDropdown(!showDropdown)}>
+          {selectedCurrency.symbol} {selectedCurrency.name}
+        </button>
+        {showDropdown && (
+          <ul className="h-52 flex flex-col bg-white shadow-md p-2 overflow-auto absolute  ">
+            {currencies.map((currency, index) => (
+              <button key={index} onClick={() => handleCurrencyChange(currency)}>
+                {currency.symbol} - {currency.name}
               </button>
-            </div>
-          </div>
-        </div>
-      </OverlayPage>
+            ))}
+          </ul>
+        )}
+      </div>
+      <input
+        type="text"
+        value={price}
+        onChange={(e) => setPrice(e.target.value)}
+        placeholder="Enter price"
+        className="price-input rounded-full p-2"
+      />
+    </div>
     </div>
   );
+};
+
+
+
+export default function Sandbox(){
+  return (
+    <div className="h-screen w-screen">
+      <div style={{width: 400}} className="bg-green-300 ">
+      <PriceInput/>
+      </div>
+     
+     
+    </div>
+  )
 }

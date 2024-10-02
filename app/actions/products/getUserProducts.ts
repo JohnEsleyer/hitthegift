@@ -4,14 +4,6 @@ import { mongoClient } from "@/lib/mongodb";
 import { ProductType } from "@/lib/types/products";
 
 
-// export type ProductType = {
-//   id: string;
-//   userId: string;
-//   title: string;
-//   productUrl: string;
-//   imageUrl: string;
-//   description: string;
-// };
 
 export async function getUserProducts(id: string) {
     try {
@@ -27,6 +19,7 @@ export async function getUserProducts(id: string) {
           responseData.push({
             id: product._id.toString(),
             userId: product.userId,
+            price: product.price,
             title: product.title,
             productUrl: product.productUrl,
             imageUrl: product.imageUrl,
