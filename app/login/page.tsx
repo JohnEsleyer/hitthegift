@@ -60,17 +60,6 @@ export default function LoginPage(){
                     setTimeout(()=>{
                         if (response.status == 200){
                             
-                            // interface UserDataState {
-                            //     id: string;
-                            //     firstName: string;
-                            //     lastName: string;
-                            //     username: string;
-                            //     verified: boolean;
-                            //     email: string;
-                            //     hobbyInfo: string;
-                            //     showInterest: boolean;
-                            // }
-
                             dispatch(updateUserId(data.userId));
                             
                             setIsError(false);

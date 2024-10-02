@@ -4,11 +4,11 @@ import Avvvatars from "avvvatars-react";
 import { Search } from "lucide-react";
 
 
-interface FriendsSidebarProps{
+interface TempSidebarProps{
     onClick: ()=> void;
 }
 
-export default function FriendsSidebar({onClick}: FriendsSidebarProps) {
+export default function TempSidebar({onClick}: TempSidebarProps) {
     return (
        <div>
           <button 

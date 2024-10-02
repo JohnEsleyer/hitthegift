@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import Friends from '/public/friends.png';
 import FriendsSidebar from "./(components)/FriendsSidebar";
+import { OverlayPage } from "./(components)/OverlayPage";
 
 export default function MyListPage(){
     return (
@@ -16,15 +17,15 @@ export default function MyListPage(){
                 <Image src={Loading} alt='' className="w-8 h-8"/>
             </div>
         }>
-        <FriendsSidebar>
-           <div className="w-72">
+        <OverlayPage >
+           <div style={{width: 300}}>
             <MyListLeftSection/>
            </div>
            <div className="flex-1 ">
             <MyListRightSection/>
            </div>
-         
-           </FriendsSidebar>
+        </OverlayPage>
+ 
         </RenderClientOnly>
         </div>
     )

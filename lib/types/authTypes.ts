@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 
 
 export type UserData = {
@@ -8,6 +9,7 @@ export type UserData = {
     birthday: string;
     hobbyInfo: string;
     showInterest: boolean;
+    friendsList: ObjectId[];
 }
 
 

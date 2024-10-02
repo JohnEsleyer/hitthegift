@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import React, { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
-import AddEventPopUp from "../(components)/AddEventPopUp";
+import AddEventPopUp from "../(components)/AddEventOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { updateHobbyInfo, updateUserData } from "@/lib/features/userData";
 import { RootState } from "@/lib/store";
@@ -13,6 +13,7 @@ import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import getUserHobbies from "@/app/actions/user/getUserHobbies";
 import EditableHobbyArea from "../(components)/EditableHobbyArea";
+import { updateCurrentOverlay } from "@/lib/features/overlays";
 
 export default function HomeLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(new Date());
@@ -46,13 +47,13 @@ export default function HomeLeftSection() {
         style={{zIndex: 100, position: 'absolute'}}
         className=" flex justify-center items-center w-screen h-screen"
         >
-          <AddEventPopUp setShowAddEventUI={setShowAddEventUI} dateSelected={dateSelected} setDateSelected={setDateSelected}/>
+          <AddEventPopUp />
       </div>}
       <div className={`${showAddEventUI && 'blurcontent'}`}>
-      <div className={`border-b border-blue-400 flex justify-center gap-2 pt-2 gap-8`}>
+      <div className={`border-b border-gray-400 flex justify-center gap-2 mt-4 pt-2 gap-8`}>
         <Link
           href="/mylist"
-          className="text-blue-500"
+          className="text-blue-500 border-b border-blue-400"
         >
           My List
         </Link>
@@ -64,7 +65,7 @@ export default function HomeLeftSection() {
         </Link>
       </div>
       <div>
-        <div className="mt-4 p-2 flex flex-col">
+        <div className="mt-4 p-2 flex flex-col border rounded-2xl ">
           {/* <span>{hobbiesInfo}</span> */}
           {/** My hobbies and interests */}
           <EditableHobbyArea/>
@@ -75,7 +76,7 @@ export default function HomeLeftSection() {
               <button 
                 className="pl-2 pr-2 bg-blue-600 text-white rounded-full"
                 onClick={() => {
-                  setShowAddEventUI(true);
+                  dispatch(updateCurrentOverlay('addEvent'));
                 }}
                 >
                 Add event
@@ -115,7 +116,7 @@ export default function HomeLeftSection() {
           </div>
 
           {/**Calendar Section */}
-          <div className="flex items-center justify-center mt-2 w-full  border border-black">
+          <div className="flex items-center justify-center mt-2 w-full">
             <Calendar
               mode="single"
               className="rounded-md border"

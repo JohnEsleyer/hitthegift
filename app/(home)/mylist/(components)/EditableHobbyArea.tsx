@@ -68,7 +68,7 @@ export default function EditableHobbyArea(){
 
 
     return (
-        <div className="flex flex-col border p-2 rounded-2xl">
+        <div className="flex flex-col p-2">
         <span className="text-xl mb-6">My hobbies and interest</span>
         <Textarea
           key={"hobbiesInfo"}

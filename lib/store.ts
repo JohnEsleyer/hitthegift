@@ -2,13 +2,18 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userDataSlice, { UserDataState } from './features/userData';
 import { loadState, saveState } from '@/utils/localStorage';
+import overlaysSlice from './features/overlays';
 
 export const makeStore = () => {
-    const persistedState = loadState() as { userData: UserDataState }; // Cast the loaded state to the correct type
+    let persistedState;
+    if (typeof window !== 'undefined'){
+    persistedState = loadState() as { userData: UserDataState }; // Cast the loaded state to the correct type
+    }
 
     const store = configureStore({
         reducer: {
             userData: userDataSlice,
+            overlays: overlaysSlice,
         },
         preloadedState: persistedState,
     });
@@ -18,6 +23,8 @@ export const makeStore = () => {
     });
 
     return store;
+
+    
 };
 
 export type AppStore = ReturnType<typeof makeStore>;

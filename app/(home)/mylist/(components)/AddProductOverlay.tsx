@@ -1,16 +1,18 @@
 'use client'
 import { Calendar } from "@/components/ui/calendar";
+import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { Dispatch, SetStateAction, useState } from "react";
+import { useDispatch } from "react-redux";
 
 interface AddProductProps{
     setShowAddProductUI: Dispatch<SetStateAction<boolean>>;
 }
 
 
-export default function AddEventPopUp({
+export default function AddEventOverlay({
     setShowAddProductUI, 
 }: AddProductProps){
-  
+    const dispatch = useDispatch();
 
     return (
         <div style={{width: 500, height: 630}} className=" p-4 bg-gray-100 rounded-2xl border-2 border-black">
@@ -75,7 +77,7 @@ export default function AddEventPopUp({
           <button 
             className="bg-black rounded-2xl pl-12 pr-12  text-white"
             onClick={() => {
-              setShowAddProductUI(false);
+                dispatch(updateCurrentOverlay('none'));
             }}
             >
             Cancel

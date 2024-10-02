@@ -3,12 +3,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import HourSelector from "./HourSelector";
 import Avvvatars from "avvvatars-react";
+import { useDispatch } from "react-redux";
+import { updateCurrentOverlay } from "@/lib/features/overlays";
 
-interface AddEventProps{
-    setShowAddEventUI: React.Dispatch<React.SetStateAction<boolean>>;
-    dateSelected: Date | undefined;
-    setDateSelected: React.Dispatch<React.SetStateAction<Date | undefined>>;
-}
+
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -24,17 +22,15 @@ const getCurrentDate = () => {
   }
 
 
-export default function AddEventPopUp({
-    setShowAddEventUI,
-    dateSelected,
-    setDateSelected,
-    
-}: AddEventProps){
+export default function AddEventOverlay(){
   
   const [meridiem, setMeridiem] = useState('AM');
   const [hourSelected, setHourSelected] = useState(8);
   const [eventTitle, setEventTitle] = useState('');
+  const [dateSelected, setDateSelected] = useState<Date | undefined>();
 
+  const dispatch = useDispatch();
+  
 
     return (
         <div style={{width: 500, height: 630}} className=" p-4 bg-gray-100 rounded-2xl border-2 border-black">
@@ -47,7 +43,7 @@ export default function AddEventPopUp({
           <button 
             className="underline"
             onClick={()=>{
-              setShowAddEventUI(false);
+              dispatch(updateCurrentOverlay('none'));
             }}
             >
             Close
@@ -138,7 +134,7 @@ export default function AddEventPopUp({
           <button 
             className="bg-black rounded-2xl pl-12 pr-12  text-white"
             onClick={() => {
-              setShowAddEventUI(false);
+              dispatch(updateCurrentOverlay('none'));
             }}
             >
             Cancel
