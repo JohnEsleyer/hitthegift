@@ -26,6 +26,3 @@ export async function createUserAction(data: UserData) {
     }
 }
 
-export async function testAction(data: string){
-    console.log("Hello " +data);
-}

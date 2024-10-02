@@ -18,6 +18,3 @@ export async function deleteEvent(id: string) {
     }
 }
 
-export async function testAction(data: string){
-    console.log("Hello " +data);
-}

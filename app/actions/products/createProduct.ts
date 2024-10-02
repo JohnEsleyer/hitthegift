@@ -2,25 +2,31 @@
 
 import { mongoClient } from "@/lib/mongodb";
 import { ProductType } from "@/lib/types/products";
+import { ObjectId } from "mongodb";
 
-export async function createProduct(data: ProductType) {
+type RequestPayload = {
+    userId: string;
+    title: string;
+    productUrl: string;
+    imageUrl: string;
+    description: string;
+}
+
+export async function createProduct(data: RequestPayload) {
     try {
         const db = mongoClient.db('hitmygift');
    
         await db.collection('products').insertOne({ // Await the database operation
+            userId: data.userId,
             title: data.title, 
             productUrl: data.productUrl,
             imageUrl: data.imageUrl,
             description: data.description,
         });
 
-        return { message: "Product Insertion Success", status: 200 };
+        return { message: "Product Creation Success", status: 200 };
     } catch (e) {
         console.log(e);
-        return { message: "Product Insertion Failed", status: 500 };
+        return { message: "Product Creation Failed", status: 500 };
     }
-}
-
-export async function testAction(data: string){
-    console.log("Hello " +data);
 }

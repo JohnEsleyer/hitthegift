@@ -2,8 +2,9 @@
 import { createProduct } from "@/app/actions/products/createProduct";
 import { Calendar } from "@/components/ui/calendar";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { RootState } from "@/lib/store";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 
 type ResponseData = {
@@ -12,7 +13,7 @@ type ResponseData = {
 }
 
 
-export default function AddEventOverlay(){
+export default function AddProductOverlay(){
     const dispatch = useDispatch();
     const [productName, setProductName] = useState('');
     const [productUrl, setProductUrl] = useState('');
@@ -22,11 +23,13 @@ export default function AddEventOverlay(){
         message: '',
         status: 0,
     });
-
+    const userId = useSelector((state: RootState) => state.userData.id);
+    
 
     const clickAddProduct = async () => {
         try{
             const data = await createProduct({
+                userId: userId,
                 title: productName,
                 productUrl: productUrl,
                 imageUrl: '',

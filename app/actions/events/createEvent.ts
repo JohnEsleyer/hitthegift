@@ -20,7 +20,3 @@ export async function createEvent(data: EventData) {
         return { message: "insert Event Failed", status: 500 };
     }
 }
-
-export async function testAction(data: string){
-    console.log("Hello " +data);
-}
