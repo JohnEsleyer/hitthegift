@@ -1,0 +1,59 @@
+'use server'
+
+import { mongoClient } from "@/lib/mongodb";
+import { ProductType } from "@/lib/types/products";
+
+
+// export type ProductType = {
+//   id: string;
+//   userId: string;
+//   title: string;
+//   productUrl: string;
+//   imageUrl: string;
+//   description: string;
+// };
+
+export async function getUserProducts(id: string) {
+    try {
+        const db = mongoClient.db('hitmygift');
+        
+        // Find products with matching userId
+        const products = await db.collection<ProductType>('products').find({ userId: id }).toArray();
+
+        console.log(`Length: ${products.length}`);
+        console.log(`array: ${products}`);
+        let responseData: ProductType[] = [];
+        products.map((product) => {
+          responseData.push({
+            id: product._id.toString(),
+            userId: product.userId,
+            title: product.title,
+            productUrl: product.productUrl,
+            imageUrl: product.imageUrl,
+            description: product.description,
+
+          });
+        });
+
+        if (products.length > 0) {
+          return {
+            message: "Successfully fetched all products",
+            data: responseData,  
+            status: 200,
+          };
+        } else {
+          return {
+            message: "No products found for the given user",
+            data: [],
+            status: 404,
+          };
+        }
+      } catch (e) {
+        console.error(e);
+        return {
+          message: "Failed to fetch products",
+          status: 500,
+        };
+      }
+}
+
