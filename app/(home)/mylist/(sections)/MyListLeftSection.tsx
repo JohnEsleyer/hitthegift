@@ -48,7 +48,8 @@ export default function HomeLeftSection() {
         >
           <AddEventPopUp setShowAddEventUI={setShowAddEventUI} dateSelected={dateSelected} setDateSelected={setDateSelected}/>
       </div>}
-      <div className="border-b border-blue-400 flex justify-center gap-2 pt-2 gap-8">
+      <div className={`${showAddEventUI && 'blurcontent'}`}>
+      <div className={`border-b border-blue-400 flex justify-center gap-2 pt-2 gap-8`}>
         <Link
           href="/mylist"
           className="text-blue-500"
@@ -121,6 +122,7 @@ export default function HomeLeftSection() {
             />
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

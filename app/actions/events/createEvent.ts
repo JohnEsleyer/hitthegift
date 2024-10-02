@@ -14,10 +14,10 @@ export async function createEvent(data: EventData) {
             invitedFriends: data.invitedFriends,
         });
 
-        return { message: "Registration Success", status: 200 };
+        return { message: "Event Inserted Successfully", status: 200 };
     } catch (e) {
         console.log(e);
-        return { message: "Registration Failed", status: 500 };
+        return { message: "insert Event Failed", status: 500 };
     }
 }
 
