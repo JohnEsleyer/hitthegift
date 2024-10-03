@@ -1,14 +1,18 @@
 "use client";
 import { FormEvent, useState, useTransition } from "react";
-import { createUserAction } from "../actions/auth/createUser";
+import { createUser } from "../actions/auth/createUser";
 import { termsAndConditions } from "./constants";
 import { useRouter } from "next/navigation";
 import Loading from "/public/loading.svg";
 import Image from "next/image";
 import { UserData } from "@/lib/types/user";
+import { useDispatch } from "react-redux";
+import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateUserId } from "@/lib/features/userData";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showTermsNConditions, setShowTermsNConditions] =
@@ -16,6 +20,7 @@ export default function RegisterPage() {
   const [didReadTerms, setDidReadTerms] = useState<boolean>(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     firstName: "",
     lastName: "",
@@ -32,7 +37,7 @@ export default function RegisterPage() {
 
     const registerUser = async () => {
       try {
-        const response = await createUserAction({
+        const response = await createUser({
           firstName: userData?.firstName as string,
           lastName: userData?.lastName as string,
           email: userData?.email as string,
@@ -42,10 +47,15 @@ export default function RegisterPage() {
           showInterest: userData?.showInterest as boolean,
           friendsList: [],
         });
+
         if (response) {
           setResponseMessage(response.message);
           setTimeout(() => {
-          
+            
+            dispatch(updateUserId(response.userId));
+                          
+            setIsError(false);
+            dispatch(updateCurrentOverlay('none'));
             router.push("/mylist");
           }, 3000);
         }else{

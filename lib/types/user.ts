@@ -9,5 +9,5 @@ export type UserData = {
     birthday: string;
     hobbyInfo: string;
     showInterest: boolean;
-    friendsList: ObjectId[];
+    friendsList: string[];
 }

@@ -19,6 +19,7 @@ export default async function getUserInfo(userId: string){
                 hobbiesInfo: user.hobbyInfo,
                 firstName: user.firstName,
                 lastName: user.lastName,
+                email: user.email,
                 birthday: user.birthday,
                 status: 200,
             }
@@ -30,7 +31,7 @@ export default async function getUserInfo(userId: string){
         }
     }catch(e){
         return {
-            message: 'Server failed to access user hobbies',
+            message: 'Server failed to access user info',
             status: 500,
         }
     }

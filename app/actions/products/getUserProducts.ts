@@ -11,7 +11,7 @@ export async function getUserProducts(id: string) {
         
         // Find products with matching userId
         const products = await db.collection<ProductType>('products').find({ userId: id }).toArray();
-
+      
         console.log(`Length: ${products.length}`);
         console.log(`array: ${products}`);
         let responseData: ProductType[] = [];
