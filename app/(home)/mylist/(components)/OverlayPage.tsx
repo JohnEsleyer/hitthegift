@@ -12,8 +12,6 @@ import FriendsSidebar from "./FriendsSidebar";
 interface OverlayPageProps{
     children: ReactNode;
 }
-  
-  
   export function OverlayPage({children}: OverlayPageProps){
     
     const currentOverlay = useSelector((state: RootState) => state.overlays.currentOverlay);
@@ -22,10 +20,17 @@ interface OverlayPageProps{
     useEffect(()=> {
       dispatch(updateCurrentOverlay('none'));
     }, []);
+
+    const handleCloseOverlay = () => {
+      if (currentOverlay !== 'none'){
+        console.log("Closing overlay");
+        dispatch(updateCurrentOverlay('none'));
+      }
+    }
     
     return (
         <div className="flex h-screen w-screen">
-            <div className={`flex h-full w-full ${currentOverlay !== 'none' && 'blurcontent'}`}>
+            <div onClick={handleCloseOverlay} className={`flex h-full w-full ${currentOverlay !== 'none' && 'blurcontent'}`}>
               {children}
             </div>
         {currentOverlay == "friends" &&
@@ -46,18 +51,21 @@ interface OverlayPageProps{
         
         {/**Add Product Overlay */}
         {currentOverlay == "addProduct" && <div 
-          style={{zIndex: 100, position: 'absolute'}}
+          style={{zIndex: 999, position: 'absolute'}}
           className=" flex justify-center items-center w-screen h-screen"
-          >
+          >   <div onClick={handleCloseOverlay} className="flex-1 h-screen"></div>
               <AddProductOverlay/>
+              <div onClick={handleCloseOverlay} className="flex-1 h-screen"></div>
         </div>}
         
          {/**Add Event Overlay*/}
         {currentOverlay == "addEvent"  && <div 
-          style={{zIndex: 100, position: 'absolute'}}
+          style={{zIndex: 999, position: 'absolute'}}
           className=" flex justify-center items-center w-screen h-screen"
           >
-            <AddEventOverlay />
+              <div onClick={handleCloseOverlay} className="flex-1 h-screen"></div>
+              <AddEventOverlay />
+              <div onClick={handleCloseOverlay} className="flex-1 h-screen"></div>
         </div>}
            </div>
   

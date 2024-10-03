@@ -6,8 +6,6 @@ import Avvvatars from "avvvatars-react";
 import { useDispatch } from "react-redux";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 
-
-
 const getCurrentDate = () => {
     const today = new Date();
     const day = today.getDay();
@@ -120,9 +118,6 @@ export default function AddEventOverlay(){
               <div className="w-8 h-8 bg-blue-400 rounded-full">
                 <Avvvatars value="best_user7@gmail.com" style="shape"/>
               </div>
-           
-           
-
             </div>
             <span className="text-xl pt-2">Selected friends</span>
             <div className="w-8 h-8 bg-blue-400 rounded-full">
