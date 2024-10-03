@@ -2,16 +2,13 @@
 
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import { RootState } from "@/lib/store";
+import { Friends } from "@/lib/types/friends";
 import Avvvatars from "avvvatars-react";
 import { Search } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
 
-type Friends = {
-  id: string;
-  firstName: string;
-  lastName: string;
-};
+
 
 interface FriendsSidebarProps {
   onClick: () => void;
