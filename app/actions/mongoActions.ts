@@ -1,7 +1,6 @@
 'use server'
 
 import { mongoClient } from "@/lib/mongodb";
-import { UserData } from "@/lib/types/authTypes";
 
 
 export async function testAction(data: string){

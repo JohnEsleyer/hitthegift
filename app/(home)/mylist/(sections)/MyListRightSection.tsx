@@ -11,6 +11,7 @@ import { RootState } from "@/lib/store";
 import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import WishItem from "../(components)/WishItem";
+import Avvvatars from "avvvatars-react";
 
 export default function HomeRightSection() {
   const dispatch = useDispatch();
@@ -29,23 +30,32 @@ export default function HomeRightSection() {
     });
   }, []);
 
-
-
   return (
     <div className="pl-8 w-full h-full">
-      {/**Buttons*/}
-      <div className="mt-12 flex gap-2">
-        <button
-          className="bg-blue-500 text-white pl-2 pr-2 rounded-full"
-          onClick={() => {
-            dispatch(updateCurrentOverlay("addProduct"));
-          }}
-        >
-          Add Product
-        </button>
-        <button className="bg-blue-500 text-white pl-2 pr-2 rounded-full">
-          Share list
-        </button>
+ 
+      <div className="mt-12 flex justify-between items-center">
+             {/**Buttons*/}
+        <div className=" flex gap-2 items-center ">
+          <button
+            className="bg-blue-500 text-white pl-2 pr-2 rounded-full"
+            onClick={() => {
+              dispatch(updateCurrentOverlay("addProduct"));
+            }}
+          >
+            Add Product
+          </button>
+          <button className="bg-blue-500 text-white pl-2 pr-2 rounded-full">
+            Share list
+          </button>
+        </div>
+        {/*Button to open up profile section */}
+        <div className="p-2 pr-8">
+          <button onClick={() => {
+            dispatch(updateCurrentOverlay('profile'));
+          }}>
+          <Avvvatars value={`profile`}/>
+          </button>  
+        </div>
       </div>
       {/**Body */}
       <div style={{ position: "relative" }}>
@@ -57,18 +67,20 @@ export default function HomeRightSection() {
           }}
           className=" mt-4 pt-4 "
         >
-          {isProductsPending ? 
-          <div>Loading...</div> : 
-          <div className="flex flex-wrap gap-8 h-full">
-            {products.map((product) => (
-                   <WishItem 
-                        productName={product.title}
-                        description={product.description}
-                        price={'$10.00'}
-                   /> 
-                ))}
-          </div>
-          }
+          {isProductsPending ? (
+            <div>Loading...</div>
+          ) : (
+            <div className="flex flex-wrap gap-8 h-full">
+              {products.map((product) => (
+                <WishItem
+                 key={product.id}
+                  productName={product.title}
+                  description={product.description}
+                  price={"$10.00"}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <div
           className="flex justify-end items-center"

@@ -5,7 +5,7 @@ import { UserData } from "@/lib/types/user";
 import { ObjectId } from "mongodb";
 
 
-export default async function getUserHobbies(userId: string){
+export default async function getUserInfo(userId: string){
     
     try{
         const db = mongoClient.db('hitmygift');
@@ -17,6 +17,9 @@ export default async function getUserHobbies(userId: string){
             console.log(user._id);
             return {
                 hobbiesInfo: user.hobbyInfo,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                birthday: user.birthday,
                 status: 200,
             }
         }

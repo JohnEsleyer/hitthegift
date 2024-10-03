@@ -1,17 +1,6 @@
 import { ObjectId } from "mongodb";
 
 
-export type UserData = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    birthday: string;
-    hobbyInfo: string;
-    showInterest: boolean;
-    friendsList: ObjectId[];
-}
-
 
 export type LoginData = {
     email: string;

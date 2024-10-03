@@ -42,9 +42,29 @@ const userDataSlice = createSlice({
                 ...state,
                 id: action.payload,
             }
-        }
+        },
+        updateUserFirstName: (state, action: PayloadAction<string>) => {
+            console.log('updating user first name...');
+            return {
+                ...state,
+                firstName: action.payload,
+            }
+        },
+        updateUserLastName: (state, action: PayloadAction<string>) => {
+            console.log('updating user last name...');
+            return {
+                ...state,
+                lastName: action.payload,
+            }
+        },
     }
 });
 
-export const { updateUserData, updateHobbyInfo, updateUserId} = userDataSlice.actions;
+export const { 
+    updateUserData, 
+    updateHobbyInfo, 
+    updateUserId,
+    updateUserFirstName,
+    updateUserLastName,
+} = userDataSlice.actions;
 export default userDataSlice.reducer; // Ensure this exports the reducer

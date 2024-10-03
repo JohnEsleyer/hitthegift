@@ -10,7 +10,7 @@ import Loading from '/public/loading.svg';
 import {useRouter} from 'next/navigation';
 import BackgroundImage from '/public/background.png';
 import { useDispatch } from "react-redux";
-import { updateUserData, updateUserId } from "@/lib/features/userData";
+import { updateUserData, updateUserFirstName, updateUserId, updateUserLastName } from "@/lib/features/userData";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 
 type ResponseData = {
@@ -60,9 +60,9 @@ export default function LoginPage(){
 
                     setTimeout(()=>{
                         if (response.status == 200){
-                            
+           
                             dispatch(updateUserId(data.userId));
-                            
+                          
                             setIsError(false);
                             dispatch(updateCurrentOverlay('none'));
                             router.push('/mylist');

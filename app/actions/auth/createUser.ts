@@ -2,7 +2,7 @@
 
 import { hashPassword } from "@/lib/hashPassword";
 import { mongoClient } from "@/lib/mongodb";
-import { UserData } from "@/lib/types/authTypes";
+import { UserData } from "@/lib/types/user";
 
 export async function createUserAction(data: UserData) {
     try {
@@ -16,6 +16,7 @@ export async function createUserAction(data: UserData) {
             email: data.email,
             password: encryptedPassword,
             hobbyInfo: data.hobbyInfo,
+            birthday: data.birthday,
             showInterest: data.showInterest
         });
 
