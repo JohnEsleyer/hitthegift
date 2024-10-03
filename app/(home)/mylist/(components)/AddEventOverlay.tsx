@@ -66,9 +66,14 @@ export default function AddEventOverlay() {
         );
         
         const responseData = await createEvent({
-          date: eventDate,
-          eventTitle: eventTitle,
-          invitedFriends: selectedFriends,
+          userId: userId,
+          data: {
+            id: '',
+            userId: userId,
+            date: eventDate,
+            eventTitle: eventTitle,
+            invitedFriends: selectedFriends,
+          }
         });
 
         dispatch(updateCurrentOverlay('none'));

@@ -1,8 +1,10 @@
 import { Friend } from "./friend";
 
 export type EventData = {
-    date: Date,
-    eventTitle: string,
-    invitedFriends: Friend[], // A list of Ids
+    id: string;
+    date: Date;
+    userId: string; //owner of event
+    eventTitle: string;
+    invitedFriends: Friend[]; // A list of Ids
 }
 
