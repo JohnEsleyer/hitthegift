@@ -19,8 +19,9 @@ export default function testGetFriends(){
 
     useEffect(() => {
         startTransition(async () => {
+            console.log(`id sent to server: ${userId}`);
             const results = await getAllFriends(userId);
-            console.log(`status: ${results.message}`);
+            console.log(`status: ${results?.status}`);
             if (results){
                 setFriends(results.friends || []);
             }
@@ -36,7 +37,7 @@ export default function testGetFriends(){
             : 
             <div>
                 {friends.map((friend) => (
-                    <p key={friend.id}>{friend.id} {friend.firstName}</p>
+                    <p key={friend.id}>{friend.id} {friend.firstName} {friend.lastName}</p>
                 ))}
             </div>
             }

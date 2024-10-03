@@ -2,7 +2,7 @@
 
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { RootState } from "@/lib/store";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import AddEventOverlay from "./AddEventOverlay";
 import AddProductOverlay from "./AddProductOverlay";
@@ -18,7 +18,11 @@ interface OverlayPageProps{
     
     const currentOverlay = useSelector((state: RootState) => state.overlays.currentOverlay);
     const dispatch = useDispatch();
-  
+    
+    useEffect(()=> {
+      dispatch(updateCurrentOverlay('none'));
+    }, []);
+    
     return (
         <div className="flex h-screen w-screen">
             <div className={`flex h-full w-full ${currentOverlay !== 'none' && 'blurcontent'}`}>
@@ -46,7 +50,6 @@ interface OverlayPageProps{
           className=" flex justify-center items-center w-screen h-screen"
           >
               <AddProductOverlay/>
-             
         </div>}
         
          {/**Add Event Overlay*/}

@@ -9,57 +9,61 @@ type UserFriends = {
     lastName: string;
 };
 
-export default async function getAllFriends(userId: string){
-    try{
+export default async function getAllFriends(userId: string) {
+    console.log(`ID received: ${userId}`);
+    try {
         const db = mongoClient.db('hitmygift');
         const user = await db.collection<UserData>('users').findOne({
             _id: new ObjectId(userId),
         });
 
-        if (user){
+        if (user) {
             console.log(`Server received userId: ${user._id}`);
 
-            const userFriendsIdList: string[] = user.friendsList.map((friendId) => (friendId.toString()));
-            
-            // Fetch the names of friends 
-            let userFriends: UserFriends[] = [];
-            
-            userFriendsIdList.map(async (friendIdStr) => {
-                console.log(`MAP: ${friendIdStr}`);
-                const friend = await db.collection<UserData>('users').findOne({
-                    _id: new ObjectId(friendIdStr)
-                });
-                
-                console.log("After getting 1 friend");
-             
-                if (friend){
-                    userFriends.push({
-                        id: friendIdStr,
-                        firstName: friend.firstName,
-                        lastName: friend.lastName,
-                    });
-                }
-            });
+            const userFriendsIdList: string[] = user.friendsList.map((friendId) => friendId.toString());
 
-            console.log(`id: ${userFriends[0].id}`);
-            console.log(`firstName: ${userFriends[0].firstName}`);
-            console.log(`lastName: ${userFriends[0].lastName}`);
+            // Fetch the names of friends
+            let userFriends: UserFriends[] = [];
+
+            // Use Promise.all to handle async mapping
+            const friendsData = await Promise.all(
+                userFriendsIdList.map(async (friendIdStr) => {
+                    console.log(`MAP: ${friendIdStr}`);
+                    const friend = await db.collection<UserData>('users').findOne({
+                        _id: new ObjectId(friendIdStr),
+                    });
+
+                    console.log("After getting 1 friend");
+
+                    if (friend) {
+                        console.log(`push to userFriends ID: ${friendIdStr}`);
+                        console.log(`push to userFriends firstName: ${friend.firstName}`);
+                        console.log(`push to userFriends lastName: ${friend.lastName}`);
+                        return {
+                            id: friendIdStr,
+                            firstName: friend.firstName,
+                            lastName: friend.lastName,
+                        };
+                    }
+                    return null; // Return null if the friend is not found
+                })
+            );
+
+            // Filter out any null values
+            userFriends = friendsData.filter((friend): friend is UserFriends => friend !== null);
+
+            console.log(`LENGTH: ${userFriends.length}`);
+            console.log('Status: 200');
             return {
                 friends: userFriends,
                 status: 200,
-            }
+            };
         }
-
-        console.log('Status: 400');
+    } catch (error) {
+        console.error('Error fetching friends:', error);
         return {
-            message: 'Failed to fetch friends data.',
-            status: 400,
-        }
-    }catch(e){
-        console.log(`Status 500: ${e}`);
-        return {
-            message: 'Server failed to access user hobbies',
+            friends: [],
             status: 500,
-        }
+        };
     }
 }

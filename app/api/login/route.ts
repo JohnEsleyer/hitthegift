@@ -40,7 +40,7 @@ export async function POST(req: Request){
                 message: 'Invalid email or password',
                 status: 401,
             }), {
-                status: 401,
+            
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -60,8 +60,9 @@ export async function POST(req: Request){
         return new Response(JSON.stringify({
             message: 'Login successful',
             userId: user._id,
-        }), {
             status: 200,
+        }), {
+           
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -72,8 +73,9 @@ export async function POST(req: Request){
         console.log(e);
         return new Response(JSON.stringify({
             message: 'Login Failed',
-        }), {
             status: 500,
+        }), {
+        
             headers: {
                 'Content-Type': 'application/json',
             },

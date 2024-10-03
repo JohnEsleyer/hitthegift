@@ -11,6 +11,7 @@ import {useRouter} from 'next/navigation';
 import BackgroundImage from '/public/background.png';
 import { useDispatch } from "react-redux";
 import { updateUserData, updateUserId } from "@/lib/features/userData";
+import { updateCurrentOverlay } from "@/lib/features/overlays";
 
 type ResponseData = {
     message: string;
@@ -63,12 +64,14 @@ export default function LoginPage(){
                             dispatch(updateUserId(data.userId));
                             
                             setIsError(false);
+                            dispatch(updateCurrentOverlay('none'));
                             router.push('/mylist');
                             console.log('push(mylist)');
                         }else{
                             setIsError(true);
+                            setIsLoading(false);
                         }
-                        setIsLoading(false);
+                      
                     
                     }, 3000);
                 
