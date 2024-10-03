@@ -8,6 +8,11 @@ import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { RootState } from "@/lib/store";
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
+import { createEvent } from "@/app/actions/events/createEvent";
+import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
+import Loading from '/public/loading.svg';
+import Image from 'next/image';
+
 
 const getCurrentDate = () => {
   const today = new Date();
@@ -25,7 +30,7 @@ const getCurrentDate = () => {
 };
 
 export default function AddEventOverlay() {
-  const [meridiem, setMeridiem] = useState("AM");
+  const [meridiem, setMeridiem] = useState<"AM" | "PM">("AM");
   const [hourSelected, setHourSelected] = useState(8);
   const [eventTitle, setEventTitle] = useState("");
   const [dateSelected, setDateSelected] = useState<Date | undefined>();
@@ -33,6 +38,7 @@ export default function AddEventOverlay() {
   const userId = useSelector((state: RootState) => state.userData.id);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -47,26 +53,49 @@ export default function AddEventOverlay() {
     });
   }, []);
 
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      if (dateSelected) {
+        const eventDate = new Date(
+          dateSelected.getFullYear(), // Set year
+          dateSelected.getMonth(), // Set month
+          dateSelected.getDay(), // Set day
+          convertTo24HourFormat(hourSelected, meridiem), // Set hour
+          0 // minutes
+        );
+        
+        const responseData = await createEvent({
+          date: eventDate,
+          eventTitle: eventTitle,
+          invitedFriends: selectedFriends,
+        });
+
+        dispatch(updateCurrentOverlay('none'));
+
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setIsLoading(false);
+  };
+
   const handleSelectFriend = (friend: Friend) => {
-    setSelectedFriends((prev) => [
-      friend,
-      ...prev,
-    ]);
-    setFriends((prev) => (prev.filter((element) => element.id !== friend.id)))
-  }
+    setSelectedFriends((prev) => [friend, ...prev]);
+    setFriends((prev) => prev.filter((element) => element.id !== friend.id));
+  };
 
   const handleRemoveSelectedFriend = (friend: Friend) => {
-    setFriends((prev) => [
-      friend,
-      ...prev,
-    ]);
-    setSelectedFriends((prev) => prev.filter((element) => element.id !== friend.id));
-  }
+    setFriends((prev) => [friend, ...prev]);
+    setSelectedFriends((prev) =>
+      prev.filter((element) => element.id !== friend.id)
+    );
+  };
 
   return (
     <div
       style={{ width: 500, height: 630 }}
-      className=" p-4 bg-gray-100 rounded-2xl border-2 border-black"
+      className=" p-4 bg-white  rounded-2xl border-2 border-black"
     >
       {/* <p className="text-2xl font-bold">Add Event</p> */}
       <p className=" flex justify-between">
@@ -86,7 +115,8 @@ export default function AddEventOverlay() {
       {/**Calendar Section **/}
       <Calendar
         classNames={{
-          day_selected: "bg-blue-500 rounded-2xl text-white ",
+          day_selected: "bg-blue-500 rounded-xl text-white",
+          day: "p-1 pl-2 pr-2 hover:bg-blue-300 rounded-xl",
           months:
             "flex w-full flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 flex-1",
           month: "space-y-4 w-full flex flex-col",
@@ -137,13 +167,17 @@ export default function AddEventOverlay() {
         <input
           className="bg-white rounded-full p-2 w-64 pl-4"
           placeholder="Event title"
+          value={eventTitle}
+          onChange={(e) => {
+            setEventTitle(e.target.value);
+          }}
         />
       </div>
       {/**Friend Section **/}
       <div>
         <span className="text-xl pt-2">Friend you'll share this event</span>
         <div className="flex gap-2 overflow-auto w-96 h-8 ">
-        <div className="flex w-full">
+          <div className="flex w-full">
             {selectedFriends.map((friend) => (
               <div onClick={() => handleRemoveSelectedFriend(friend)}>
                 <Avvvatars key={friend.id} value={`${friend.firstName}`} />
@@ -151,21 +185,23 @@ export default function AddEventOverlay() {
             ))}
           </div>
         </div>
-        <span className="text-xl pt-2">Selected Friend</span>
-        {isFriendPending ? (
-          <div>Loading...</div>
-        ) : (
-          <div className="flex w-full">
-            {friends.map((friend) => (
-              <div onClick={() => handleSelectFriend(friend)}>
-                <Avvvatars key={friend.id} value={`${friend.firstName}`} />
-              </div>
-            ))}
-          </div>
-        )}
+        <span className="text-xl pt-2 ">Select Friend</span>
+        <div className="h-8">
+          {isFriendPending ? (
+            <div>Loading...</div>
+          ) : (
+            <div className="flex w-full">
+              {friends.map((friend) => (
+                <div onClick={() => handleSelectFriend(friend)}>
+                  <Avvvatars key={friend.id} value={`${friend.firstName}`} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex justify-center gap-8 mt-6">
-        <button className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white">
+        <button onClick={handleSubmit} className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white">
           Accept
         </button>
         <button
@@ -176,6 +212,9 @@ export default function AddEventOverlay() {
         >
           Cancel
         </button>
+      </div>
+      <div className="flex justify-center items-center p-4">
+        {isLoading && <Image src={Loading} alt='' style={{width: 30}} />}
       </div>
     </div>
   );

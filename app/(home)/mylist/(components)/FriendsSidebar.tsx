@@ -2,7 +2,7 @@
 
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import { RootState } from "@/lib/store";
-import { Friends } from "@/lib/types/friends";
+import { Friend } from "@/lib/types/friend";
 import Avvvatars from "avvvatars-react";
 import { Search } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
@@ -17,7 +17,7 @@ interface FriendsSidebarProps {
 export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   const [isPending, startTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
-  const [friends, setFriends] = useState<Friends[]>([]);
+  const [friends, setFriends] = useState<Friend[]>([]);
 
   useEffect(() => {
     startTransition(async () => {
