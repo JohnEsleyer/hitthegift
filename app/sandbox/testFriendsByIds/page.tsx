@@ -1,23 +1,31 @@
+
+
 'use client'
 
-import { getAllEvents } from "@/app/actions/events/getAllEvents";
+import getFriendsByIds from "@/app/actions/user/getFriendsByIds";
 import { RootState } from "@/lib/store";
-import { EventData, ServerResponseForEvents } from "@/lib/types/event";
+import { Friend } from "@/lib/types/friend";
 import { useEffect, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
 
-export default function testGetevents(){
+export default function testFriendsByIds(){
     const [isPending, startTransition] = useTransition();
     const userId = useSelector((state: RootState) => state.userData.id);
-    const [events, setevents] = useState<ServerResponseForEvents[]>([]);
+    const [friends, setFriends] = useState<Friend[]>([]);
 
     useEffect(() => {
         startTransition(async () => {
             console.log(`id sent to server: ${userId}`);
-            const results = await getAllEvents(userId);
+            const results = await getFriendsByIds([
+                "66fe544c2426b7d616e5f80b",
+                "66fe4ef22426b7d616e5f80a",
+                "66fe4eba2426b7d616e5f809",
+                "66fe4d302426b7d616e5f807",
+            ]);
             console.log(`status: ${results?.status}`);
             if (results){
-                setevents(results.data || []);
+                console.log(results);
+                setFriends(results.friends || []);
             }
            
         });
@@ -30,11 +38,12 @@ export default function testGetevents(){
             <div>Loading...</div>
             : 
             <div>
-                {events.map((event) => (
-                    <p key={event.id}>{event.id} {event.eventTitle} {event.date.getDay()}</p>
+                {friends.map((friend) => (
+                    <p key={friend.id}>{friend.id} {friend.firstName} {friend.lastName}</p>
                 ))}
             </div>
             }
         </div>
     )
 }
+

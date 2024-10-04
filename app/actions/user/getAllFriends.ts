@@ -33,12 +33,8 @@ export default async function getAllFriends(userId: string) {
                         _id: new ObjectId(friendIdStr),
                     });
 
-                    console.log("After getting 1 friend");
 
                     if (friend) {
-                        console.log(`push to userFriends ID: ${friendIdStr}`);
-                        console.log(`push to userFriends firstName: ${friend.firstName}`);
-                        console.log(`push to userFriends lastName: ${friend.lastName}`);
                         return {
                             id: friendIdStr,
                             firstName: friend.firstName,

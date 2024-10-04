@@ -3,6 +3,7 @@
 import { mongoClient } from "@/lib/mongodb";
 import { EventData } from "@/lib/types/event";
 import { ObjectId } from "mongodb";
+import getFriendsByIds from "../user/getFriendsByIds";
 
 export async function getAllEvents(userId: string) {
     try {
@@ -16,13 +17,18 @@ export async function getAllEvents(userId: string) {
         if (events.length > 0) {
             // Use Promise.all to handle async mapping
             const responseData = await Promise.all(
+
                 events.map(async (event) => {
+                    event.invitedFriends.map((friendId) => console.log(`Friend: ${friendId}`));
+                    
+                    const friendsData = await getFriendsByIds(event.invitedFriends);
+                    
                     return {
                         id: event._id.toString(),
                         userId: userId,
                         date: event.date,
                         eventTitle: event.eventTitle,
-                        invitedFriends: event.invitedFriends,
+                        invitedFriends: friendsData.friends,
                     };
                 })
             );

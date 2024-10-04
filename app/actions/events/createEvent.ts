@@ -13,13 +13,12 @@ export async function createEvent(payload: RequestPayload) {
     try {
         const db = mongoClient.db('hitmygift');
 
-        const friendsId = payload.data.invitedFriends.map((friend) => friend.id);
         
         await db.collection('events').insertOne({ // Await the database operation
             userId: payload.userId,
             date: payload.data.date,
             eventTitle: payload.data.eventTitle,
-            invitedFriends: friendsId,
+            invitedFriends: payload.data.invitedFriends,
         });
 
         return { message: "Event Inserted Successfully", status: 200 };

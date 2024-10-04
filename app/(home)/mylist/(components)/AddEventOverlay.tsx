@@ -64,7 +64,8 @@ export default function AddEventOverlay() {
           convertTo24HourFormat(hourSelected, meridiem), // Set hour
           0 // minutes
         );
-        
+        const friendsId = selectedFriends.map((friend) => friend.id);
+
         const responseData = await createEvent({
           userId: userId,
           data: {
@@ -72,7 +73,7 @@ export default function AddEventOverlay() {
             userId: userId,
             date: eventDate,
             eventTitle: eventTitle,
-            invitedFriends: selectedFriends,
+            invitedFriends: friendsId,
           }
         });
 

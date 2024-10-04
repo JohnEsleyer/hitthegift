@@ -21,7 +21,11 @@ import getUserHobbies from "@/app/actions/user/getUserHobbies";
 import EditableHobbyArea from "../(components)/EditableHobbyArea";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { getAllEvents } from "@/app/actions/events/getAllEvents";
-import { EventData } from "@/lib/types/event";
+import { EventData, ServerResponseForEvents } from "@/lib/types/event";
+import Avvvatars from "avvvatars-react";
+
+
+
 
 export default function HomeLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
@@ -31,7 +35,7 @@ export default function HomeLeftSection() {
   const [hobbiesInfo, setHobbiesInfo] = useState("");
   const [showAddEventUI, setShowAddEventUI] = useState<boolean>(false);
   const userId = useSelector((state: RootState) => state.userData.id);
-  const [events, setEvents] = useState<EventData[]>([]);
+  const [events, setEvents] = useState<ServerResponseForEvents[]>([]);
   const [isEventsPending, startEventsTransition] = useTransition();
 
   const dispatch = useDispatch();
@@ -99,20 +103,42 @@ export default function HomeLeftSection() {
                 </button>
               </div>
               <div>
-              {isEventsPending ? <div>Loading...</div> : <div className="flex flex-col items-between justify-between">
-                  
-                 {events.map((event) => (
-                       <div className="flex gap-2 items-center p-2 bg-gray-100 rounded-2xl m-2">
-                       <div
-                         style={{ fontSize: 15 }}
-                         className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold w-8 h-8 rounded-full"
-                       >
-                        {event.date.getDay()}
-                       </div>
-                       <span>{event.eventTitle}</span>
-                     </div>
-                 ))}
-                </div>}
+                {isEventsPending ? (
+                  <div>Loading...</div>
+                ) : (
+                  <div className="flex flex-col items-between justify-between">
+                    {events.map((event) => (
+                      <div className="flex gap-2 items-center p-2 bg-gray-100 rounded-2xl m-2">
+                        <div
+                          style={{ fontSize: 15 }}
+                          className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold w-8 h-8 rounded-full"
+                        >
+                          {event.date.getDate()}
+                        </div>
+                        <div style={{width: 200}} className="flex">
+                          <span className="flex-1">{event.eventTitle}</span>
+                          <div style={{width: 70}} className="flex">
+                            {event.invitedFriends.map((friend, index) => {
+                              if (index < 2){
+                                return (
+                                  <Avvvatars 
+                                    key={friend.id}
+                                    value={`${friend.firstName}`}
+                                  />
+                                );
+                              }
+                            })}
+                          </div>
+                          <span className="text-gray-500 flex items-center">
+                            {event.invitedFriends.length < 3 ? 
+                            "": 
+                            "+" + (event.invitedFriends.length - 2)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
