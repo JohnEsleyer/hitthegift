@@ -46,7 +46,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
         {friends.map((friend) => (
         <div key={friend.id} className="border border-gray-400 border-2 rounded-2xl pl-2 pr-2 p-1 mt-2 flex items-center gap-2 ">
           <div className="flex justify-center items-center w-12 h-12 bg-blue-400 rounded-full">
-            <Avvvatars size={48} value={friend.firstName} style="shape" />
+            <Avvvatars size={48} value={friend.firstName}  />
           </div>
           <span>{friend.firstName}</span>
         </div>    
