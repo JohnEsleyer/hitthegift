@@ -106,18 +106,21 @@ export default function HomeLeftSection() {
                 {isEventsPending ? (
                   <div>Loading...</div>
                 ) : (
-                  <div className="flex flex-col items-between justify-between">
+                  <div style={{height: 200}} className="overflow-auto flex flex-col items-between ">
                     {events.map((event) => (
-                      <div className="flex gap-2 items-center p-2 bg-gray-100 rounded-2xl m-2">
+                      <div className="flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2">
                         <div
-                          style={{ fontSize: 15 }}
-                          className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold w-8 h-8 rounded-full"
+                          style={{ fontSize: 15, width: 30, height: 30}}
+                          className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold rounded-full"
                         >
                           {event.date.getDate()}
                         </div>
                         <div style={{width: 200}} className="flex">
-                          <span className="flex-1">{event.eventTitle}</span>
-                          <div style={{width: 70}} className="flex">
+                          <div style={{width:event.invitedFriends.length == 1 ? 130 : 100}}>
+                            <p className="truncate">{event.eventTitle}</p>
+                          </div>
+                          <div 
+                            className="flex-1 flex justify-end">
                             {event.invitedFriends.map((friend, index) => {
                               if (index < 2){
                                 return (
@@ -128,12 +131,13 @@ export default function HomeLeftSection() {
                                 );
                               }
                             })}
-                          </div>
-                          <span className="text-gray-500 flex items-center">
+                              <span className="text-gray-500 flex items-center">
                             {event.invitedFriends.length < 3 ? 
                             "": 
                             "+" + (event.invitedFriends.length - 2)}
                           </span>
+                          </div>
+                        
                         </div>
                       </div>
                     ))}

@@ -16,7 +16,7 @@ import Image from 'next/image';
 
 const getCurrentDate = () => {
   const today = new Date();
-  const day = today.getDay();
+  const day = today.getDate();
   const month = today.getMonth();
   const year = today.getFullYear();
   const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
@@ -60,7 +60,7 @@ export default function AddEventOverlay() {
         const eventDate = new Date(
           dateSelected.getFullYear(), // Set year
           dateSelected.getMonth(), // Set month
-          dateSelected.getDay(), // Set day
+          dateSelected.getDate(), // Set day
           convertTo24HourFormat(hourSelected, meridiem), // Set hour
           0 // minutes
         );
@@ -219,6 +219,7 @@ export default function AddEventOverlay() {
           Cancel
         </button>
       </div>
+    
       <div className="flex justify-center items-center p-4">
         {isLoading && <Image src={Loading} alt='' style={{width: 30}} />}
       </div>
