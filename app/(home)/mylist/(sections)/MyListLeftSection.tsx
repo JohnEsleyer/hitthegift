@@ -48,7 +48,7 @@ export default function HomeLeftSection() {
     };
 
     fetchHobbyData();
-    startTransition(async () => {
+    startEventsTransition(async () => {
       const results = await getAllEvents(userId);
       console.log(`status: ${results.message}`);
       if (results) {

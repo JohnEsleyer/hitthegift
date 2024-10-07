@@ -7,7 +7,7 @@ import { EventData, ServerResponseForEvents } from "@/lib/types/event";
 import { useEffect, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
 
-export interface MonthlyInvitedEventsResponse {
+ interface MonthlyInvitedEventsResponse {
     id: string;
     userId: string;
     date: Date;
@@ -15,7 +15,6 @@ export interface MonthlyInvitedEventsResponse {
     invitedFriends: string[];
     ownerName: string;
 }
-
 
 export default function displayInvitedEvent(){
     const [isPending, startTransition] = useTransition();
