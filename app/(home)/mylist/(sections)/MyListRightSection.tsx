@@ -20,7 +20,6 @@ export default function HomeRightSection() {
   const [isProductsPending, startProductsTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const [products, setProducts] = useState<ProductType[]>([]);
-  const [showProfileOptions, setShowProfileOptions] = useState(false);
   const router = useRouter();
 
 
@@ -52,32 +51,7 @@ export default function HomeRightSection() {
             Share list
           </button>
         </div>
-        {/*Button to open up profile section */}
-        <div className="p-2 pr-8">
-          <button 
-            className="relative"
-            onClick={() => {
-            
-            setShowProfileOptions((prev) => !prev);
-          }}>
-          <Avvvatars value={`profile`}/>
-          </button>  
-          {showProfileOptions && <ul style={{zIndex: 100, right: 10}} className="flex flex-col gap-2 p-4 absolute bg-white shadow-md">
-            <button onClick={() => {
-              setShowProfileOptions(false);
-              dispatch(updateCurrentOverlay('profile'));
-            }}>
-              My Profile
-            </button>
-            <button onClick={() => {
-            
-              document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-              router.push('/login');
-            }}>
-              Log out
-            </button>
-          </ul>}
-        </div>
+        
       </div>
       {/**Body */}
       <div style={{ position: "relative" }}>
