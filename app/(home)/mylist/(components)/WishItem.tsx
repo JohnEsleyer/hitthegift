@@ -18,7 +18,7 @@ export default function WishItem({
     >
       <div style={{ height: 150 }} className=" w-full bg-slate-300"></div>
       <p className="flex justisfy-center mt-2">{productName}</p>
-      <p className="font-bold">{price}</p>
+      <p className="font-bold">${price}</p>
       <p className="text-xs mt-2 h-24 overflow-auto">{description}</p>
     </div>
   );

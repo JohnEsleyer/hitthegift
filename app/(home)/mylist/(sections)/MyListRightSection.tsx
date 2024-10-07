@@ -72,7 +72,7 @@ export default function HomeRightSection() {
                  key={product.id}
                   productName={product.title}
                   description={product.description}
-                  price={"$10.00"}
+                  price={product.price}
                 />
               ))}
             </div>

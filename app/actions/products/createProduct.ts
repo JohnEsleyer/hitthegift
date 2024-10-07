@@ -21,6 +21,7 @@ export async function createProduct(data: RequestPayload) {
             userId: data.userId,
             title: data.title, 
             productUrl: data.productUrl,
+            price: data.price,
             imageUrl: data.imageUrl,
             description: data.description,
         });

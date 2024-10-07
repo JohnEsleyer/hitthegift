@@ -5,14 +5,7 @@ import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 
 
-// id: string;
-// firstName: string;
-// lastName: string;
-// username: string;
-// verified: boolean;
-// email: string;
-// hobbyInfo: string;
-// showInterest: boolean;
+
 
 export default function TestUserData(){
     const userId = useSelector((state: RootState) => state.userData.id);
