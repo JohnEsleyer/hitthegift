@@ -8,7 +8,7 @@ type RequestData = {
     token: string;
 };
 
-export default async function verifyJWT(req: Request){
+export default async function POST(req: Request){
     const data: RequestData =  await req.json();
     const decoded = jwt.verify(data.token, process.env.JWT_SECRET || '');        
     return decoded;

@@ -66,7 +66,6 @@ export default function LoginPage(){
                             setIsError(false);
                             dispatch(updateCurrentOverlay('none'));
                             router.push('/mylist');
-                            console.log('push(mylist)');
                         }else{
                             setIsError(true);
                             setIsLoading(false);

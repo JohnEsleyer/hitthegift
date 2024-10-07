@@ -25,8 +25,6 @@ import { EventData, ServerResponseForEvents } from "@/lib/types/event";
 import Avvvatars from "avvvatars-react";
 
 
-
-
 export default function HomeLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
     new Date()
@@ -148,7 +146,13 @@ export default function HomeLeftSection() {
 
             {/**Calendar Section */}
             <div className="flex items-center justify-center mt-2 w-full">
-              <Calendar mode="single" className="rounded-md border" />
+              <Calendar 
+                mode="single" 
+                className="rounded-md border" 
+                classNames={{
+                    
+                }}
+                />
             </div>
           </div>
         </div>

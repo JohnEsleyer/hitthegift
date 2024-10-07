@@ -12,6 +12,7 @@ import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import WishItem from "../(components)/WishItem";
 import Avvvatars from "avvvatars-react";
+import { useRouter } from "next/navigation";
 
 export default function HomeRightSection() {
   const dispatch = useDispatch();
@@ -19,6 +20,9 @@ export default function HomeRightSection() {
   const [isProductsPending, startProductsTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const [products, setProducts] = useState<ProductType[]>([]);
+  const [showProfileOptions, setShowProfileOptions] = useState(false);
+  const router = useRouter();
+
 
   useEffect(() => {
     startTransition(async () => {
@@ -50,11 +54,29 @@ export default function HomeRightSection() {
         </div>
         {/*Button to open up profile section */}
         <div className="p-2 pr-8">
-          <button onClick={() => {
-            dispatch(updateCurrentOverlay('profile'));
+          <button 
+            className="relative"
+            onClick={() => {
+            
+            setShowProfileOptions((prev) => !prev);
           }}>
           <Avvvatars value={`profile`}/>
           </button>  
+          {showProfileOptions && <ul style={{zIndex: 100, right: 10}} className="flex flex-col gap-2 p-4 absolute bg-white shadow-md">
+            <button onClick={() => {
+              setShowProfileOptions(false);
+              dispatch(updateCurrentOverlay('profile'));
+            }}>
+              My Profile
+            </button>
+            <button onClick={() => {
+            
+              document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+              router.push('/login');
+            }}>
+              Log out
+            </button>
+          </ul>}
         </div>
       </div>
       {/**Body */}
