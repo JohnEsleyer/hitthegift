@@ -59,29 +59,9 @@ export default function HomeLeftSection() {
 
   return (
     <div className="h-full ml-2 ">
-      {/*Terms and conditions */}
-      {showAddEventUI && (
-        <div
-          style={{ zIndex: 100, position: "absolute" }}
-          className=" flex justify-center items-center w-screen h-screen"
-        >
-          <AddEventPopUp />
-        </div>
-      )}
+     
       <div className={`${showAddEventUI && "blurcontent"}`}>
-        <div
-          className={`border-b border-gray-400 flex justify-center gap-2 mt-4 pt-2 gap-8`}
-        >
-          <Link
-            href="/mylist"
-            className="text-blue-500 border-b border-blue-400"
-          >
-            My List
-          </Link>
-          <Link className="" href="/friendslist">
-            Friends List
-          </Link>
-        </div>
+        
         <div>
           <div className="mt-4 p-2 flex flex-col border rounded-2xl ">
             {/* <span>{hobbiesInfo}</span> */}
