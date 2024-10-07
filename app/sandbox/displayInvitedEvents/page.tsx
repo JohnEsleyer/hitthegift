@@ -7,15 +7,25 @@ import { EventData, ServerResponseForEvents } from "@/lib/types/event";
 import { useEffect, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
 
+export interface MonthlyInvitedEventsResponse {
+    id: string;
+    userId: string;
+    date: Date;
+    eventTitle: string;
+    invitedFriends: string[];
+    ownerName: string;
+}
+
+
 export default function displayInvitedEvent(){
     const [isPending, startTransition] = useTransition();
     const userId = useSelector((state: RootState) => state.userData.id);
-    const [events, setEvents] = useState<EventData[]>([]);
+    const [events, setEvents] = useState<MonthlyInvitedEventsResponse[]>([]);
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
         startTransition(async () => {
-            const results = await getMonthlyInvitedEvents(userId);
+            const results = await getMonthlyInvitedEvents(userId, 10);
             console.log(`status: ${results.message}`);
             if (results){
                 setEvents(results.data || []);
@@ -34,7 +44,7 @@ export default function displayInvitedEvent(){
             : 
             <div>
                 {events.map((event) => (
-                   <p key={event.id}>{event.eventTitle}</p>
+                   <p key={event.id}>Title: {event.eventTitle} Owner: {event.ownerName} </p>
                 ))}
             </div> 
             }
