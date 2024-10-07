@@ -105,7 +105,6 @@ export default function AddProductOverlay() {
                     }
                 </div>
                 </div>
-            
             </div>
           </div>
         </div>

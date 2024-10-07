@@ -1,19 +1,20 @@
 "use client";
 
 import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
-import MyListLeftSection from "./(sections)/MyListLeftSection";
-import MyListRightSection from "./(sections)/MyListRightSection";
-import Image from "next/image";
-import Loading from "/public/loading.svg";
-import Friends from "/public/friends.png";
-import FriendsSidebar from "./(components)/FriendsSidebar";
-import { OverlayPage } from "./(components)/OverlayPage";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 import Avvvatars from "avvvatars-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "lucide-react";
+import { OverlayPage } from "../mylist/(components)/OverlayPage";
+
+import Image from 'next/image';
+import Loading from '/public/loading.svg';
+import AuthMiddleware from "@/components/AuthMiddleware";
+import Link from "next/link";
+import MyListLeftSection from "./(sections)/MyListLeftSection";
+import MyListRightSection from "./(sections)/MyListRightSection";
+
 
 export default function MyListPage() {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
@@ -22,6 +23,7 @@ export default function MyListPage() {
 
   return (
     <div className="w-screen h-screen flex">
+      <AuthMiddleware>
       <RenderClientOnly
         loading={
           <div className="flex w-full justify-center items-center">
@@ -47,24 +49,19 @@ export default function MyListPage() {
                 style={{width: 291}}
                 className={`border-b border-gray-400 flex justify-center mt-4 pt-2 gap-8`}
               >
-                <button
+                <a
+                  href={'/mylist'}
                   className="text-blue-500 border-b border-blue-400"
-                  onClick={() => {
-                    console.log('button pressed');
-                    router.push("/mylist");
-                  }}
                 >
-                  My List
-                </button>
-                <button
-                  onClick={() => {
-                    console.log('button pressed');
-                    router.push("/friendslist")
-                  }}
-                  className=""
+                  <a>My List</a>
+                </a>
+                <a
+                
+                  href={"/friendslist"}
+            
                 >
-                  Friends List
-                </button>
+                  <a>Friends List</a>
+                </a>
               </div>
               {/**Profile */}
               <button
@@ -104,6 +101,7 @@ export default function MyListPage() {
           </div>
         </OverlayPage>
       </RenderClientOnly>
+      </AuthMiddleware>
     </div>
   );
 }

@@ -25,7 +25,7 @@ import { EventData, ServerResponseForEvents } from "@/lib/types/event";
 import Avvvatars from "avvvatars-react";
 
 
-export default function HomeLeftSection() {
+export default function MyListLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
     new Date()
   );
@@ -86,7 +86,7 @@ export default function HomeLeftSection() {
                 ) : (
                   <div style={{height: 200}} className="overflow-auto flex flex-col items-between ">
                     {events.map((event) => (
-                      <div className="flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2">
+                      <div key={event.id} className="flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2">
                         <div
                           style={{ fontSize: 15, width: 30, height: 30}}
                           className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold rounded-full"

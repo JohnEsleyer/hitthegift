@@ -13,15 +13,17 @@ import Image from "next/image";
 import Loading from '/public/loading.svg';
 import FriendListLeftSection from "./(sections)/FriendListLeftSection";
 import FriendListRightSection from "./(sections)/FriendListRightSection";
+import AuthMiddleware from "@/components/AuthMiddleware";
 
 
-export default function FriendsListPage() {
+export default function FriendListPage() {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
 
   return (
     <div className="w-screen h-screen flex">
+      <AuthMiddleware>
       <RenderClientOnly
         loading={
           <div className="flex w-full justify-center items-center">
@@ -102,6 +104,7 @@ export default function FriendsListPage() {
           </div>
         </OverlayPage>
       </RenderClientOnly>
+      </AuthMiddleware>
     </div>
   );
 }

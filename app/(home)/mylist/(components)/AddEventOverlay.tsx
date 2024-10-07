@@ -104,7 +104,7 @@ export default function AddEventOverlay() {
       className=" p-4 bg-white  rounded-2xl border-2 border-black"
     >
       {/* <p className="text-2xl font-bold">Add Event</p> */}
-      <p className=" flex justify-between">
+      <div className=" flex justify-between">
         <div className="text-2xl font-bold flex gap-2">
           <span>{getCurrentDate().month}</span>
           <span>{getCurrentDate().year}</span>
@@ -117,7 +117,7 @@ export default function AddEventOverlay() {
         >
           Close
         </button>
-      </p>
+      </div>
       {/**Calendar Section **/}
       <Calendar
         classNames={{

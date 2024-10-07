@@ -11,6 +11,8 @@ import FriendsListLeftSection from "./(sections)/FriendsListLeftSection";
 import FriendsListRightSection from "./(sections)/FriendsListRightSection";
 import Image from 'next/image';
 import Loading from '/public/loading.svg';
+import AuthMiddleware from "@/components/AuthMiddleware";
+import Link from "next/link";
 
 
 export default function FriendsListPage() {
@@ -20,6 +22,7 @@ export default function FriendsListPage() {
 
   return (
     <div className="w-screen h-screen flex">
+      <AuthMiddleware>
       <RenderClientOnly
         loading={
           <div className="flex w-full justify-center items-center">
@@ -45,23 +48,19 @@ export default function FriendsListPage() {
                 style={{width: 291}}
                 className={`border-b border-gray-400 flex justify-center mt-4 pt-2 gap-8`}
               >
-                <button
-                  
-                  onClick={() => {
-                    router.push("/mylist");
-                  }}
-                >
-                  My List
-                </button>
-                <button
-                  className="text-blue-500 border-b border-blue-400"
-                  onClick={() => {
-                    router.push("/friendslist")
-                  }}
+                <a
+                  href={'/mylist'}
             
                 >
-                  Friends List
-                </button>
+                 My List
+                </a>
+                <a
+                  className="text-blue-500 border-b border-blue-400"
+                  href={"/friendslist"}
+            
+                >
+                 Friends List
+                </a>
               </div>
               {/**Profile */}
               <button
@@ -101,6 +100,7 @@ export default function FriendsListPage() {
           </div>
         </OverlayPage>
       </RenderClientOnly>
+      </AuthMiddleware>
     </div>
   );
 }
