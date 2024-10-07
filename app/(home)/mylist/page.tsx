@@ -50,6 +50,7 @@ export default function MyListPage() {
                 <button
                   className="text-blue-500 border-b border-blue-400"
                   onClick={() => {
+                    console.log('button pressed');
                     router.push("/mylist");
                   }}
                 >
@@ -57,6 +58,7 @@ export default function MyListPage() {
                 </button>
                 <button
                   onClick={() => {
+                    console.log('button pressed');
                     router.push("/friendslist")
                   }}
                   className=""

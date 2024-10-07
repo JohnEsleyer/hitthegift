@@ -42,12 +42,12 @@ export default function FriendsListLeftSection() {
       <div>
         <div className="p-2 flex flex-col gap-4 ">
           {/**Calendar Section */}
-          <div className="flex items-center justify-center mt-2 w-full ">
+          <div className="flex items-center justify-center mt-2 w-full">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
-              className=""
+              className="shadow-md"
             />
           </div>
           <div>
