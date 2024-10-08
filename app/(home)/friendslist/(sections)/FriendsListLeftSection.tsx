@@ -9,6 +9,7 @@ import { getMonthlyInvitedEvents } from "@/app/actions/events/getMonthlyInvitedE
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import Avvvatars from "avvvatars-react";
+import EventsCalendar from "@/components/EventsCalendar";
 
 interface MonthlyInvitedEventsResponse {
   id: string;
@@ -20,10 +21,10 @@ interface MonthlyInvitedEventsResponse {
 }
 
 export default function FriendsListLeftSection() {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [isEventsPending, startEventsTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const [events, setEvents] = useState<MonthlyInvitedEventsResponse[]>([]);
+  const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
 
   useEffect(() => {
     startEventsTransition(async () => {
@@ -31,6 +32,9 @@ export default function FriendsListLeftSection() {
       console.log(`status: ${results.message}`);
       if (results){
           setEvents(results.data || []);
+          const dates: Date[] = (results.data as MonthlyInvitedEventsResponse[]).map((event) => event.date);
+          console.log(`Dates: ${dates}`);
+          setHighlightedDates(dates);
       }
     });
   }, []);
@@ -38,20 +42,14 @@ export default function FriendsListLeftSection() {
 
   return (
     <div className="h-full">
-     
       <div>
         <div className="p-2 flex flex-col gap-4 ">
           {/**Calendar Section */}
           <div className="flex items-center justify-center mt-2 w-full">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="shadow-md"
-            />
+            <EventsCalendar highlightedDates={highlightedDates}/> 
           </div>
           <div>
-            <span>Friends{"'"} events in {getMonthName(date || new Date())}</span>
+            <span>Friends{"'"} events in {getMonthName(new Date())}</span>
             <div className="flex flex-col gap-4 items-between justify-between">
              {isEventsPending ? 
              <div>Loading...</div> : 

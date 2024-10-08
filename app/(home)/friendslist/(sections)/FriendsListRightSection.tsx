@@ -28,8 +28,7 @@ export default function FriendsListRightSection(){
             console.log(`status: ${results}`);
             if (results){
                 setProducts(results.data || []);
-            }
-           
+            }            
         });
     }, []);
 
@@ -45,7 +44,7 @@ export default function FriendsListRightSection(){
                     {
                         isPending ? 
                         (<div>Loading...</div>) 
-                        : <div className="flex flex-wrap">
+                        : <div className="flex flex-wrap gap-2 ">
                             {
                                 products.map((product, friendIndex) => (
                                     <FriendsWishItem key={product.friendId} friendsProduct={product}/>

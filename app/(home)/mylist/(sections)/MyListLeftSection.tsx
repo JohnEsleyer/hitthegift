@@ -38,7 +38,6 @@ export default function MyListLeftSection() {
   const [isEventsPending, startEventsTransition] = useTransition();
   const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
 
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -67,7 +66,6 @@ export default function MyListLeftSection() {
     <div className="h-full ml-2 ">
      
       <div className={`${showAddEventUI && "blurcontent"}`}>
-        
         <div>
           <div className="mt-4 p-2 flex flex-col border rounded-2xl ">
             {/* <span>{hobbiesInfo}</span> */}
