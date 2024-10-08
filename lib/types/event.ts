@@ -16,3 +16,14 @@ export type ServerResponseForEvents = {
     eventTitle: string;
     invitedFriends: Friend[]; // A list of Ids
 }
+
+// Type used by /friendslist
+export type MonthlyInvitedEventsResponse = {
+    id: string;
+    userId: string;
+    date: Date;
+    eventTitle: string;
+    invitedFriends: string[];
+    ownerName: string;
+  }
+

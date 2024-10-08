@@ -43,9 +43,7 @@ export default function AddEventOverlay() {
 
   useEffect(() => {
     startFriendTransition(async () => {
-      console.log(`id sent to server: ${userId}`);
       const results = await getAllFriends(userId);
-      console.log(`status: ${results?.status}`);
       if (results) {
         setFriends(results.friends || []);
       }

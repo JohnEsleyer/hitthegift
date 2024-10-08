@@ -4,7 +4,8 @@ import userDataSlice, { UserDataState } from './features/userData';
 import { loadState, saveState } from '@/utils/localStorage';
 import overlaysSlice from './features/overlays';
 import wishlist from './features/wishlist';
-import friendlist from './features/friendlist';
+import insideFriend from './features/insideFriend';
+import friendsList from './features/friendslist';
 
 export const makeStore = () => {
     let persistedState;
@@ -17,7 +18,8 @@ export const makeStore = () => {
             userData: userDataSlice,
             overlays: overlaysSlice,
             wishlist: wishlist,
-            friendList: friendlist,
+            insideFriend: insideFriend,
+            friendsList: friendsList,
         },
         preloadedState: persistedState,
     });
@@ -27,7 +29,6 @@ export const makeStore = () => {
     });
 
     return store;
-
     
 };
 

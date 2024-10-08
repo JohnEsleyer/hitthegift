@@ -1,13 +1,9 @@
 'use server'
 import { mongoClient } from "@/lib/mongodb";
+import { Friend } from "@/lib/types/friend";
 import { UserData } from "@/lib/types/user";
 import { ObjectId } from "mongodb";
 
-type UserFriends = {
-    id: string;
-    firstName: string;
-    lastName: string;
-};
 
 export default async function getAllFriends(userId: string) {
     console.log(`ID received: ${userId}`);
@@ -23,7 +19,7 @@ export default async function getAllFriends(userId: string) {
             const userFriendsIdList: string[] = user.friendsList.map((friendId) => friendId.toString());
 
             // Fetch the names of friends
-            let userFriends: UserFriends[] = [];
+            let userFriends: Friend[] = [];
 
             // Use Promise.all to handle async mapping
             const friendsData = await Promise.all(
@@ -46,7 +42,7 @@ export default async function getAllFriends(userId: string) {
             );
 
             // Filter out any null values
-            userFriends = friendsData.filter((friend): friend is UserFriends => friend !== null);
+            userFriends = friendsData.filter((friend): friend is Friend => friend !== null);
 
             console.log(`LENGTH: ${userFriends.length}`);
             console.log('Status: 200');

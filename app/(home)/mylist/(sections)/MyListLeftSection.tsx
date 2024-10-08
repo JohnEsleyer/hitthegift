@@ -19,6 +19,8 @@ import { getAllEvents } from "@/app/actions/events/getAllEvents";
 import { ServerResponseForEvents } from "@/lib/types/event";
 import Avvvatars from "avvvatars-react";
 import EventsCalendar from "@/components/EventsCalendar";
+import { ProductType } from "@/lib/types/products";
+import { getUserProducts } from "@/app/actions/products/getUserProducts";
 
 export default function MyListLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
@@ -31,7 +33,7 @@ export default function MyListLeftSection() {
   const [events, setEvents] = useState<ServerResponseForEvents[]>([]);
   const [isEventsPending, startEventsTransition] = useTransition();
   const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
-
+ 
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -54,6 +56,8 @@ export default function MyListLeftSection() {
         setHighlightedDates(dates);
       }
     });
+
+
   }, []);
 
   return (

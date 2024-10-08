@@ -4,19 +4,14 @@ import React, { useEffect, useState, useTransition } from "react";
 import { getMonthName } from "@/utils/getMonthName";
 import { getMonthlyInvitedEvents } from "@/app/actions/events/getMonthlyInvitedEvents";
 import { RootState } from "@/lib/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EventsCalendar from "@/components/EventsCalendar";
-
-interface MonthlyInvitedEventsResponse {
-  id: string;
-  userId: string;
-  date: Date;
-  eventTitle: string;
-  invitedFriends: string[];
-  ownerName: string;
-}
+import { MonthlyInvitedEventsResponse } from "@/lib/types/event";
+import { updateEvents } from "@/lib/features/friendslist";
 
 export default function FriendsListLeftSection() {
+  const dispatch = useDispatch();
+
   const [isEventsPending, startEventsTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const [events, setEvents] = useState<MonthlyInvitedEventsResponse[]>([]);
@@ -31,10 +26,10 @@ export default function FriendsListLeftSection() {
           const dates: Date[] = (results.data as MonthlyInvitedEventsResponse[]).map((event) => event.date);
           console.log(`Dates: ${dates}`);
           setHighlightedDates(dates);
+          dispatch(updateEvents(events));
       }
     });
   }, []);
-
 
   return (
     <div className="h-full">

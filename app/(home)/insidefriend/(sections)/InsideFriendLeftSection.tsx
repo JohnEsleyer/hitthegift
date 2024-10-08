@@ -8,25 +8,28 @@ import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import getUserInfo from "@/app/actions/user/getUserInfo";
 import Avvvatars from "avvvatars-react";
+import getAllFriends from "@/app/actions/user/getAllFriends";
+import { Friend } from "@/lib/types/friend";
 
 // Selected friend page
-export default function FriendListLeftSection(){
-    const friendId = useSelector((state: RootState) => state.friendList.friendId);
+export default function InsideFriendLeftSection(){
+    const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [hobbiesInfo, setHobbiesInfo] = useState('');
-    const [invitedFriends, setInvitedFriends] = useState([]);
+    const [friends, setFriends] = useState<Friend[]>([]);
+    const [isFriendsPending, startFriendsTransition] = useTransition();
     const [isPendingUserInfo, startUserInfoTransition] = useTransition();
     const [friendNotFound, setFriendNotFound] = useState(false);
 
     useEffect(()=>{
-
         if (!friendId){
             setFriendNotFound(true);
             console.log('Friend not found');
         }
 
         startUserInfoTransition(async() => {
+            console.log(`friendId: ${friendId}`);
             const result = await getUserInfo(friendId);
             console.log(`status: ${result.status}`);
             if (result){
@@ -37,6 +40,14 @@ export default function FriendListLeftSection(){
             }
         });
 
+        startFriendsTransition(async() => {
+            const results = await getAllFriends(friendId);
+            if (results) {
+              setFriends(results.friends || []);
+            }
+        });
+
+
     },[]);
 
     return (
@@ -45,7 +56,7 @@ export default function FriendListLeftSection(){
             <div>
             <div className="p-2 flex flex-col gap-4 ">
                 
-                {isPendingUserInfo ? <div>Loading...</div> : <div className="p-2 border border-gray-200 rounded-2xl">
+                {isPendingUserInfo ? <div>Loading...</div> : <div className="mt-2 p-2 border border-gray-200 rounded-2xl">
                     {/**Friend's profile */}
                     <div className="flex  p-2">
                         <div className="flex items-center">
@@ -62,13 +73,11 @@ export default function FriendListLeftSection(){
                     </div>
                     <div style={{height: 100}}></div>
                     <span>People with whom this list has been shared</span>
-                    <div className="flex">
-                        <div className="h-12 w-12 rounded-full bg-gray-300"></div>
-                        <div className="h-12 w-12 rounded-full bg-gray-300"></div>
-                        <div className="h-12 w-12 rounded-full bg-gray-300"></div>
-                        <div className="h-12 w-12 rounded-full bg-gray-300"></div>
-
-                    </div>
+                    {isFriendsPending ? <div>Loading...</div> :  <div className="flex">
+                        {friends.map((friend) => (
+                            <Avvvatars key={friend.id} value={friend.firstName}/>
+                        ))}
+                    </div> }
                 </div>}
 
             </div>

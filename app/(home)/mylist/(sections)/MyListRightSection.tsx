@@ -9,10 +9,10 @@ import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { RootState } from "@/lib/store";
 import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
-import WishItem from "../(components)/WishItem";
+import WishItem from "../../../../components/WishItem";
 import { useRouter } from "next/navigation";
 
-export default function HomeRightSection() {
+export default function MyListRightSection() {
   const dispatch = useDispatch();
 
   const [isProductsPending, startProductsTransition] = useTransition();

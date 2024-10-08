@@ -8,12 +8,13 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import FriendsListRightSection from "../friendslist/(sections)/FriendsListRightSection";
 import { OverlayPage } from "../mylist/(components)/OverlayPage";
-import FriendsListLeftSection from "./(sections)/FriendListLeftSection";
+import FriendsListLeftSection from "./(sections)/InsideFriendLeftSection";
 import Image from "next/image";
 import Loading from '/public/loading.svg';
-import FriendListLeftSection from "./(sections)/FriendListLeftSection";
-import FriendListRightSection from "./(sections)/FriendListRightSection";
+
 import AuthMiddleware from "@/components/AuthMiddleware";
+import InsideFriendLeftSection from "./(sections)/InsideFriendLeftSection";
+import InsideFriendRightSection from "./(sections)/InsideFriendRightSection";
 
 
 export default function FriendListPage() {
@@ -34,10 +35,10 @@ export default function FriendListPage() {
         <OverlayPage>
           <div className="flex w-full h-full">
             <div style={{ width: 300, marginTop: 50}}>
-              <FriendListLeftSection />
+              <InsideFriendLeftSection />
             </div>
             <div className="flex-1 ">
-              <FriendListRightSection />
+              <InsideFriendRightSection />
             </div>
             {/**Navigation bar */}
             <div

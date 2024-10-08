@@ -1,6 +1,6 @@
 'use client'
 
-import { updateFriendId } from "@/lib/features/friendlist";
+import { updateFriendId } from "@/lib/features/insideFriend";
 import { ProductType } from "@/lib/types/products";
 import Avvvatars from "avvvatars-react";
 import { useDispatch } from "react-redux";
@@ -20,12 +20,11 @@ export default function FriendsWishItem({friendsProduct} : FriendWishItemProps){
     const dispatch = useDispatch();
     
     const handleClick = () => {
-        // friendsProduct.
-        // dispatch(updateFriendId(friendsProduct.friendId));
+        dispatch(updateFriendId(friendsProduct.friendId));
     }
 
     return (
-        <a href={'/friendlist'} onClick={handleClick}>
+        <a href={'/insidefriend'} onClick={handleClick}>
         <div
             style={{width: 200}}
             className="p-4 rounded-xl border border-slate-300">
