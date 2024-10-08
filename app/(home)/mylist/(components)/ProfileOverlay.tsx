@@ -1,19 +1,13 @@
 "use client";
-import { Calendar } from "@/components/ui/calendar";
 import { ChangeEvent, useEffect, useState, useTransition } from "react";
-import HourSelector from "./HourSelector";
 import Avvvatars from "avvvatars-react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { RootState } from "@/lib/store";
-import getAllFriends from "@/app/actions/user/getAllFriends";
-import { Friend } from "@/lib/types/friend";
-import { createEvent } from "@/app/actions/events/createEvent";
-import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
+
 import Loading from "/public/loading.svg";
 import Image from "next/image";
 import getUserInfo from "@/app/actions/user/getUserInfo";
-import { stringToDate } from "@/utils/stringToDate";
+
 import DebouncedInput from "@/components/DebounceInput";
 import updateUserBirthday from "@/app/actions/user/updateUserBirthday";
 import updateUserEmail from "@/app/actions/user/updateUserEmail";

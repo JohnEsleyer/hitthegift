@@ -1,8 +1,7 @@
 "use client";
 
 import { startTransition, useEffect, useState, useTransition } from "react";
-import AddEventPopUp from "../(components)/AddEventOverlay";
-import AddProductPopUp from "../(components)/AddProductOverlay";
+
 import Image from "next/image";
 import Friends from "/public/friends.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +10,6 @@ import { RootState } from "@/lib/store";
 import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import WishItem from "../(components)/WishItem";
-import Avvvatars from "avvvatars-react";
 import { useRouter } from "next/navigation";
 
 export default function HomeRightSection() {
@@ -20,7 +18,7 @@ export default function HomeRightSection() {
   const [isProductsPending, startProductsTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const [products, setProducts] = useState<ProductType[]>([]);
-  const router = useRouter();
+  // const router = useRouter();
 
 
   useEffect(() => {

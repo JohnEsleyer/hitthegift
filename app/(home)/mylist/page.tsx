@@ -11,7 +11,6 @@ import { OverlayPage } from "../mylist/(components)/OverlayPage";
 import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import AuthMiddleware from "@/components/AuthMiddleware";
-import Link from "next/link";
 import MyListLeftSection from "./(sections)/MyListLeftSection";
 import MyListRightSection from "./(sections)/MyListRightSection";
 

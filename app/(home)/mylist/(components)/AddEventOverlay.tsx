@@ -16,8 +16,7 @@ import Image from 'next/image';
 
 const getCurrentDate = () => {
   const today = new Date();
-  const day = today.getDate();
-  const month = today.getMonth();
+
   const year = today.getFullYear();
   const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
     today
@@ -181,12 +180,12 @@ export default function AddEventOverlay() {
       </div>
       {/**Friend Section **/}
       <div>
-        <span className="text-xl pt-2">Friend you'll share this event</span>
+        <span className="text-xl pt-2">Friend you{"'"}ll share this event</span>
         <div className="flex gap-2 overflow-auto w-96 h-8 ">
           <div className="flex w-full">
             {selectedFriends.map((friend) => (
-              <div onClick={() => handleRemoveSelectedFriend(friend)}>
-                <Avvvatars key={friend.id} value={`${friend.firstName}`} />
+              <div key={friend.id} onClick={() => handleRemoveSelectedFriend(friend)}>
+                <Avvvatars  value={`${friend.firstName}`} />
               </div>
             ))}
           </div>
@@ -198,8 +197,8 @@ export default function AddEventOverlay() {
           ) : (
             <div className="flex w-full">
               {friends.map((friend) => (
-                <div onClick={() => handleSelectFriend(friend)}>
-                  <Avvvatars key={friend.id} value={`${friend.firstName}`} />
+                <div key={friend.id} onClick={() => handleSelectFriend(friend)}>
+                  <Avvvatars  value={`${friend.firstName}`} />
                 </div>
               ))}
             </div>

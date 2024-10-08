@@ -17,6 +17,7 @@ export default async function updateUserEmail(userId: string, email: string){
             status: 200,
         }
     }catch(e){
+        console.log(e);
         return {
             message: 'Server failed to update user email',
             status: 500,

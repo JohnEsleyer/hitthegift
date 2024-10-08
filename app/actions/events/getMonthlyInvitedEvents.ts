@@ -2,7 +2,7 @@
 
 import { mongoClient } from "@/lib/mongodb";
 import { EventData } from "@/lib/types/event";
-import { ObjectId } from "mongodb";
+
 import getUserInfo from "../user/getUserInfo";
 
 /**

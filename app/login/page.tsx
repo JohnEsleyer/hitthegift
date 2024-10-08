@@ -8,9 +8,8 @@ import { useState } from "react";
 import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import {useRouter} from 'next/navigation';
-import BackgroundImage from '/public/background.png';
 import { useDispatch } from "react-redux";
-import { updateUserData, updateUserFirstName, updateUserId, updateUserLastName } from "@/lib/features/userData";
+import { updateUserId} from "@/lib/features/userData";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 
 type ResponseData = {
@@ -29,7 +28,7 @@ export default function LoginPage(){
         status: 200,
         userId: '',
     });
-    const [isError, setIsError] = useState(false);
+    // const [isError, setIsError] = useState(false);
     const [loginData, setLoginData] = useState<LoginData>(
         {
             email: '',
@@ -63,11 +62,11 @@ export default function LoginPage(){
            
                             dispatch(updateUserId(data.userId));
                           
-                            setIsError(false);
+                            // setIsError(false);
                             dispatch(updateCurrentOverlay('none'));
                             router.push('/mylist');
                         }else{
-                            setIsError(true);
+                            // setIsError(true);
                             setIsLoading(false);
                         }
                       
@@ -127,6 +126,7 @@ export default function LoginPage(){
                {/**Check box */}
                <div className=" flex items-center pt-2">
                 <input type="checkbox" onChange={(e) => {
+                    console.log(e);
                 // setUserData((prev) => ({
                 //   ...prev,
                 //   showInterest: e.target.checked,

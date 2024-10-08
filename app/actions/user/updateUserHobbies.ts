@@ -25,6 +25,7 @@ export default async function updateUserHobbies(userId: string, hobbiesInfo: str
             status: 200,
         }
     }catch(e){
+        console.log(e);
         return {
             message: 'Server failed to update user hobbies',
             status: 500,

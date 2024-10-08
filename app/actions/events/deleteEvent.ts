@@ -1,8 +1,6 @@
 'use server'
 
-import { hashPassword } from "@/lib/hashPassword";
 import { mongoClient } from "@/lib/mongodb";
-import { UserData } from "@/lib/types/authTypes";
 import { ObjectId } from "mongodb";
 
 export async function deleteEvent(id: string) {

@@ -25,6 +25,7 @@ export default async function updateUserFirstName(userId: string, firstName: str
             status: 200,
         }
     }catch(e){
+        console.log(e);
         return {
             message: 'Server failed to update user first name',
             status: 500,

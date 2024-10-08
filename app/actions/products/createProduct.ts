@@ -1,8 +1,7 @@
 'use server'
 
 import { mongoClient } from "@/lib/mongodb";
-import { ProductType } from "@/lib/types/products";
-import { ObjectId } from "mongodb";
+
 
 type RequestPayload = {
     userId: string;

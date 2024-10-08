@@ -2,7 +2,6 @@ import { comparePassword } from "@/lib/hashPassword";
 import { mongoClient } from "@/lib/mongodb";
 import { LoginData } from "@/lib/types/authTypes";
 import jwt from 'jsonwebtoken';
-import { NextResponse } from "next/server";
 import { cookies } from 'next/headers';
 
 export async function POST(req: Request){

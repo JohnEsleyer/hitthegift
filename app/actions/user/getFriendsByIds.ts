@@ -1,7 +1,6 @@
 'use server'
 
 import { mongoClient } from "@/lib/mongodb";
-import { EventData } from "@/lib/types/event";
 import { Friend } from "@/lib/types/friend";
 import { UserData } from "@/lib/types/user";
 import { ObjectId } from "mongodb";

@@ -1,7 +1,5 @@
 "use client";
 
-import { Calendar } from "@/components/ui/calendar";
-import { Textarea } from "@/components/ui/textarea";
 
 import React, {
   startTransition,
@@ -10,21 +8,17 @@ import React, {
   useState,
   useTransition,
 } from "react";
-import Link from "next/link";
-import AddEventPopUp from "../(components)/AddEventOverlay";
+
 import { useDispatch, useSelector } from "react-redux";
-import { updateHobbyInfo, updateUserData } from "@/lib/features/userData";
 import { RootState } from "@/lib/store";
-import Image from "next/image";
-import Loading from "/public/loading.svg";
+
 import getUserHobbies from "@/app/actions/user/getUserHobbies";
 import EditableHobbyArea from "../(components)/EditableHobbyArea";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { getAllEvents } from "@/app/actions/events/getAllEvents";
-import { EventData, ServerResponseForEvents } from "@/lib/types/event";
+import { ServerResponseForEvents } from "@/lib/types/event";
 import Avvvatars from "avvvatars-react";
 import EventsCalendar from "@/components/EventsCalendar";
-
 
 export default function MyListLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(

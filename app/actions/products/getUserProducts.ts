@@ -20,6 +20,7 @@ export async function getUserProducts(id: string) {
             id: product._id.toString(),
             userId: product.userId,
             price: product.price,
+            currency: product.currency,
             title: product.title,
             productUrl: product.productUrl,
             imageUrl: product.imageUrl,

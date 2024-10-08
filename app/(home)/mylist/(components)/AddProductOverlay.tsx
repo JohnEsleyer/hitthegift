@@ -1,9 +1,8 @@
 "use client";
 import { createProduct } from "@/app/actions/products/createProduct";
-import { Calendar } from "@/components/ui/calendar";
 import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { RootState } from "@/lib/store";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { currencies } from "../constants";
 
@@ -17,7 +16,7 @@ export default function AddProductOverlay() {
   const dispatch = useDispatch();
   const [productName, setProductName] = useState("");
   const [productUrl, setProductUrl] = useState("");
-  const [autoFill, setAutoFill] = useState("");
+  // const [autoFill, setAutoFill] = useState("");
   const [price, setPrice] = useState('');
   const [productDescription, setProductDescription] = useState("");
   const [currency, setCurrency] = useState('');
@@ -139,7 +138,9 @@ export default function AddProductOverlay() {
               </p>
             </div>
             <label className="switch">
-              <input type="checkbox" onChange={(e) => {}} />
+              <input type="checkbox" onChange={(e) => {
+                e.target.value;
+              }} />
 
               <span className="slider round"></span>
             </label>

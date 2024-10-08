@@ -26,6 +26,7 @@ export default async function getUserHobbies(userId: string){
             status: 400,
         }
     }catch(e){
+        console.log(e);
         return {
             message: 'Server failed to access user hobbies',
             status: 500,

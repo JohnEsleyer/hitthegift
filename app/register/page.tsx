@@ -1,5 +1,5 @@
 "use client";
-import { FormEvent, useState, useTransition } from "react";
+import { useState } from "react";
 import { createUser } from "../actions/auth/createUser";
 import { termsAndConditions } from "./constants";
 import { useRouter } from "next/navigation";
@@ -62,6 +62,7 @@ export default function RegisterPage() {
           setIsLoading(false);
         }
       } catch (e) {
+        console.log(e);
         setIsLoading(false);
       }
     };

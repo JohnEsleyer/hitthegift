@@ -1,14 +1,10 @@
 "use client";
 
-import { Calendar } from "@/components/ui/calendar";
-
 import React, { useEffect, useState, useTransition } from "react";
-import Link from "next/link";
 import { getMonthName } from "@/utils/getMonthName";
 import { getMonthlyInvitedEvents } from "@/app/actions/events/getMonthlyInvitedEvents";
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
-import Avvvatars from "avvvatars-react";
 import EventsCalendar from "@/components/EventsCalendar";
 
 interface MonthlyInvitedEventsResponse {
