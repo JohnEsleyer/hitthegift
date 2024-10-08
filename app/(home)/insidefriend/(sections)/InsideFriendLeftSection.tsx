@@ -5,14 +5,17 @@ import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
 import { RootState } from "@/lib/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import getUserInfo from "@/app/actions/user/getUserInfo";
 import Avvvatars from "avvvatars-react";
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
+import { updateFriendName } from "@/lib/features/insideFriend";
 
 // Selected friend page
 export default function InsideFriendLeftSection(){
+    const dispatch = useDispatch();
+
     const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -37,6 +40,7 @@ export default function InsideFriendLeftSection(){
                 setName(fullName);
                 setEmail(result.email || '');
                 setHobbiesInfo(result.hobbiesInfo || '');
+                dispatch(updateFriendName(`${result.firstName} ${result.lastName}`));
             }
         });
 
@@ -54,7 +58,7 @@ export default function InsideFriendLeftSection(){
         <div className="h-full">
       
             <div>
-            <div className="p-2 flex flex-col gap-4 ">
+            <div className="p-2 flex flex-col gap-4">
                 
                 {isPendingUserInfo ? <div>Loading...</div> : <div className="mt-2 p-2 border border-gray-200 rounded-2xl">
                     {/**Friend's profile */}
@@ -79,6 +83,7 @@ export default function InsideFriendLeftSection(){
                         ))}
                     </div> }
                 </div>}
+                
 
             </div>
             </div>

@@ -5,7 +5,7 @@ import { RootState } from "@/lib/store";
 import { ProductType } from "@/lib/types/products";
 import { useTransition, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import FriendsWishItem from "../(components)/FriendsWishItem";
+import FriendsWishItem from "../_components/FriendsWishItem";
 
 
 interface FriendsProducts {
