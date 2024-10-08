@@ -21,6 +21,7 @@ import Avvvatars from "avvvatars-react";
 import EventsCalendar from "@/components/EventsCalendar";
 import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
+import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 
 export default function MyListLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
@@ -61,8 +62,8 @@ export default function MyListLeftSection() {
   }, []);
 
   return (
+    <HomeLeftTemplate highlight="mylist">
     <div className="h-full ml-2 ">
-     
       <div className={`${showAddEventUI && "blurcontent"}`}>
         <div>
           <div className="mt-4 p-2 flex flex-col border rounded-2xl ">
@@ -134,5 +135,6 @@ export default function MyListLeftSection() {
         </div>
       </div>
     </div>
+    </HomeLeftTemplate>
   );
 }

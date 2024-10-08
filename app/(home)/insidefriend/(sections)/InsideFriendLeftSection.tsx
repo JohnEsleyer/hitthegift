@@ -11,6 +11,7 @@ import Avvvatars from "avvvatars-react";
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
 import { updateFriendName } from "@/lib/features/insideFriend";
+import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 
 // Selected friend page
 export default function InsideFriendLeftSection(){
@@ -55,8 +56,8 @@ export default function InsideFriendLeftSection(){
     },[]);
 
     return (
+        <HomeLeftTemplate highlight={'friendslist'}>
         <div className="h-full">
-      
             <div>
             <div className="p-2 flex flex-col gap-4">
                 
@@ -88,5 +89,6 @@ export default function InsideFriendLeftSection(){
             </div>
             </div>
         </div>
+        </HomeLeftTemplate>
     );
 }
