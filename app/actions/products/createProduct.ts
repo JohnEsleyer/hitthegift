@@ -8,6 +8,7 @@ type RequestPayload = {
     userId: string;
     title: string;
     price: string;
+    currency: string;
     productUrl: string;
     imageUrl: string;
     description: string;
@@ -21,6 +22,7 @@ export async function createProduct(data: RequestPayload) {
             userId: data.userId,
             title: data.title, 
             productUrl: data.productUrl,
+            currency: data.currency,
             price: data.price,
             imageUrl: data.imageUrl,
             description: data.description,

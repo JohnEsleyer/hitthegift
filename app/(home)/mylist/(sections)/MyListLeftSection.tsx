@@ -23,6 +23,7 @@ import { updateCurrentOverlay } from "@/lib/features/overlays";
 import { getAllEvents } from "@/app/actions/events/getAllEvents";
 import { EventData, ServerResponseForEvents } from "@/lib/types/event";
 import Avvvatars from "avvvatars-react";
+import EventsCalendar from "@/components/EventsCalendar";
 
 
 export default function MyListLeftSection() {
@@ -35,6 +36,8 @@ export default function MyListLeftSection() {
   const userId = useSelector((state: RootState) => state.userData.id);
   const [events, setEvents] = useState<ServerResponseForEvents[]>([]);
   const [isEventsPending, startEventsTransition] = useTransition();
+  const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
+
 
   const dispatch = useDispatch();
 
@@ -53,6 +56,9 @@ export default function MyListLeftSection() {
       console.log(`status: ${results.message}`);
       if (results) {
         setEvents(results.data || []);
+        const dates: Date[] = (results.data as ServerResponseForEvents[]).map((event) => event.date);
+        console.log(`Dates: ${dates}`);
+        setHighlightedDates(dates);
       }
     });
   }, []);
@@ -82,9 +88,9 @@ export default function MyListLeftSection() {
               </div>
               <div>
                 {isEventsPending ? (
-                  <div>Loading...</div>
+                  <div style={{height: 130}}>Loading...</div>
                 ) : (
-                  <div style={{height: 200}} className="overflow-auto flex flex-col items-between ">
+                  <div style={{height: 130}} className="overflow-auto flex flex-col items-between ">
                     {events.map((event) => (
                       <div key={event.id} className="flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2">
                         <div
@@ -125,14 +131,8 @@ export default function MyListLeftSection() {
             </div>
 
             {/**Calendar Section */}
-            <div className="flex items-center justify-center mt-2 w-full">
-              <Calendar 
-                mode="single" 
-                className="rounded-md border" 
-                classNames={{
-                    
-                }}
-                />
+            <div className="flex pr-4 items-center justify-center mt-2 w-full">
+             <EventsCalendar highlightedDates={highlightedDates}/>
             </div>
           </div>
         </div>

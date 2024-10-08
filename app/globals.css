@@ -70,3 +70,71 @@
 }
 
 
+/*Calendar styling*/
+.calendar-container {
+  max-width: 220px; /* Reduced width for a smaller calendar */
+  margin: auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calendar-header h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.calendar-header button {
+  font-size: 12px;
+  padding: 5px;
+  cursor: pointer;
+  background-color: #fcfeff;
+  color: black;
+  border: none;
+  border-radius: 3px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px; /* Reduced gap for compact look */
+}
+
+.day-label {
+  font-size: 12px;
+  padding: 5px;
+  font-weight: bold;
+  background-color: #f4f4f4;
+  border-radius: 3px;
+}
+
+.day-cell {
+  padding: 8px;
+  font-size: 12px;
+  background-color: #e9ecef;
+  text-align: center;
+  border-radius: 3px;
+}
+
+.highlighted {
+  background-color: #00aeff; /* Highlight color for selected dates */
+  color: black;
+}
+
+/* .day-cell:hover {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+} */
+
+button:focus {
+  outline: none;
+}
+
+/*End of Calendar styling*/

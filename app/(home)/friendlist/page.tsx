@@ -49,22 +49,19 @@ export default function FriendListPage() {
                 style={{width: 291}}
                 className={`border-b border-gray-400 flex justify-center mt-4 pt-2 gap-8`}
               >
-                <button
+                <a
+                  href={'/mylist'}
+            
+                >
+                 My List
+                </a>
+                <a
                   className="text-blue-500 border-b border-blue-400"
-                  onClick={() => {
-                    router.push("/mylist");
-                  }}
+                  href={"/friendslist"}
+            
                 >
-                  My List
-                </button>
-                <button
-                  onClick={() => {
-                    router.push("/friendslist")
-                  }}
-                  className=""
-                >
-                  Friends List
-                </button>
+                 Friends List
+                </a>
               </div>
               {/**Profile */}
               <button

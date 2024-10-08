@@ -45,7 +45,7 @@ export default function FriendsListRightSection(){
                     {
                         isPending ? 
                         (<div>Loading...</div>) 
-                        : <div>
+                        : <div className="flex flex-wrap">
                             {
                                 products.map((product, friendIndex) => (
                                     <FriendsWishItem key={product.friendId} friendsProduct={product}/>

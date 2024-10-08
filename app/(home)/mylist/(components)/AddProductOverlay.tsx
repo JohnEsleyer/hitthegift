@@ -20,6 +20,7 @@ export default function AddProductOverlay() {
   const [autoFill, setAutoFill] = useState("");
   const [price, setPrice] = useState('');
   const [productDescription, setProductDescription] = useState("");
+  const [currency, setCurrency] = useState('');
   const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
   const [response, setResponse] = useState<ResponseData>({
     message: "",
@@ -32,6 +33,7 @@ export default function AddProductOverlay() {
       const data = await createProduct({
         userId: userId,
         title: productName,
+        currency: currency,
         price: price,
         productUrl: productUrl,
         imageUrl: "",
@@ -96,7 +98,10 @@ export default function AddProductOverlay() {
                         showCurrencyOptions && (
                             <ul style={{zIndex: 100, top: 30,right: 1 }} className="flex flex-col h-52 p-4 overflow-auto absolute mt-2 bg-white rounded shadow-md">
                                 {currencies.map((currency) => (
-                                    <button>
+                                    <button onClick={() => {
+                                      setCurrency(currency);
+                                      setShowCurrencyOptions(false);
+                                    }} key={currency}>
                                         {currency}
                                     </button>
                                 ))}

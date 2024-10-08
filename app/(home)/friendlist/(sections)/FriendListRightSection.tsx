@@ -1,7 +1,7 @@
 'use client'
 
 
-export default function FriendsListRightSection(){
+export default function FriendListRightSection(){
     const WishItem = () => {
         return (
             <div className="p-2 rounded border border-slate-300 w-32">

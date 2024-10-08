@@ -1,45 +1,66 @@
 'use client'
 
 
-import React from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
+import getUserInfo from "@/app/actions/user/getUserInfo";
+import Avvvatars from "avvvatars-react";
 
+// Selected friend page
+export default function FriendListLeftSection(){
+    const friendId = useSelector((state: RootState) => state.friendList.friendId);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [hobbiesInfo, setHobbiesInfo] = useState('');
+    const [invitedFriends, setInvitedFriends] = useState([]);
+    const [isPendingUserInfo, startUserInfoTransition] = useTransition();
+    const [friendNotFound, setFriendNotFound] = useState(false);
 
-export default function FriendsListLeftSection(){
+    useEffect(()=>{
 
+        if (!friendId){
+            setFriendNotFound(true);
+            console.log('Friend not found');
+        }
 
+        startUserInfoTransition(async() => {
+            const result = await getUserInfo(friendId);
+            console.log(`status: ${result.status}`);
+            if (result){
+                const fullName = `${result.firstName} ${result.lastName}`;
+                setName(fullName);
+                setEmail(result.email || '');
+                setHobbiesInfo(result.hobbiesInfo || '');
+            }
+        });
 
+    },[]);
 
     return (
         <div className="h-full">
-            <div className="flex justify-center gap-2">
-                <Link href="/mylist">My List</Link>
-                <Link href="/friends-list">Friends List</Link>
-            </div>
+      
             <div>
             <div className="p-2 flex flex-col gap-4 ">
                 
-                <div className="border border-gray-400 rounded">
+                {isPendingUserInfo ? <div>Loading...</div> : <div className="p-2 border border-gray-200 rounded-2xl">
                     {/**Friend's profile */}
-                    <div className="flex mb-4">
-                        <div className="bg-slate-300 rounded-full w-12 h-12">
+                    <div className="flex  p-2">
+                        <div className="flex items-center">
+                            <Avvvatars size={45} value={name}/>
                         </div>
-                       <div>
-                       <p>Name</p>
-                       <p>Email@gmail.com</p>
+                       <div className="p-2">
+                       <p>{name}</p>
+                       <p className="text-xs text-gray-400">{email}</p>
                        </div>
                     </div>
-                    <span className=" text-2xl">Interests and hobbies</span>
-                    <Textarea
-                        key={"hobbiesInfo"}
-                        className="h-32 mb-64 "
-                        placeholder={
-                            "Welcome to my wish list! These are the things I would love to have, and I would be so happy if you could gift me something from here."
-                        }
-                        value={''}
-                        onChange={()=>{}}
-                        />
+                    <span className="text-xl font-bold">Interests and hobbies</span>
+                    <div style={{height: 120, width: 260}} className="shadow-md border rounded-2xl  p-2">
+                        {hobbiesInfo}
+                    </div>
+                    <div style={{height: 100}}></div>
                     <span>People with whom this list has been shared</span>
                     <div className="flex">
                         <div className="h-12 w-12 rounded-full bg-gray-300"></div>
@@ -48,7 +69,7 @@ export default function FriendsListLeftSection(){
                         <div className="h-12 w-12 rounded-full bg-gray-300"></div>
 
                     </div>
-                </div>
+                </div>}
 
             </div>
             </div>
