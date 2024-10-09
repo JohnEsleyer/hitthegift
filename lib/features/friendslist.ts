@@ -3,10 +3,12 @@ import { EventData, MonthlyInvitedEventsResponse } from '../types/event';
 
 export interface FriendsListState {
    events: MonthlyInvitedEventsResponse[];
+   toDeleteFriend: string; // ID of friends to delete
 }
 
 const initialState: FriendsListState = {
-   events: []
+   events: [],
+   toDeleteFriend: '',
 };
 
 const friendsListSlice = createSlice({
@@ -15,12 +17,19 @@ const friendsListSlice = createSlice({
     reducers: {
         updateEvents: (state, action: PayloadAction<MonthlyInvitedEventsResponse[]>) => {
             return {
+                ...state,
                 events: action.payload,
             };
         },
+        updateToDeleteFriend: (state, action: PayloadAction<string>) => {
+            return {
+                ...state, 
+                toDeleteFriend: action.payload,
+            }
+        }
         
     }
 });
 
-export const { updateEvents} = friendsListSlice.actions;
+export const { updateEvents, updateToDeleteFriend} = friendsListSlice.actions;
 export default friendsListSlice.reducer; // Ensure this exports the reducer

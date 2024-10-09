@@ -8,6 +8,7 @@ import AddEventPopup from "./AddEventPopup";
 import AddProductPopup from "./AddProductPopup";
 import FriendsSidebar from "./FriendsSidebar";
 import ProfilePopup from "./ProfilePopup";
+import DeleteFriend from "./DeleteFriend";
 
 interface PopupPageProps {
   children: ReactNode;
@@ -100,13 +101,13 @@ export function Popups({ children }: PopupPageProps) {
       )}
 
        {/**Delete Friend Popup*/}
-       {currentPopup == "profile" && (
+       {currentPopup == "deletefriend" && (
         <div
           style={{ zIndex: 999, position: "absolute" }}
           className=" flex justify-center items-center w-screen h-screen"
         >
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
-          <ProfilePopup />
+          <DeleteFriend/>
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}

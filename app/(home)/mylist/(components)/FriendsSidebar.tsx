@@ -1,24 +1,25 @@
 "use client";
 
 import getAllFriends from "@/app/actions/user/getAllFriends";
+import { updateToDeleteFriend } from "@/lib/features/friendslist";
+import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { Friend } from "@/lib/types/friend";
 import Avvvatars from "avvvatars-react";
 import { Search, X } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
-import { useSelector } from "react-redux";
-
-
+import { useDispatch, useSelector } from "react-redux";
 
 interface FriendsSidebarProps {
   onClick: () => void;
 }
 
 export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
+  const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const [friends, setFriends] = useState<Friend[]>([]);
-
+  
   useEffect(() => {
     startTransition(async () => {
       console.log(`id sent to server: ${userId}`);
@@ -49,7 +50,8 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
           <span>{friend.firstName}</span>
           </div> 
           <button className="flex items-center hover:text-red-600" onClick={() => {
-
+            dispatch(updateCurrentPopup('deletefriend'));
+            dispatch(updateToDeleteFriend(friend.id));
           }}>
             <X/>
           </button>

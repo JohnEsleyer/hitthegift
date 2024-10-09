@@ -13,7 +13,9 @@ export default async function getFriendsByIds(friendsIds: string[]) {
         
          
         const users = await Promise.all(friendsIds.map(async (friendId) => {
-            const user = await db.collection<UserData>('users').findOne({ _id: new ObjectId(friendId)});
+            const user = await db.collection<UserData>('users').findOne(
+                { _id: new ObjectId(friendId)}
+            );
             if (user){
                 // console.log(`F: ${user.firstName}`);
                return {
