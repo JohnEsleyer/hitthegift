@@ -4,7 +4,7 @@ import getAllFriends from "@/app/actions/user/getAllFriends";
 import { RootState } from "@/lib/store";
 import { Friend } from "@/lib/types/friend";
 import Avvvatars from "avvvatars-react";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
 
@@ -32,9 +32,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
 
   return (
     <div>
-      <button className="text-black p-2 underline" onClick={onClick}>
-        Close
-      </button>
+
       <div className="flex items-center rounded-xl p-2 bg-white w-fulls">
         <input type="text" style={{ width: 230 }} placeholder="Search friend" />
         <Search style={{ width: 26, height: 20, strokeWidth: 3 }} />
@@ -44,11 +42,17 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
       <div>
         
         {friends.map((friend) => (
-        <div key={friend.id} className="border border-gray-400 border-2 rounded-2xl pl-2 pr-2 p-1 mt-2 flex items-center gap-2 ">
-          <div className="flex justify-center items-center w-12 h-12 bg-blue-400 rounded-full">
+        <div key={friend.id} className="border border-gray-400 border-2 rounded-2xl pl-2 pr-2 p-1 mt-2  flex justify-between ">
+          <div className="flex items-center gap-2 "><div className="flex justify-center items-center w-12 h-12 bg-blue-400 rounded-full">
             <Avvvatars size={48} value={friend.firstName}  />
           </div>
           <span>{friend.firstName}</span>
+          </div> 
+          <button className="flex items-center hover:text-red-600" onClick={() => {
+
+          }}>
+            <X/>
+          </button>
         </div>    
         ))}
       </div>}

@@ -1,7 +1,7 @@
 "use client";
 
 import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateCurrentPopup } from "@/lib/features/popups";
 import Avvvatars from "avvvatars-react";
 import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
@@ -10,11 +10,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import Loading from "/public/loading.svg";
 import AuthMiddleware from "@/components/AuthMiddleware";
-import { OverlayPage } from "@/app/(home)/mylist/(components)/OverlayPage";
 import { RootState } from "@/lib/store";
 import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
 import Chatbox from "@/app/(home)/insidefriend/_components/Chatbox";
 import { MessageSquareText } from "lucide-react";
+import { Popups } from "@/app/(home)/mylist/(components)/Popups";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -43,7 +43,7 @@ export default function HomeTemplate({
             </div>
           }
         >
-          <OverlayPage>
+          <Popups>
             <div className="flex w-full h-full">
               <div style={{ width: 300 }}>{leftSide}</div>
               <div className="flex-1 ">{rightSide}</div>
@@ -69,7 +69,7 @@ export default function HomeTemplate({
                       className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
                       onClick={() => {
                         setShowProfileOptions(false);
-                        dispatch(updateCurrentOverlay("profile"));
+                        dispatch(updateCurrentPopup("profile"));
                       }}
                     >
                       My Profile
@@ -98,7 +98,7 @@ export default function HomeTemplate({
                 </button>}
               </div>}
             </div>
-          </OverlayPage>
+          </Popups>
         </RenderClientOnly>
       </AuthMiddleware>
     </div>

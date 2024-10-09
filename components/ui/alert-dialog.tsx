@@ -12,11 +12,11 @@ const AlertDialogTrigger = AlertDialogPrimitive.Trigger
 
 const AlertDialogPortal = AlertDialogPrimitive.Portal
 
-const AlertDialogOverlay = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
+const AlertDialogPopup = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Popup>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Popup>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Overlay
+  <AlertDialogPrimitive.Popup
     className={cn(
       "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
@@ -25,14 +25,14 @@ const AlertDialogOverlay = React.forwardRef<
     ref={ref}
   />
 ))
-AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
+AlertDialogPopup.displayName = AlertDialogPrimitive.Popup.displayName
 
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
 >(({ className, ...props }, ref) => (
   <AlertDialogPortal>
-    <AlertDialogOverlay />
+    <AlertDialogPopup />
     <AlertDialogPrimitive.Content
       ref={ref}
       className={cn(
@@ -129,7 +129,7 @@ AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName
 export {
   AlertDialog,
   AlertDialogPortal,
-  AlertDialogOverlay,
+  AlertDialogPopup,
   AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,

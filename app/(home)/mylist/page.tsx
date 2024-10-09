@@ -1,12 +1,12 @@
 "use client";
 
 import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateCurrentPopup } from "@/lib/features/Popups";
 import Avvvatars from "avvvatars-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { OverlayPage } from "../mylist/(components)/OverlayPage";
+import { PopupPage } from "../mylist/(components)/PopupPage";
 
 import Image from 'next/image';
 import Loading from '/public/loading.svg';

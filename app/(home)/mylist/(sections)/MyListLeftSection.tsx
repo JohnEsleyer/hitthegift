@@ -14,7 +14,7 @@ import { RootState } from "@/lib/store";
 
 import getUserHobbies from "@/app/actions/user/getUserHobbies";
 import EditableHobbyArea from "../(components)/EditableHobbyArea";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateCurrentPopup } from "@/lib/features/popups";
 import { getAllEvents } from "@/app/actions/events/getAllEvents";
 import { ServerResponseForEvents } from "@/lib/types/event";
 import Avvvatars from "avvvatars-react";
@@ -77,7 +77,7 @@ export default function MyListLeftSection() {
                 <button
                   className="pl-2 pr-2 bg-blue-600 text-white rounded-full"
                   onClick={() => {
-                    dispatch(updateCurrentOverlay("addEvent"));
+                    dispatch(updateCurrentPopup("addEvent"));
                   }}
                 >
                   Add event

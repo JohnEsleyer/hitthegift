@@ -7,7 +7,7 @@ import Loading from "/public/loading.svg";
 import Image from "next/image";
 import { UserData } from "@/lib/types/user";
 import { useDispatch } from "react-redux";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateCurrentPopup } from "@/lib/features/Popups";
 import { updateUserId } from "@/lib/features/userData";
 
 export default function RegisterPage() {
@@ -55,7 +55,7 @@ export default function RegisterPage() {
             dispatch(updateUserId(response.userId));
                           
             setIsError(false);
-            dispatch(updateCurrentOverlay('none'));
+            dispatch(updateCurrentPopup('none'));
             router.push("/mylist");
           }, 3000);
         }else{

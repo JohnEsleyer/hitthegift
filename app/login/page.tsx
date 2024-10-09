@@ -10,7 +10,7 @@ import Loading from '/public/loading.svg';
 import {useRouter} from 'next/navigation';
 import { useDispatch } from "react-redux";
 import { updateUserId} from "@/lib/features/userData";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateCurrentPopup } from "@/lib/features/popups";
 
 type ResponseData = {
     message: string;
@@ -63,7 +63,7 @@ export default function LoginPage(){
                             dispatch(updateUserId(data.userId));
                           
                             // setIsError(false);
-                            dispatch(updateCurrentOverlay('none'));
+                            dispatch(updateCurrentPopup('none'));
                             router.push('/mylist');
                         }else{
                             // setIsError(true);

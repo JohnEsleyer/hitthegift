@@ -1,6 +1,6 @@
 "use client";
 import { createProduct } from "@/app/actions/products/createProduct";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ type ResponseData = {
 };
 
 
-export default function AddProductOverlay() {
+export default function AddProductPopup() {
   const dispatch = useDispatch();
   const [productName, setProductName] = useState("");
   const [productUrl, setProductUrl] = useState("");
@@ -47,7 +47,7 @@ export default function AddProductOverlay() {
       console.log(e);
     }
 
-    dispatch(updateCurrentOverlay("none"));
+    dispatch(updateCurrentPopup("none"));
   };
 
   return (
@@ -172,7 +172,7 @@ export default function AddProductOverlay() {
           <button
             className="bg-black rounded-2xl pl-12 pr-12  text-white"
             onClick={() => {
-              dispatch(updateCurrentOverlay("none"));
+              dispatch(updateCurrentPopup("none"));
             }}
           >
             Cancel

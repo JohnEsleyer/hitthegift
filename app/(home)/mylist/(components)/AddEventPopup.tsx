@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import HourSelector from "./HourSelector";
 import Avvvatars from "avvvatars-react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
@@ -28,7 +28,7 @@ const getCurrentDate = () => {
   };
 };
 
-export default function AddEventOverlay() {
+export default function AddEventPopup() {
   const [meridiem, setMeridiem] = useState<"AM" | "PM">("AM");
   const [hourSelected, setHourSelected] = useState(8);
   const [eventTitle, setEventTitle] = useState("");
@@ -74,7 +74,7 @@ export default function AddEventOverlay() {
           }
         });
 
-        dispatch(updateCurrentOverlay('none'));
+        dispatch(updateCurrentPopup('none'));
 
       }
     } catch (e) {
@@ -109,7 +109,7 @@ export default function AddEventOverlay() {
         <button
           className="underline"
           onClick={() => {
-            dispatch(updateCurrentOverlay("none"));
+            dispatch(updateCurrentPopup("none"));
           }}
         >
           Close
@@ -210,7 +210,7 @@ export default function AddEventOverlay() {
         <button
           className="bg-black rounded-2xl pl-12 pr-12  text-white"
           onClick={() => {
-            dispatch(updateCurrentOverlay("none"));
+            dispatch(updateCurrentPopup("none"));
           }}
         >
           Cancel

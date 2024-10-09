@@ -5,7 +5,7 @@ import { startTransition, useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import Friends from "/public/friends.png";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCurrentOverlay } from "@/lib/features/overlays";
+import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
@@ -40,7 +40,7 @@ export default function MyListRightSection() {
           <button
             className="bg-blue-500 text-white pl-2 pr-2 rounded-full"
             onClick={() => {
-              dispatch(updateCurrentOverlay("addProduct"));
+              dispatch(updateCurrentPopup("addProduct"));
             }}
           >
             Add Product
@@ -91,7 +91,7 @@ export default function MyListRightSection() {
             <button
               className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg "
               onClick={() => {
-                dispatch(updateCurrentOverlay("friends"));
+                dispatch(updateCurrentPopup("friends"));
               }}
             >
               <Image alt="" width={30} src={Friends} />

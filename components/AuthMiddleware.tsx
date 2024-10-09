@@ -59,5 +59,5 @@ export default function AuthMiddleware({ children }: AuthMiddlewareProps) {
   }
 
   // If authenticated, render the wrapped component
-  return <>{children}</>;
+  return <div>{children}</div>;
 }

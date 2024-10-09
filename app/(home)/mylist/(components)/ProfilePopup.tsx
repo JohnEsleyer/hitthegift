@@ -13,7 +13,7 @@ import updateUserBirthday from "@/app/actions/user/updateUserBirthday";
 import updateUserEmail from "@/app/actions/user/updateUserEmail";
 import updateUserFirstName from "@/app/actions/user/updateUserFirstName";
 
-export default function AddEventOverlay() {
+export default function AddEventPopup() {
   const dispatch = useDispatch();
 
   const userId = useSelector((state: RootState) => state.userData.id);

@@ -2,7 +2,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userDataSlice, { UserDataState } from './features/userData';
 import { loadState, saveState } from '@/utils/localStorage';
-import overlaysSlice from './features/overlays';
+import popupsSlice from './features/popups';
 import wishlist from './features/wishlist';
 import insideFriend from './features/insideFriend';
 import friendsList from './features/friendslist';
@@ -16,7 +16,7 @@ export const makeStore = () => {
     const store = configureStore({
         reducer: {
             userData: userDataSlice,
-            overlays: overlaysSlice,
+            popups: popupsSlice,
             wishlist: wishlist,
             insideFriend: insideFriend,
             friendsList: friendsList,
