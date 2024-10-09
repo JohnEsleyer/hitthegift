@@ -1,9 +1,11 @@
 'use client'
 
+import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
 import { updateFriendId } from "@/lib/features/insideFriend";
+import { RootState } from "@/lib/store";
 import { ProductType } from "@/lib/types/products";
 import Avvvatars from "avvvatars-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface FriendsProducts {
     friendId: string;
@@ -13,14 +15,17 @@ interface FriendsProducts {
 }
 
 interface FriendWishItemProps {
-    friendsProduct: FriendsProducts;
+    friendProduct: FriendsProducts;
 }
 
-export default function FriendsWishItem({friendsProduct} : FriendWishItemProps){
+export default function FriendsWishItem({friendProduct} : FriendWishItemProps){
     const dispatch = useDispatch();
-    
+
+
     const handleClick = () => {
-        dispatch(updateFriendId(friendsProduct.friendId));
+        
+        dispatch(updateFriendId(friendProduct.friendId));
+        
     }
 
     return (
@@ -30,9 +35,9 @@ export default function FriendsWishItem({friendsProduct} : FriendWishItemProps){
             className="p-4 rounded-xl border border-slate-300">
             <div style={{height: 150}} className=" bg-slate-300">
             </div>
-            <span className="text-xs flex justify-center mt-2">{friendsProduct.friendFirstName}{"'s"} wish list</span>
+            <span className="text-xs flex justify-center mt-2">{friendProduct.friendFirstName}{"'s"} wish list</span>
             <div className="flex justify-center ">
-                <Avvvatars value={friendsProduct.friendFirstName} />
+                <Avvvatars value={friendProduct.friendFirstName} />
             </div>
 
         </div></a>

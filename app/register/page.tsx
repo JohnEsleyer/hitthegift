@@ -7,7 +7,7 @@ import Loading from "/public/loading.svg";
 import Image from "next/image";
 import { UserData } from "@/lib/types/user";
 import { useDispatch } from "react-redux";
-import { updateCurrentPopup } from "@/lib/features/Popups";
+import { updateCurrentPopup } from "@/lib/features/popups";
 import { updateUserId } from "@/lib/features/userData";
 
 export default function RegisterPage() {
@@ -30,6 +30,7 @@ export default function RegisterPage() {
     birthday: "",
     showInterest: true,
     friendsList: [],
+    conversations: [],
   });
 
   const handleSubmit = async () => {
@@ -46,6 +47,7 @@ export default function RegisterPage() {
           birthday: userData?.birthday as string,
           showInterest: userData?.showInterest as boolean,
           friendsList: [],
+          conversations:[],
         });
 
         if (response) {

@@ -1,5 +1,4 @@
 
-
 export type UserData = {
     firstName: string;
     lastName: string;
@@ -9,4 +8,5 @@ export type UserData = {
     hobbyInfo: string;
     showInterest: boolean;
     friendsList: string[];
+    conversations: string[];
 }

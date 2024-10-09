@@ -43,7 +43,7 @@ const userDataSlice = createSlice({
                 id: action.payload,
             }
         },
-        updateUserFirstName: (state, action: PayloadAction<string>) => {
+        updateUserFirstNameStore: (state, action: PayloadAction<string>) => {
             console.log('updating user first name...');
             return {
                 ...state,
@@ -64,7 +64,7 @@ export const {
     updateUserData, 
     updateHobbyInfo, 
     updateUserId,
-    updateUserFirstName,
+    updateUserFirstNameStore,
     updateUserLastName,
 } = userDataSlice.actions;
 export default userDataSlice.reducer; // Ensure this exports the reducer

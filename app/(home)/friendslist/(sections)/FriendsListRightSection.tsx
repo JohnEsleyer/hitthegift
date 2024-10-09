@@ -47,7 +47,7 @@ export default function FriendsListRightSection(){
                         : <div className="flex flex-wrap gap-2 ">
                             {
                                 products.map((product, friendIndex) => (
-                                    <FriendsWishItem key={product.friendId} friendsProduct={product}/>
+                                    <FriendsWishItem key={product.friendId} friendProduct={product}/>
                                 ))
                             }
                         </div>

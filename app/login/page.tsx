@@ -9,8 +9,10 @@ import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import {useRouter} from 'next/navigation';
 import { useDispatch } from "react-redux";
-import { updateUserId} from "@/lib/features/userData";
+import { updateUserFirstNameStore, updateUserId} from "@/lib/features/userData";
 import { updateCurrentPopup } from "@/lib/features/popups";
+import updateUserFirstName from "../actions/user/updateUserFirstName";
+import getUserInfo from "../actions/user/getUserInfo";
 
 type ResponseData = {
     message: string;
@@ -52,16 +54,22 @@ export default function LoginPage(){
                     }),
                 });
 
+              
                 const data: ResponseData = await response.json();
 
                 if (data){
                     setResponseData(data);
 
+                    const userData = await getUserInfo(data.userId);
                     setTimeout(()=>{
                         if (response.status == 200){
            
                             dispatch(updateUserId(data.userId));
-                          
+        
+                            dispatch(updateUserFirstNameStore(userData.firstName as string));
+                            
+                            
+                            
                             // setIsError(false);
                             dispatch(updateCurrentPopup('none'));
                             router.push('/mylist');
