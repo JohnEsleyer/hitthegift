@@ -138,3 +138,47 @@ button:focus {
 }
 
 /*End of Calendar styling*/
+
+/*Chat bubble*/
+/* src/BubbleChat.css */
+
+.chat-container {
+  display: flex;
+  justify-content: flex-start; /* Change to 'flex-end' for right-side bubble */
+  margin-bottom: 20px;
+}
+
+.chat-bubble {
+  background-color: #e1ffc7;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 15px;
+  position: relative;
+  max-width: 250px;
+  word-wrap: break-word;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat-bubble::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10px; /* Adjust for the arrow on the left. Use 'right: -10px;' for the right */
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 10px 10px 0;
+  border-color: transparent #e1ffc7 transparent transparent; /* Color for left arrow */
+}
+
+/* For right-side arrow */
+.chat-container.right {
+  justify-content: flex-end;
+}
+
+.chat-bubble.right::before {
+  left: auto;
+  right: -10px;
+  border-width: 0 0 10px 10px;
+  border-color: transparent transparent transparent #e1ffc7;
+}

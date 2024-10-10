@@ -26,6 +26,7 @@ export async function createUser(data: UserData) {
               "66fe4d302426b7d616e5f807",
 
             ],
+            conversations: [],
         });
 
         return { message: "Registration Success", status: 200, userId: res.insertedId.toString()};

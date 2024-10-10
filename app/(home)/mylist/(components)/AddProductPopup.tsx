@@ -2,15 +2,16 @@
 import { createProduct } from "@/app/actions/products/createProduct";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { currencies } from "../constants";
+import Image from 'next/image';
+import Loading from '/public/loading.svg';
 
 type ResponseData = {
   message: string;
   status: number;
 };
-
 
 export default function AddProductPopup() {
   const dispatch = useDispatch();
@@ -25,35 +26,41 @@ export default function AddProductPopup() {
     message: "",
     status: 0,
   });
+  const [isLoading, setIsLoading] = useState(false);  
   const userId = useSelector((state: RootState) => state.userData.id);
 
   const clickAddProduct = async () => {
-    try {
-      const data = await createProduct({
-        userId: userId,
-        title: productName,
-        currency: currency,
-        price: price,
-        productUrl: productUrl,
-        imageUrl: "",
-        description: productDescription,
-      });
-
-      if (data) {
-        console.log(data.message);
-        setResponse(data);
+      setIsLoading(true);
+      try {
+        const data = await createProduct({
+          userId: userId,
+          title: productName,
+          currency: currency,
+          price: price,
+          productUrl: productUrl,
+          imageUrl: "",
+          description: productDescription,
+        });
+  
+        if (data) {
+          console.log(data.message);
+          setResponse(data);
+        }
+       
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
-    }
 
-    dispatch(updateCurrentPopup("none"));
+      setTimeout(() => {
+        dispatch(updateCurrentPopup("none"));
+        setIsLoading(false);
+      }, 3000);
   };
 
   return (
     <div
-      style={{ width: 500, height: 580 }}
-      className="pt-2 pr-1 bg-gray-100 rounded-2xl border-2 border-black"
+      style={{ width: 500, height: 610, marginTop: 110 }}
+      className="pt-4 pr-1 bg-gray-100 rounded-2xl border-2 border-gray"
     >
       <div className="h-full overflow-auto ">
         {/*Image of the Product */}
@@ -178,6 +185,15 @@ export default function AddProductPopup() {
             Cancel
           </button>
         </div>
+        <div className={`${!isLoading && 'invisible'} flex justify-center items-center h-12`}>
+          <Image 
+          alt=""
+          width={30}
+          height={30}
+          src={Loading}
+
+          />
+        </div> 
       </div>
     </div>
   );

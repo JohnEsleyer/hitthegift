@@ -45,7 +45,7 @@ export default function DeleteFriend() {
         </button>
         <button
           onClick={() => {
-            dispatch(updateCurrentPopup("none"));
+            dispatch(updateCurrentPopup("friends"));
           }}
           className="text-white bg-black rounded-2xl p-2 pl-4 pr-4"
         >
