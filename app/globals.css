@@ -171,14 +171,16 @@ button:focus {
   border-color: transparent #e1ffc7 transparent transparent; /* Color for left arrow */
 }
 
-/* For right-side arrow */
-.chat-container.right {
-  justify-content: flex-end;
+
+/*Others*/ 
+
+.transformLeftSection{
+  transform: scale(0.9) translate(1px, -40px); 
+
 }
 
-.chat-bubble.right::before {
-  left: auto;
-  right: -10px;
-  border-width: 0 0 10px 10px;
-  border-color: transparent transparent transparent #e1ffc7;
+.transformCalendar{
+  transform: scale(0.9) translate(1px, -15px) ; 
+
 }
+

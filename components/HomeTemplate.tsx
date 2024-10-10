@@ -18,6 +18,7 @@ import { Popups } from "@/app/(home)/mylist/(components)/Popups";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
 import { Conversation } from "@/lib/types/conversation";
 import { WithId } from "mongodb";
+import Friends from '/public/friends.png';
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -39,7 +40,7 @@ export default function HomeTemplate({
   const router = useRouter();
 
   return (
-    <div className="w-screen h-screen flex">
+    <div className="w-screen h-screen flex overflow-auto">
       <AuthMiddleware>
         <RenderClientOnly
           loading={
@@ -49,9 +50,17 @@ export default function HomeTemplate({
           }
         >
           <Popups>
-            <div className="flex w-full h-full">
-              <div style={{ width: 300 }}>{leftSide}</div>
-              <div className="flex-1 ">{rightSide}</div>
+            <div className="flex w-full h-full ">
+              <div className=" h-full " 
+              style={{ width: 300 }}
+              >
+                <div style={{width: 330}} className="transformLeftSection ">
+                {leftSide}
+                </div>
+              </div>
+              <div className="h-full overflow-auto flex-1 ">
+                {rightSide}
+              </div>
               {/**Profile*/}
               <div
                 style={{ zIndex: 90, right: 30 }}
@@ -112,6 +121,18 @@ export default function HomeTemplate({
                   <MessageSquareText color={"#4298f5"} />
                 </button>}
               </div>}
+
+              {/**Friends */}
+              <div style={{zIndex: 99, right: 0, top:225 }} className="absolute text-white flex justify-end">
+            <button
+              className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg "
+              onClick={() => {
+                dispatch(updateCurrentPopup("friends"));
+              }}
+            >
+              <Image alt="" width={30} src={Friends} />
+            </button>
+          </div>
             </div>
           </Popups>
         </RenderClientOnly>

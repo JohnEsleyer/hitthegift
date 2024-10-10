@@ -68,12 +68,13 @@ export default function EditableHobbyArea(){
 
 
     return (
-        <div className="flex flex-col p-2">
-        <span className="text-xl mb-6">My hobbies and interest</span>
+        <div className="flex flex-col p-2  flex items-center">
+        <span style={{marginBottom: 17}} className="text-xl">My hobbies and interest</span>
         <Textarea
           key={"hobbiesInfo"}
-          style={{height: 200}}
-          className="border border-2xl rounded-2xl "
+          style={{height: 220, width: 280}}
+          
+          className="border border-2xl rounded-2xl"
      
           value={hobbiesInfo}
           onChange={(e)=>{

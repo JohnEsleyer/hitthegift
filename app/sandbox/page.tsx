@@ -4,13 +4,7 @@ import React, { useState } from "react";
 
 
 export default function Sandbox(){
-  const isSender = true;
-  const message = "test";
-  return (
-    <div className={`chat-container ${isSender ? 'right' : ''}`}>
-    <div className={`chat-bubble ${isSender ? 'right' : ''}`}>
-      {message}
-    </div>
-  </div>
-  )
+ return (<div className="h-screen w-screen">
+  <div style={{width: 200, height:300}} className="bg-blue-300"></div>
+ </div>)
 }

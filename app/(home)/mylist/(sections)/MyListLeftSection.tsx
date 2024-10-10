@@ -64,14 +64,15 @@ export default function MyListLeftSection() {
   return (
     <HomeLeftTemplate highlight="mylist">
     <div className="h-full ml-2 ">
-      <div className={`${showAddEventUI && "blurcontent"}`}>
+      <div className={''}>
         <div>
-          <div className="mt-4 p-2 flex flex-col border rounded-2xl ">
+          <div style={{height: 665}} className=" flex flex-col border rounded-2xl">
             {/* <span>{hobbiesInfo}</span> */}
             {/** My hobbies and interests */}
             <EditableHobbyArea />
             {/**My events section */}
-            <div className="mt-4">
+      
+            <div >
               <div className="flex justify-between">
                 <span>My Events</span>
                 <button
@@ -128,7 +129,7 @@ export default function MyListLeftSection() {
             </div>
 
             {/**Calendar Section */}
-            <div className="flex pr-4 items-center justify-center mt-2 w-full">
+            <div className="transformCalendar flex pr-4 items-center justify-center w-full">
              <EventsCalendar highlightedDates={highlightedDates}/>
             </div>
           </div>

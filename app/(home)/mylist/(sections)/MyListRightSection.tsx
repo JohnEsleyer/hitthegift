@@ -71,6 +71,7 @@ export default function MyListRightSection() {
                   productName={product.title}
                   description={product.description}
                   price={product.price}
+                  productUrl={product.productUrl}
                 />
               ))}
             </div>
@@ -87,16 +88,7 @@ export default function MyListRightSection() {
             zIndex: 90,
           }}
         >
-          <div className=" text-white flex justify-end">
-            <button
-              className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg "
-              onClick={() => {
-                dispatch(updateCurrentPopup("friends"));
-              }}
-            >
-              <Image alt="" width={30} src={Friends} />
-            </button>
-          </div>
+        
         </div>
       </div>
     </div>
