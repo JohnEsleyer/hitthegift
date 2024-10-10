@@ -24,12 +24,14 @@ interface HomeTemplateProps {
   leftSide: ReactNode;
   rightSide: ReactNode;
   allowChat?: boolean;
+  showFriends?: boolean;
 }
 
 export default function HomeTemplate({
   leftSide,
   rightSide,
   allowChat,
+  showFriends,
 }: HomeTemplateProps) {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const isOpenChatbox = useSelector((state: RootState) => state.insideFriend.isOpenChatbox);
@@ -40,7 +42,7 @@ export default function HomeTemplate({
   const router = useRouter();
 
   return (
-    <div className="w-screen h-screen flex overflow-auto">
+    <div className="w-screen h-screen flex overflow-auto overflow-x-hidden">
       <AuthMiddleware>
         <RenderClientOnly
           loading={
@@ -58,7 +60,7 @@ export default function HomeTemplate({
                 {leftSide}
                 </div>
               </div>
-              <div className="h-full overflow-auto flex-1 ">
+              <div className="h-full overflow-auto hide-scrollbar flex-1 ">
                 {rightSide}
               </div>
               {/**Profile*/}
@@ -123,7 +125,7 @@ export default function HomeTemplate({
               </div>}
 
               {/**Friends */}
-              <div style={{zIndex: 99, right: 0, top:225 }} className="absolute text-white flex justify-end">
+              {showFriends && <div style={{zIndex: 99, right: 0, top:225 }} className="absolute text-white flex justify-end">
             <button
               className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg "
               onClick={() => {
@@ -132,7 +134,7 @@ export default function HomeTemplate({
             >
               <Image alt="" width={30} src={Friends} />
             </button>
-          </div>
+          </div>}
             </div>
           </Popups>
         </RenderClientOnly>

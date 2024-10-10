@@ -27,7 +27,7 @@ export function ChatBubbleSkeleton({ isSender }: { isSender: boolean }) {
   );
 }
 
-export function ChatboxSkeleton() {
+export default function ChatboxSkeleton() {
   return (
     <div className="p-4 space-y-4">
       {/* Sender message 1 */}
@@ -38,35 +38,4 @@ export function ChatboxSkeleton() {
       <ChatBubbleSkeleton isSender={false} />
     </div>
   );
-}
-
-export default function Chatbox() {
-  const isLoading = true; // Simulate loading
-
-  if (isLoading) {
-    return <ChatboxSkeleton />;
-  }
-
-  const messages = [
-    {
-      id: 1,
-      avatarUrl: '',
-      senderName: 'Bonnie Green',
-      timestamp: '11:46',
-      message: "That's awesome. I think our users will really appreciate the improvements.",
-      deliveryStatus: 'Delivered',
-      isSender: false,
-    },
-    {
-      id: 2,
-      avatarUrl: '',
-      senderName: 'You',
-      timestamp: '11:47',
-      message: 'Thanks! I appreciate your feedback.',
-      deliveryStatus: 'Sent',
-      isSender: true,
-    },
-  ];
-
- 
 }

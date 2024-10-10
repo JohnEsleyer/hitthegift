@@ -2,6 +2,8 @@
 
 import createMessage from "@/app/actions/chat/createMessage";
 import fetchMessages from "@/app/actions/chat/fetchMessages";
+import { ChatBubble } from "@/components/ChatBubble";
+import ChatboxSkeleton from "@/components/skeletons/ChatboxSkeleton";
 import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
 import { RootState } from "@/lib/store";
 import { ChatMessage, Message } from "@/lib/types/message";
@@ -113,46 +115,25 @@ export default function Chatbox() {
           </button>
         </div>
       </div>
-      <div className="flex-1 ">
+      <div className="flex-1 overflow-auto overflow-x-hidden ">
         {!isPending ? (
           <div style={{ maxWidth: "400px", margin: "0 auto" }}>
             {messages.map((chatMessage, index) => {
-              const isUserMessage = chatMessage.message.sender === userId;
+              // const isUserMessage = chatMessage.message.sender === userId;
 
-              return (<div 
+              return (<ChatBubble
                 key={index}
-                
-                style={{
-                  display: 'flex',
-                  margin: '10px 0',
-                }}
-              >
-                <div className={`flex flex-col w-full ${isUserMessage ? 'items-end' : 'items-start'}`}>
-                <div
-                  style={{
-                    backgroundColor: isUserMessage ? '#007bff' : '#f1f1f1',
-                    color: isUserMessage ? '#fff' : '#000',
-                    padding: '10px',
-                    paddingLeft: isUserMessage ? '10px':'50px',
-                    paddingRight: !isUserMessage ? '10px':'50px',
-                    borderRadius: '20px',
-                    maxWidth: '70%',
-                    wordWrap: 'break-word',
-                  }}
-                >
-                  <p>{chatMessage.message.content}</p>
-                </div>
-                {isUserMessage && index === messages.length-1 &&<span style={{ fontSize: '12px' }} className="text-gray-400">
-                    {chatMessage.status === 'sending' ? 'Sending...' : 'Sent'}
-                  </span>}
-                </div>
-             
-              </div>);
+                avatarUrl={''}
+                timestamp={`${chatMessage.message.timestamp.getFullYear()}/${chatMessage.message.timestamp.getMonth()}/${chatMessage.message.timestamp.getDate()} `}
+                message={chatMessage.message.content}
+                deliveryStatus={chatMessage.status}
+                isSender={chatMessage.message.sender == userId}
+              />);
             })}
           </div>
         ) : (
-          <div className="flex justify-center items-center h-full text-gray-400">
-            No messages
+          <div className="flex-1 overflow-auto overflow-x-hidden">
+            <ChatboxSkeleton/>
           </div>
         )}
       </div>

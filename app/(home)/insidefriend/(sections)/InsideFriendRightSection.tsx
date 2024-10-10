@@ -35,6 +35,7 @@ export default function InsideFriendRightSection(){
                          description={product.description}
                          price={product.price}
                          productUrl={product.productUrl}
+                         showBuyButton={true}
                         /> 
                     ))}
                 </div>}
