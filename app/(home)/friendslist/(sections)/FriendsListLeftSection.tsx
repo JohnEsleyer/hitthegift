@@ -9,6 +9,7 @@ import EventsCalendar from "@/components/EventsCalendar";
 import { MonthlyInvitedEventsResponse } from "@/lib/types/event";
 import { updateEvents } from "@/lib/features/friendslist";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
+import FriendEventSkeleton from "@/components/skeletons/FriendEventSkeleton";
 
 export default function FriendsListLeftSection() {
   const dispatch = useDispatch();
@@ -36,7 +37,8 @@ export default function FriendsListLeftSection() {
 
   return (
     <HomeLeftTemplate highlight="friendslist">
-      <div style={{ height: 600 }} className="p-2 flex flex-col gap-4 border rounded-2xl m-2">
+      <div className="h-screen ml-2">
+      <div style={{ height: 600 }} className="p-2 flex flex-col gap-4 border rounded-2xl ">
         {/**Calendar Section */}
         <div className="flex items-center justify-center mt-2 w-full border rounded-2xl border-gray-100 pr-4 pb-2">
           <EventsCalendar highlightedDates={highlightedDates} />
@@ -47,9 +49,16 @@ export default function FriendsListLeftSection() {
           </span>
           <div className="flex flex-col gap-4 items-between justify-between">
             {isEventsPending ? (
-              <div>Loading...</div>
+              <div style={{height: 250}} className="overflow-auto">
+                <FriendEventSkeleton/>
+                <FriendEventSkeleton/>
+                <FriendEventSkeleton/>
+                <FriendEventSkeleton/>
+                <FriendEventSkeleton/>
+                <FriendEventSkeleton/>
+              </div>
             ) : (
-              <div>
+              <div style={{height: 250}}>
                 {events.map((event) => (
                   <div
                     key={event.id}
@@ -70,6 +79,7 @@ export default function FriendsListLeftSection() {
             )}
           </div>
         </div>
+      </div>
       </div>
     </HomeLeftTemplate>
   );

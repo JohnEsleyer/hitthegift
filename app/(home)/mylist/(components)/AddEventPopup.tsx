@@ -98,7 +98,7 @@ export default function AddEventPopup() {
   return (
     <div
       style={{ width: 500, height: 630 }}
-      className=" p-4 bg-white  rounded-2xl border-2 border-black"
+      className=" p-4 bg-white  rounded-2xl border-2 border-gray"
     >
       {/* <p className="text-2xl font-bold">Add Event</p> */}
       <div className=" flex justify-between">

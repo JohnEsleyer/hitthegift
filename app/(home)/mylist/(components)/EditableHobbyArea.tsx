@@ -2,10 +2,11 @@
 
 import getUserHobbies from "@/app/actions/user/getUserHobbies";
 import updateUserHobbies from "@/app/actions/user/updateUserHobbies";
+import TextareaSkeleton from "@/components/skeletons/TextareaSkeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { updateHobbyInfo } from "@/lib/features/userData";
 import { RootState } from "@/lib/store";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 
@@ -13,6 +14,7 @@ export default function EditableHobbyArea(){
     const [hobbiesInfo, setHobbiesInfo] = useState('');
     const [debouncedValue, setDebouncedValue] = useState(hobbiesInfo);
     const userId = useSelector((state: RootState) => state.userData.id);
+    const [isTextareaPending, startTextareaTransition] = useTransition();
 
     const dispatch = useDispatch();
 
@@ -52,15 +54,14 @@ export default function EditableHobbyArea(){
     
 
       useEffect(() => {
-        const fetchHobbyData = async () => {
+        startTextareaTransition(async () => {
             const hobbyData = await getUserHobbies(userId);
             if (hobbyData.status == 200){
                 setHobbiesInfo(hobbyData.hobbiesInfo as string);
                 console.log(hobbyData.message);
             }
-        };
-    
-        fetchHobbyData();
+        })
+  
     
       }, []);
     
@@ -70,7 +71,7 @@ export default function EditableHobbyArea(){
     return (
         <div className="flex flex-col p-2  flex items-center">
         <span style={{marginBottom: 17}} className="text-xl">My hobbies and interest</span>
-        <Textarea
+        {isTextareaPending ? <TextareaSkeleton/> : <Textarea
           key={"hobbiesInfo"}
           style={{height: 220, width: 280}}
           
@@ -80,7 +81,7 @@ export default function EditableHobbyArea(){
           onChange={(e)=>{
             handleInputChange(e);
           }}
-        />
+        />}
         {/* <span 
           className="text-gray-600 flex justify-end"
           >

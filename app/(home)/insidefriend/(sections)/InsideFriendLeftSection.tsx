@@ -57,7 +57,7 @@ export default function InsideFriendLeftSection(){
 
     return (
         <HomeLeftTemplate highlight={'friendslist'}>
-        <div className="h-full">
+        <div className="h-screen">
             <div>
             <div className="p-2 flex flex-col gap-4">
                 

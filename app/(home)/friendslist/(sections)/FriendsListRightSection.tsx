@@ -35,7 +35,7 @@ export default function FriendsListRightSection(){
     
 
     return (
-        <div className="w-full">
+        <div className="ml-8 h-screen">
             {/**Search bar */}
                 <input
                     className="mt-12 p-4 rounded-full bg-slate-200 w-64" 

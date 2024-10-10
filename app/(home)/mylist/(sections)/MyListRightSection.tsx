@@ -11,6 +11,7 @@ import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import WishItem from "../../../../components/WishItem";
 import { useRouter } from "next/navigation";
+import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ export default function MyListRightSection() {
 
 
   useEffect(() => {
-    startTransition(async () => {
+    startProductsTransition(async () => {
       const results = await getUserProducts(userId);
       console.log(`status: ${results.message}`);
       if (results) {
@@ -62,7 +63,14 @@ export default function MyListRightSection() {
           className=" mt-4 pt-4 "
         >
           {isProductsPending ? (
-            <div>Loading...</div>
+            <div className="flex flex-wrap gap-8 h-full">
+              <WishItemSkeleton/>
+              <WishItemSkeleton/>
+              <WishItemSkeleton/>
+              <WishItemSkeleton/>
+              <WishItemSkeleton/>
+              <WishItemSkeleton/>
+            </div>
           ) : (
             <div className="flex flex-wrap gap-8 h-full">
               {products.map((product) => (

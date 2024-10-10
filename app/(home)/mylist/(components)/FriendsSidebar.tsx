@@ -1,6 +1,7 @@
 "use client";
 
 import getAllFriends from "@/app/actions/user/getAllFriends";
+import FriendSkeleton from "@/components/skeletons/FriendSkeleton";
 import { updateToDeleteFriend } from "@/lib/features/friendslist";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
@@ -39,7 +40,14 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
         <Search style={{ width: 26, height: 20, strokeWidth: 3 }} />
       </div>
       {/**Friends Section */}
-      {isPending ? <div>Loading...</div> :
+      {isPending ? <div>
+        <FriendSkeleton/>
+        <FriendSkeleton/>
+        <FriendSkeleton/>
+        <FriendSkeleton/>
+        <FriendSkeleton/>
+        
+      </div> :
       <div>
         
         {friends.map((friend) => (

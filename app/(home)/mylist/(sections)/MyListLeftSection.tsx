@@ -22,6 +22,7 @@ import EventsCalendar from "@/components/EventsCalendar";
 import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
+import EventSkeleton from "@/components/skeletons/EventSkeleton";
 
 export default function MyListLeftSection() {
   const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
@@ -64,7 +65,7 @@ export default function MyListLeftSection() {
   return (
     <HomeLeftTemplate highlight="mylist">
     <div className="h-full ml-2 ">
-      <div className={''}>
+    <div className={''}>
         <div>
           <div style={{height: 665}} className=" flex flex-col border rounded-2xl">
             {/* <span>{hobbiesInfo}</span> */}
@@ -86,7 +87,12 @@ export default function MyListLeftSection() {
               </div>
               <div>
                 {isEventsPending ? (
-                  <div style={{height: 130}}>Loading...</div>
+                  <div style={{height: 130}}  className="overflow-auto flex flex-col items-between ">
+                    <EventSkeleton/>
+                    <EventSkeleton/>
+                    <EventSkeleton/>
+                    
+                  </div>
                 ) : (
                   <div style={{height: 130}} className="overflow-auto flex flex-col items-between ">
                     {events.map((event) => (
