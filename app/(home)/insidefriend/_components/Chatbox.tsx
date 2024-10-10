@@ -7,6 +7,7 @@ import ChatboxSkeleton from "@/components/skeletons/ChatboxSkeleton";
 import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
 import { RootState } from "@/lib/store";
 import { ChatMessage, Message } from "@/lib/types/message";
+import { getLastElement } from "@/utils/getLastElement";
 import Avvvatars from "avvvatars-react";
 import { Minus, Send } from "lucide-react";
 import { WithId } from "mongodb";
@@ -28,21 +29,10 @@ export default function Chatbox() {
   );
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isPending, startChatTransition] = useTransition();
+  const [isSending, startSendingTransition] = useTransition();
 
   const handleSend = () => {
-    async function sentToServer() {
-      try {
-        const res = await createMessage(userId, conversationId, messageContent);
-        console.log(res.status);
-        // Display sent on the latest message 
-        setMessages((messages) => ([...messages, {
-          ...messages[messages.length-1],
-          status: 'sent',
-        }]))
-      } catch (e) {
-        console.log(e);
-      }
-    }
+
 
     setMessages((prev) => [
       ...prev,
@@ -58,9 +48,38 @@ export default function Chatbox() {
       },
     ]);
 
-    sentToServer();
+    startSendingTransition(async () => {
+      try {
+        const res = await createMessage(userId, conversationId, messageContent);
+        console.log(res.status);
+      
+      } catch (e) {
+        console.log(e);
+      }
+    })
     setMessageContent('');
   };
+
+  useEffect(() => {
+    if (!isSending){
+       // Display sent on the latest message 
+
+      //Delete the last message and replace it with the updated one
+       const temp: ChatMessage | undefined = getLastElement(messages);
+       if (temp){
+        setMessages((messages) => (messages.filter((message, index) => (index !== messages.length-1))));
+
+        setMessages((messages) => ([...messages, {
+         ...temp,
+         status: 'sent',
+       }]))
+       }else{
+        console.log('undefined last message');
+       }
+     
+    }
+  },[isSending])
+
 
   useEffect(() => {
     startChatTransition(async () => {
