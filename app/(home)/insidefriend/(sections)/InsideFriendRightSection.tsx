@@ -26,10 +26,7 @@ export default function InsideFriendRightSection(){
 
     return (
         <div className="w-full">
-            {/**Search bar */}
-                <input
-                    className="mt-12 p-4 rounded-full bg-slate-200 w-64" 
-                    placeholder={`Friend's name`}/>
+                <div style={{marginLeft: 30}} className="pt-12">
                 {isProductsPending ? <div>Loading...</div> : <div className="pt-4 flex flex-wrap gap-2">
                     {products.map((product) => (
                         <WishItem 
@@ -37,9 +34,11 @@ export default function InsideFriendRightSection(){
                          productName={product.title}
                          description={product.description}
                          price={product.price}
+                         productUrl={product.productUrl}
                         /> 
                     ))}
                 </div>}
+                </div>
         </div>
     );
 }

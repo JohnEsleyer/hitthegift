@@ -128,9 +128,7 @@ export default function Chatbox() {
                 }}
               >
                 <div className={`flex flex-col w-full ${isUserMessage ? 'items-end' : 'items-start'}`}>
-                
                 <div
-                  
                   style={{
                     backgroundColor: isUserMessage ? '#007bff' : '#f1f1f1',
                     color: isUserMessage ? '#fff' : '#000',
