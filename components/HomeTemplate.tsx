@@ -60,7 +60,7 @@ export default function HomeTemplate({
                 {leftSide}
                 </div>
               </div>
-              <div className="h-full overflow-auto hide-scrollbar flex-1 ">
+              <div className="h-full overflow-auto flex-1 ">
                 {rightSide}
               </div>
               {/**Profile*/}
