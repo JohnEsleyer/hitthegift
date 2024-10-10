@@ -4,6 +4,7 @@ import { RootState } from "@/lib/store";
 import Avvvatars from "avvvatars-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import Image from 'next/image';
 
 interface ChatBubbleProps {
   avatarUrl: string;
@@ -28,7 +29,7 @@ export function ChatBubble({
       <div className={`flex items-start ${isSender ? 'justify-end' : 'justify-start'}`}>
       {!isSender && (
         <div className="pl-2 pt-2">
-        {avatarUrl ? <img
+        {avatarUrl ? <Image
           className="w-8 h-8 rounded-full"
           src={avatarUrl}
           alt={`${friendName}'s avatar`}
@@ -57,7 +58,7 @@ export function ChatBubble({
       
       {isSender && (
         <div className="pr-2 pt-2">
-        {avatarUrl ?  <img
+        {avatarUrl ?  <Image
           className="w-8 h-8 rounded-full"
           src={avatarUrl}
           alt={`${userName}'s avatar`}
