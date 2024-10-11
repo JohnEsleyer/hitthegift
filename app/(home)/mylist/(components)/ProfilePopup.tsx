@@ -37,23 +37,12 @@ export default function AddEventPopup() {
     });
   }, [userId, startTransition]);
 
-  // // Debounce handler for name change
-  // const handleDebounceChangeName = async (value: string) => {
-  //   setFirstName(value);
-  //   await handleSave(updateUserFirstName, value, "Failed to update name at server");
-  // };
-
-  // // Debounce handler for email change
-  // const handleDebounceChangeEmail = async (value: string) => {
-  //   setEmail(value);
-  //   await handleSave(updateUserEmail, value, "Failed to update email at server");
-  // };
 
   // Unified save function to handle API calls
-  const handleSave = async (updateFunction: Function, value: string, errorMessage: string) => {
+  const handleSave = async (value: string, errorMessage: string) => {
     setIsSaving(true);
     try {
-      const res = await updateFunction(userId, value);
+      const res = await updateUserBirthday(userId, value);
       if (res) {
         console.log(res.message);
       } else {
@@ -69,7 +58,7 @@ export default function AddEventPopup() {
   const handleChangeDate = async (e: ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setBirthday(newDate);
-    await handleSave(updateUserBirthday, newDate, "Failed to update birthday at server");
+    await handleSave(newDate, "Failed to update birthday at server");
   };
 
   return (

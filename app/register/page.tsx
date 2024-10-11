@@ -33,8 +33,99 @@ export default function RegisterPage() {
     conversations: [],
   });
 
+  // Display red border if error
+  const [errorFirstName, setErrorFirstName] = useState(false);
+  const [errorLastName, setErrorLastName] = useState(false);
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
+  const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
+  const [errorDateOfBirth, setErrorDateOfBirth] = useState(false);
+  const [errorHobbiesInfo, setErrorHobbiesInfo] = useState(false);
+  const [errorTerms, setErrorTerms] = useState(false);
+
   const handleSubmit = async () => {
+    setResponseMessage("");
+    setIsError(false);
     setIsLoading(true);
+
+
+    setErrorFirstName(false);
+    setErrorLastName(false);
+    setErrorEmail(false);
+    setErrorPassword(false);
+    setErrorConfirmPassword(false);
+    setErrorDateOfBirth(false);
+    setErrorHobbiesInfo(false);
+    setErrorTerms(false);
+    
+    let invalidInputs = 0; // count the number of invalid inputs
+    if (userData.firstName == ""){
+      setResponseMessage("Please provide your first name.");
+      setErrorFirstName(true);
+      invalidInputs++;
+    }
+
+    if (userData.lastName == ""){
+      setResponseMessage("Please provide your last name.");
+      setErrorLastName(true);
+      invalidInputs++;
+    }
+
+    if (userData.email == ""){
+      setResponseMessage("Please provide your email address.");
+      setErrorEmail(true);
+      invalidInputs++;
+    }
+
+    if (userData.password == ""){
+      setResponseMessage("Password is empty.");
+      setErrorPassword(true);
+      invalidInputs++;
+    }
+
+    if (confirmPassword == ""){
+      setResponseMessage("Please confirm your passsword.");
+      setErrorConfirmPassword(true);
+      invalidInputs++;
+    }
+
+    if (userData.birthday == ""){
+      setResponseMessage("Please provide your date of birth.");
+      setErrorDateOfBirth(true);
+      invalidInputs++;
+    }
+
+    if (userData.hobbyInfo == ""){
+      setResponseMessage("Please provide your hobbies and interest.");
+      setErrorHobbiesInfo(true);
+      invalidInputs++;
+    }
+
+    if (!didReadTerms){
+      setResponseMessage("Please read the terms and conditions.");
+      setErrorTerms(true);
+      invalidInputs++;
+    }
+
+    if (confirmPassword !== userData.password){
+      setErrorPassword(true);
+      setErrorConfirmPassword(true);
+      setResponseMessage("Passwords do not match");
+      invalidInputs++;
+
+    }
+
+    // Do not proceed if there are still errors
+    if (invalidInputs == 1){
+      setIsError(true);
+      setIsLoading(false);
+      return;
+    }else if (invalidInputs > 1){
+      setIsError(true);
+      setIsLoading(false);
+      setResponseMessage("Missing or invalid input");
+      return;
+    }
 
     const registerUser = async () => {
       try {
@@ -112,10 +203,11 @@ export default function RegisterPage() {
             <div className="flex-1 flex flex-col">
               <label>First Name:</label>
               <input
-                className="border-2 p-2 border-gray-300 rounded"
+                className={`${errorFirstName ? "border-red-500": "border-gray-300"} border-2 p-2 rounded`}
                 type="text"
                 placeholder="First Name"
                 onChange={(e) => {
+                  setErrorFirstName(false);
                   setUserData((prev) => ({
                     ...prev,
                     firstName: e.target.value,
@@ -129,10 +221,11 @@ export default function RegisterPage() {
             <div className="flex-1 flex flex-col">
               <label>Last Name:</label>
               <input
-                className="border-2 p-2 border-gray-300 rounded"
+                className={`${errorLastName ? "border-red-500" : "border-gray-300"} border-2 p-2  rounded`}
                 type="text"
                 placeholder="Last Name"
                 onChange={(e) => {
+                  setErrorLastName(false);
                   setUserData((prev) => ({
                     ...prev,
                     lastName: e.target.value,
@@ -147,10 +240,11 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <label>Email:</label>
               <input
-                className="p-2 border-2 border-gray-300 rounded"
+                className={`${errorEmail ? 'border-red-500' : 'border-gray-300'} p-2 border-2 rounded`}
                 type="text"
                 placeholder="firstname@email.com"
                 onChange={(e) => {
+                  setErrorEmail(false);
                   setUserData((prev) => ({
                     ...prev,
                     email: e.target.value,
@@ -165,10 +259,11 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <label>Password:</label>
               <input
-                className="border-2 border-gray-300 p-2 rounded"
+                className={`${errorPassword ? 'border-red-500' : ' border-gray-300'} border-2 p-2 rounded`}
                 type="password"
                 placeholder="*******"
                 onChange={(e) => {
+                  setErrorPassword(false);
                   setUserData((prev) => ({
                     ...prev,
                     password: e.target.value,
@@ -184,10 +279,11 @@ export default function RegisterPage() {
               <label>Confirm Password:</label>
 
               <input
-                className="border-2 p-2 border-gray-300 rounded"
+                className={`${errorConfirmPassword ? 'border-red-500' : 'border-gray-300'} border-2 p-2 rounded`}
                 type="password"
                 placeholder="*******"
                 onChange={(e) => {
+                  setErrorConfirmPassword(false);
                   setConfirmPassword(e.target.value);
                 }}
                 required
@@ -199,9 +295,10 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <label>Date of Birth</label>
               <input
-                className="border-2 border-gray-300"
+                className={`${errorDateOfBirth ? 'border-red-500' : 'border-gray-300'} border-2`}
                 type="date"
                 onChange={(e) => {
+                  setErrorDateOfBirth(false);
                   setUserData((prev) => ({
                     ...prev,
                     birthday: e.target.value,
@@ -235,8 +332,9 @@ export default function RegisterPage() {
             <div>
               <textarea
                 style={{ width: 550, height: 140 }}
-                className="border border-black p-2"
+                className={`${errorHobbiesInfo ? 'border-red-500' : 'border-gray-300'} border p-2`}
                 onChange={(e) => {
+                  
                   setUserData((prev) => ({
                     ...prev,
                     hobbyInfo: e.target.value,
@@ -283,7 +381,7 @@ export default function RegisterPage() {
           </div>
           <div className="flex flex-col items-center justify-center h-8">
             {isLoading && <Image src={Loading} height={30} width={30} alt="" />}
-            <p className={``}>{responseMessage}</p>
+            <p className={`${isError && 'text-red-500'}`}>{responseMessage}</p>
           </div>
         </div>
       </div>

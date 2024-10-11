@@ -24,6 +24,7 @@ export default function UserProfile({width, height, allowEdit}:UserProfileProps)
     const [imageUrl, setImageUrl] = useState('');
   
     const fetchProfile = () => {
+        setIsError(false);
         startTransition(async ()=>{
             try{
                 const res = await fetchProfilePicture(userId);
