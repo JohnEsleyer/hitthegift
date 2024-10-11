@@ -19,6 +19,7 @@ import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversatio
 import { Conversation } from "@/lib/types/conversation";
 import { WithId } from "mongodb";
 import Friends from '/public/friends.png';
+import UserProfile from "./UserProfile";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -74,7 +75,7 @@ export default function HomeTemplate({
                     setShowProfileOptions((prev) => !prev);
                   }}
                 >
-                  <Avvvatars value={userFirstname} />
+                <UserProfile width={30} height={30} />
                 </button>
                 {showProfileOptions && (
                   <ul

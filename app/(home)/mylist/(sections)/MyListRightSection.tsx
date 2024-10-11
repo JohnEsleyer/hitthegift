@@ -12,6 +12,7 @@ import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import WishItem from "../../../../components/WishItem";
 import { useRouter } from "next/navigation";
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
+import { CircleX, Send } from "lucide-react";
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
@@ -19,8 +20,8 @@ export default function MyListRightSection() {
   const [isProductsPending, startProductsTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const [products, setProducts] = useState<ProductType[]>([]);
-  // const router = useRouter();
-
+  const [showShareInput, setShowShareInput] = useState(false);
+  const [friendEmail, setFriendEmail] = useState("");
 
   useEffect(() => {
     startProductsTransition(async () => {
@@ -32,12 +33,15 @@ export default function MyListRightSection() {
     });
   }, []);
 
+  const handleShareList = async () => {
+    
+  }
+
   return (
     <div className="pl-8 w-full h-full">
- 
       <div className="mt-12 flex justify-between items-center">
-             {/**Buttons*/}
-        <div className=" flex gap-2 items-center ">
+        {/**Buttons*/}
+        <div className="h-4 flex gap-2 items-center ">
           <button
             className="bg-blue-500 text-white pl-2 pr-2 rounded-full"
             onClick={() => {
@@ -46,11 +50,35 @@ export default function MyListRightSection() {
           >
             Add Product
           </button>
-          <button className="bg-blue-500 text-white pl-2 pr-2 rounded-full">
+          <button
+            className="bg-blue-500 text-white pl-2 pr-2 rounded-full"
+            onClick={() => {
+              setShowShareInput(true);
+            }}
+          >
             Share list
           </button>
+          {showShareInput && (
+            <div className="flex">
+              <input
+                style={{ width: 160 }}
+                className="rounded border p-2 text-xs"
+                placeholder="friendname@email.com"
+              ></input>
+              <button onClick={handleShareList} className="p-1">
+                <Send color={"#0088d6"} />
+              </button>
+              <button
+                onClick={() => {
+                  setShowShareInput(false);
+                }}
+                className="p-1"
+              >
+                <CircleX />
+              </button>
+            </div>
+          )}
         </div>
-        
       </div>
       {/**Body */}
       <div style={{ position: "relative" }}>
@@ -64,18 +92,18 @@ export default function MyListRightSection() {
         >
           {isProductsPending ? (
             <div className="flex flex-wrap gap-8 h-full">
-              <WishItemSkeleton/>
-              <WishItemSkeleton/>
-              <WishItemSkeleton/>
-              <WishItemSkeleton/>
-              <WishItemSkeleton/>
-              <WishItemSkeleton/>
+              <WishItemSkeleton />
+              <WishItemSkeleton />
+              <WishItemSkeleton />
+              <WishItemSkeleton />
+              <WishItemSkeleton />
+              <WishItemSkeleton />
             </div>
           ) : (
             <div className="flex flex-wrap gap-8 h-full">
               {products.map((product) => (
                 <WishItem
-                 key={product.id}
+                  key={product.id}
                   productName={product.title}
                   description={product.description}
                   price={product.price}
@@ -95,9 +123,7 @@ export default function MyListRightSection() {
             width: 90,
             zIndex: 90,
           }}
-        >
-        
-        </div>
+        ></div>
       </div>
     </div>
   );

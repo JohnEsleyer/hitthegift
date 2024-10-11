@@ -38,6 +38,8 @@ export default function AddEventPopup() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [handledAllError, setHandledAllError] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -51,6 +53,25 @@ export default function AddEventPopup() {
   }, []);
 
   const handleSubmit = async () => {
+    
+    // Check if no date is selected
+    if (!dateSelected){
+      setErrorMessage("No date selected, please select a date");
+      setHandledAllError(false);
+      return;
+    }
+    if (eventTitle.length == 0){
+      setErrorMessage("Please provide an event title");
+      setHandledAllError(false);
+      return;
+    }
+    if (selectedFriends.length == 0){
+      setErrorMessage("Please select at least 1 friend for the event");
+      setHandledAllError(false);
+      return;
+    }
+    setHandledAllError(true);
+
     setIsLoading(true);
     try {
       if (dateSelected) {
@@ -219,6 +240,7 @@ export default function AddEventPopup() {
     
       <div className="flex justify-center items-center p-4">
         {isLoading && <Image src={Loading} alt='' style={{width: 30}} />}
+        {errorMessage && !handledAllError && <p className="text-red-500">{errorMessage}</p>}
       </div>
     </div>
   );

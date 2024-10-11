@@ -6,6 +6,7 @@ import popupsSlice from './features/popups';
 import wishlist from './features/wishlist';
 import insideFriend from './features/insideFriend';
 import friendsList from './features/friendslist';
+import mylist from './features/mylist';
 
 export const makeStore = () => {
     let persistedState;
@@ -20,6 +21,7 @@ export const makeStore = () => {
             wishlist: wishlist,
             insideFriend: insideFriend,
             friendsList: friendsList,
+            mylist: mylist,
         },
         preloadedState: persistedState,
     });
