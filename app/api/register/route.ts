@@ -1,12 +1,15 @@
-'use server'
 
-import { hashPassword } from "@/lib/hashPassword";
+import { comparePassword, hashPassword } from "@/lib/hashPassword";
 import { mongoClient } from "@/lib/mongodb";
+import { LoginData } from "@/lib/types/authTypes";
 import { UserData } from "@/lib/types/user";
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 
+export async function POST(req: Request) {
 
-export async function createUser(data: UserData) {
     try {
+        const data: UserData = await req.json();
         const db = mongoClient.db('hitmygift');
         // Encrypt password before sending to DB
         const encryptedPassword = await hashPassword(data.password); // Await the hashing
@@ -30,11 +33,23 @@ export async function createUser(data: UserData) {
         });
 
         const payload = {userId: res.insertedId.toString()};
+        const token = jwt.sign(payload, process.env.JWT_SECRET || '', {expiresIn: '3h'});
 
-        return { message: "Registration Success", status: 200, userId: res.insertedId.toString()};
+        cookies().set('token', token);
+
+        return new Response(JSON.stringify({
+            message: "Registration Success", 
+            status: 200, 
+            userId: res.insertedId.toString()
+        }));
+
     } catch (e) {
         console.log(e);
-        return { message: "Registration Failed", status: 500, userId: '' };
+        return new Response(JSON.stringify({
+            message: "Registration Failed", 
+            status: 500, 
+            userId: '' 
+        }));
     }
 }
 

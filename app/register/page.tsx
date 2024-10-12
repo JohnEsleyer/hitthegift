@@ -8,7 +8,8 @@ import Image from "next/image";
 import { UserData } from "@/lib/types/user";
 import { useDispatch } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
-import { updateUserId } from "@/lib/features/userData";
+import { updateUserFirstNameStore, updateUserId } from "@/lib/features/userData";
+import updateUserFirstName from "../actions/user/updateUserFirstName";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -129,8 +130,13 @@ export default function RegisterPage() {
 
     const registerUser = async () => {
       try {
-        const response = await createUser({
-          firstName: userData?.firstName as string,
+        const response = await fetch("/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "applcation/json",
+          },
+          body: JSON.stringify({
+            firstName: userData?.firstName as string,
           lastName: userData?.lastName as string,
           email: userData?.email as string,
           password: userData?.password as string,
@@ -139,14 +145,19 @@ export default function RegisterPage() {
           showInterest: userData?.showInterest as boolean,
           friendsList: [],
           conversations:[],
+          })
         });
 
+        const responseData = await response.json();
+
+        console.log(`registered user: ${responseData.userId}`);
         if (response) {
-          setResponseMessage(response.message);
+          setResponseMessage(responseData.message);
           setTimeout(() => {
+         
+            dispatch(updateUserId(responseData.userId));
+            dispatch(updateUserFirstNameStore(userData.firstName));
             
-            dispatch(updateUserId(response.userId));
-                          
             setIsError(false);
             dispatch(updateCurrentPopup('none'));
             router.push("/mylist");
