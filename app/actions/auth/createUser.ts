@@ -20,11 +20,7 @@ export async function createUser(data: UserData) {
             birthday: data.birthday,
             showInterest: data.showInterest,
             friendsList: [
-              "66fe544c2426b7d616e5f80b",
-              "66fe4ef22426b7d616e5f80a",
-              "66fe4eba2426b7d616e5f809",
-              "66fe4d302426b7d616e5f807",
-
+          
             ],
             conversations: [],
         });

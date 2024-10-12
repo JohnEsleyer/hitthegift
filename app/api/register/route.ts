@@ -40,7 +40,8 @@ export async function POST(req: Request) {
         return new Response(JSON.stringify({
             message: "Registration Success", 
             status: 200, 
-            userId: res.insertedId.toString()
+            userId: res.insertedId.toString(),
+            
         }));
 
     } catch (e) {

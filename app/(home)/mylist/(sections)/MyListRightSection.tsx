@@ -13,6 +13,8 @@ import WishItem from "../../../../components/WishItem";
 import { useRouter } from "next/navigation";
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
 import { CircleX, Send } from "lucide-react";
+import Loading from '/public/loading.svg';
+import addFriend from "@/app/actions/user/addFriend";
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
@@ -22,6 +24,8 @@ export default function MyListRightSection() {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [showShareInput, setShowShareInput] = useState(false);
   const [friendEmail, setFriendEmail] = useState("");
+  const [isSending, startSendTransition] = useTransition();
+
 
   useEffect(() => {
     startProductsTransition(async () => {
@@ -34,6 +38,16 @@ export default function MyListRightSection() {
   }, []);
 
   const handleShareList = async () => {
+    setFriendEmail('');
+    startSendTransition(async () => {
+      try{
+        const res = await addFriend(userId, friendEmail);
+        
+      }catch(e){
+        console.log(e);
+      }
+    });
+    
     
   }
 
@@ -64,10 +78,14 @@ export default function MyListRightSection() {
                 style={{ width: 160 }}
                 className="rounded border p-2 text-xs"
                 placeholder="friendname@email.com"
+                value={friendEmail}
+                onChange={(e) => {
+                  setFriendEmail(e.target.value);
+                }}
               ></input>
-              <button onClick={handleShareList} className="p-1">
+              {isSending ? <div className="text-xs flex items-center justify-center p-2">Sent</div> : <button onClick={handleShareList} className="p-1">
                 <Send color={"#0088d6"} />
-              </button>
+              </button>}
               <button
                 onClick={() => {
                   setShowShareInput(false);
@@ -88,7 +106,7 @@ export default function MyListRightSection() {
             top: 0,
             maxWidth: 1000,
           }}
-          className=" mt-4 pt-4 "
+          className=" mt-4 pt-4"
         >
           {isProductsPending ? (
             <div className="flex flex-wrap gap-8 h-full">
@@ -100,7 +118,8 @@ export default function MyListRightSection() {
               <WishItemSkeleton />
             </div>
           ) : (
-            <div className="flex flex-wrap gap-8 h-full">
+            <div>
+            {products.length > 0 ? <div className="flex flex-wrap gap-8 h-full">
               {products.map((product) => (
                 <WishItem
                   key={product.id}
@@ -110,6 +129,10 @@ export default function MyListRightSection() {
                   productUrl={product.productUrl}
                 />
               ))}
+            </div> : 
+            <div style={{width: 900, height: 520}} className="text-gray-400 flex justify-center items-center ">
+               You have no products
+              </div>}
             </div>
           )}
         </div>
@@ -123,7 +146,9 @@ export default function MyListRightSection() {
             width: 90,
             zIndex: 90,
           }}
-        ></div>
+        >
+         
+        </div>
       </div>
     </div>
   );

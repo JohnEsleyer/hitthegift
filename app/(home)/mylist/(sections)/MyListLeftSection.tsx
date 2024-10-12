@@ -105,9 +105,9 @@ export default function MyListLeftSection() {
                   ) : (
                    <div
                       style={{ height: 130 }}
-                      className="overflow-auto flex flex-col items-between "
-                    >{isClientMounted && <div>
-                      {events.length > 0 &&
+                      className="overflow-auto w-full flex flex-col items-between "
+                    >{isClientMounted && <div className="h-full w-full">
+                      {events.length > 0 ?
                         events.map((event) => (
                           <div
                             key={event.id}
@@ -149,7 +149,12 @@ export default function MyListLeftSection() {
                               </div>
                             </div>
                           </div>
-                        ))}
+                        )) : 
+                        
+                        <div className="text-gray-400 w-full h-full flex justify-center items-center ">
+                          You have no events
+                          
+                          </div>}
                         </div>}
                     </div>
                   )}

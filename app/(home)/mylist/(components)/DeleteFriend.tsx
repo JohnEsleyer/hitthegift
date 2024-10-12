@@ -14,12 +14,13 @@ export default function DeleteFriend() {
   const friendId = useSelector(
     (state: RootState) => state.friendsList.toDeleteFriend
   );
+  const userId = useSelector((state: RootState) => state.userData.id);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleDeleteFriend = async () => {
     startTransition(async () => {
       try {
-        const res = await deleteFriend(friendId);
+        const res = await deleteFriend(userId, friendId);
         console.log(res.status);
 
         dispatch(updateCurrentPopup("friends"));
