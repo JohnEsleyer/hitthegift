@@ -6,6 +6,7 @@ import { ProductType } from "@/lib/types/products";
 import { useTransition, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import FriendsWishItem from "../_components/FriendsWishItem";
+import FriendsWishItemSkeleton from "@/components/skeletons/FriendsWishitemSkeleton";
 
 
 interface FriendsProducts {
@@ -43,13 +44,26 @@ export default function FriendsListRightSection(){
             <div className="pt-4 flex flex-wrap gap-2">
                     {
                         isPending ? 
-                        (<div>Loading...</div>) 
-                        : <div className="flex flex-wrap gap-2 ">
+                        (<div className="flex flex-wrap gap-2 ">
+                            <FriendsWishItemSkeleton/>
+                            <FriendsWishItemSkeleton/>
+                            <FriendsWishItemSkeleton/>
+                            <FriendsWishItemSkeleton/>
+                            <FriendsWishItemSkeleton/>
+                            <FriendsWishItemSkeleton/>
+                            <FriendsWishItemSkeleton/>
+                            
+                        </div>) 
+                        : <div className=" w-full h-full">
+                            {products.length > 0 ? <div className="flex flex-wrap gap-2 justify-start">
                             {
                                 products.map((product, friendIndex) => (
                                     <FriendsWishItem key={product.friendId} friendProduct={product}/>
                                 ))
                             }
+                        </div> : <div className="h-full text-gray-400 flex justify-center items-center ">
+                            No friends to show
+                            </div>}
                         </div>
                     }
                     

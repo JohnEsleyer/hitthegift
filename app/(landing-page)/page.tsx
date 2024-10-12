@@ -1,13 +1,23 @@
 'use client'
 
 import AuthMiddleware from "@/components/AuthMiddleware";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
+  const router = useRouter();
+
+
+  useEffect(()=>{
+    router.push('/login');
+  },[]);
+
   return (
-    <AuthMiddleware>
+
    <div>
-     HitTheGift Landing Page
+     HitMyGift Landing Page
+
    </div>
-   </AuthMiddleware>
+
   );
 }

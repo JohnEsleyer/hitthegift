@@ -73,7 +73,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
             </div>
           ))}
           </div> : <div className="text-gray-400 mt-24 flex justify-center items-center">
-              You have no friends
+              No friends to show
             </div>}
         </div>
       )}

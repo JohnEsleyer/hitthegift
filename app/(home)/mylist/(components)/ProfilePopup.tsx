@@ -13,6 +13,7 @@ import updateUserBirthday from "@/app/actions/user/updateUserBirthday";
 import updateUserEmail from "@/app/actions/user/updateUserEmail";
 import updateUserFirstName from "@/app/actions/user/updateUserFirstName";
 import UserProfile from "@/components/UserProfile";
+import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 
 export default function AddEventPopup() {
   const userId = useSelector((state: RootState) => state.userData.id);
@@ -67,7 +68,7 @@ export default function AddEventPopup() {
       className="p-4 bg-white flex flex-col items-center justify-start rounded-2xl border border-gray"
     >
       {isPending ? (
-        <div>Loading...</div>
+        <ProfileSkeleton/>
       ) : (
         <div className="w-full flex flex-col items-center justify-center">
           <div className="flex flex-col items-left w-full h-8">

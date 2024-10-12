@@ -58,6 +58,8 @@ export default function FriendsListLeftSection() {
                 <FriendEventSkeleton/>
               </div>
             ) : (
+              <div>{
+                events.length > 0 ?
               <div style={{height: 250}} className="overflow-auto">
                 {events.map((event) => (
                   <div
@@ -75,6 +77,9 @@ export default function FriendsListLeftSection() {
                     </p>
                   </div>
                 ))}
+              </div> : <div className="flex w-full h-full text-gray-400">
+                No events to show
+                </div>}
               </div>
             )}
           </div>

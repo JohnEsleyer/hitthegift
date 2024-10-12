@@ -5,6 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
 import Cookies from "js-cookie"; // You'll need js-cookie package to get cookies on the client side
 import verifyToken from "@/app/actions/auth/verifyToken";
+import Image from 'next/image';
+import giftloading from '/public/giftloading.svg';
+
 
 // Middleware Component that wraps the content
 interface AuthMiddlewareProps {
@@ -55,7 +58,12 @@ export default function AuthMiddleware({ children }: AuthMiddlewareProps) {
 
   // While the authentication check is happening, you can show a loading state
   if (!isAuthenticated) {
-    return <div>Loading...</div>;
+    return <div className="h-screen w-screen flex justify-center items-center">  <Image
+    src={giftloading}
+    alt=""
+    width={50}
+    height={50}
+  /></div>;
   }
 
   // If authenticated, render the wrapped component
