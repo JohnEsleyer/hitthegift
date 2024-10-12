@@ -33,7 +33,7 @@ export default function RegisterPage() {
     conversations: [],
   });
 
-  // Display red border if error
+  // States to display red border if error
   const [errorFirstName, setErrorFirstName] = useState(false);
   const [errorLastName, setErrorLastName] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
