@@ -12,6 +12,7 @@ import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
 import { updateFriendName } from "@/lib/features/insideFriend";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
+import FriendProfileSkeleton from "@/components/skeletons/FriendProfileSkeleton";
 
 // Selected friend page
 export default function InsideFriendLeftSection(){
@@ -61,7 +62,7 @@ export default function InsideFriendLeftSection(){
             <div>
             <div className="p-2 flex flex-col gap-4">
                 
-                {isPendingUserInfo ? <div>Loading...</div> : <div className="mt-2 p-2 border border-gray-200 rounded-2xl">
+                {isPendingUserInfo ? <FriendProfileSkeleton/> : <div className="mt-2 p-2 border border-gray-200 rounded-2xl">
                     {/**Friend's profile */}
                     <div className="flex  p-2">
                         <div className="flex items-center">

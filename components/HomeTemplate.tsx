@@ -120,8 +120,8 @@ export default function HomeTemplate({
                 }
                   dispatch(updateIsOpenChatbox(true));
                   startConversation();
-                }} className="bg-slate-100 shadow-md  rounded-full p-4">
-                  <MessageSquareText color={"#4298f5"} />
+                }} className="bg-blue-500 shadow-md  rounded-full p-4">
+                  <MessageSquareText color={"#ffffff"} />
                 </button>}
               </div>}
 
