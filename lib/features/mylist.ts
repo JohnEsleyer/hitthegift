@@ -1,14 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { EventData, MonthlyInvitedEventsResponse, ServerResponseForEvents } from '../types/event';
-
+import { ProductType } from '../types/products';
 
 // States for /mylist page
 export interface MyListState {
    events: ServerResponseForEvents[];
+   products: ProductType[];
 }
 
 const initialState: MyListState = {
    events: [],
+   products: [],
 };
 
 const myListSlice = createSlice({
@@ -23,8 +25,24 @@ const myListSlice = createSlice({
         },
         insertMyListEvent: (state, action: PayloadAction<ServerResponseForEvents>) => {
             return {
+                ...state,
                 events: [
                     ...state.events,
+                    action.payload,
+                ]
+            }
+        },
+        updateMyListProducts: (state, action: PayloadAction<ProductType[]>) => {
+            return {
+                ...state,
+                products: action.payload,
+            };
+        },
+        insertMyListProduct: (state, action: PayloadAction<ProductType>) => {
+            return {
+                ...state,
+                products: [
+                    ...state.products,
                     action.payload,
                 ]
             }
@@ -32,5 +50,11 @@ const myListSlice = createSlice({
     }
 });
 
-export const { updateMyListEvents, insertMyListEvent } = myListSlice.actions;
+export const {
+     updateMyListEvents, 
+     insertMyListEvent,
+     updateMyListProducts, 
+     insertMyListProduct,
+
+    } = myListSlice.actions;
 export default myListSlice.reducer; // Ensure this exports the reducer

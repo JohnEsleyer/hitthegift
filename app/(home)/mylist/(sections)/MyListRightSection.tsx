@@ -13,43 +13,44 @@ import WishItem from "../../../../components/WishItem";
 import { useRouter } from "next/navigation";
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
 import { CircleX, Send } from "lucide-react";
-import Loading from '/public/loading.svg';
+import Loading from "/public/loading.svg";
 import addFriend from "@/app/actions/user/addFriend";
+import { updateMyListProducts } from "@/lib/features/mylist";
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
 
   const [isProductsPending, startProductsTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
-  const [products, setProducts] = useState<ProductType[]>([]);
+  // const [products, setProducts] = useState<ProductType[]>([]);
+  const products = useSelector((state: RootState) => state.mylist.products);
   const [showShareInput, setShowShareInput] = useState(false);
   const [friendEmail, setFriendEmail] = useState("");
   const [isSending, startSendTransition] = useTransition();
-
+  const [isClientMounted, setIsClientMounted] = useState(false);
 
   useEffect(() => {
+    setIsClientMounted(true);
     startProductsTransition(async () => {
       const results = await getUserProducts(userId);
       console.log(`status: ${results.message}`);
       if (results) {
-        setProducts(results.data || []);
+        // setProducts(results.data || []);
+        dispatch(updateMyListProducts(results.data || []));
       }
     });
   }, []);
 
   const handleShareList = async () => {
-    setFriendEmail('');
+    setFriendEmail("");
     startSendTransition(async () => {
-      try{
+      try {
         const res = await addFriend(userId, friendEmail);
-        
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
     });
-    
-    
-  }
+  };
 
   return (
     <div className="pl-8 w-full h-full">
@@ -83,9 +84,15 @@ export default function MyListRightSection() {
                   setFriendEmail(e.target.value);
                 }}
               ></input>
-              {isSending ? <div className="text-xs flex items-center justify-center p-2">Sent</div> : <button onClick={handleShareList} className="p-1">
-                <Send color={"#0088d6"} />
-              </button>}
+              {isSending ? (
+                <div className="text-xs flex items-center justify-center p-2">
+                  Sent
+                </div>
+              ) : (
+                <button onClick={handleShareList} className="p-1">
+                  <Send color={"#0088d6"} />
+                </button>
+              )}
               <button
                 onClick={() => {
                   setShowShareInput(false);
@@ -119,21 +126,28 @@ export default function MyListRightSection() {
             </div>
           ) : (
             <div>
-            {products.length > 0 ? <div className="flex flex-wrap gap-8 h-full">
-              {products.map((product) => (
-                <WishItem
-                  key={product.id}
-                  productName={product.title}
-                  imageUrl={product.imageUrl}
-                  description={product.description}
-                  price={product.price}
-                  productUrl={product.productUrl}
-                />
-              ))}
-            </div> : 
-            <div className="text-gray-400 flex justify-center items-center ">
-               You have no products
-              </div>}
+              {
+                isClientMounted && <div>
+                  {products.length > 0 ? (
+                    <div className="flex flex-wrap gap-8 h-full">
+                      {products.map((product) => (
+                        <WishItem
+                          key={product.id}
+                          productName={product.title}
+                          imageUrl={product.imageUrl}
+                          description={product.description}
+                          price={product.price}
+                          productUrl={product.productUrl}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-gray-400 flex justify-center items-center ">
+                      You have no products
+                    </div>
+                  )}
+                </div>
+              }
             </div>
           )}
         </div>
@@ -147,9 +161,7 @@ export default function MyListRightSection() {
             width: 90,
             zIndex: 90,
           }}
-        >
-         
-        </div>
+        ></div>
       </div>
     </div>
   );

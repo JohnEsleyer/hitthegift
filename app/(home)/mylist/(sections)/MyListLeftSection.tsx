@@ -21,9 +21,9 @@ import EventSkeleton from "@/components/skeletons/EventSkeleton";
 import { updateMyListEvents } from "@/lib/features/mylist";
 
 export default function MyListLeftSection() {
-  const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
-    new Date()
-  );
+  // const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
+  //   new Date()
+  // );
   //   const hobbiesInfo = useSelector((state: RootState) => state.userData.hobbyInfo);
   const [hobbiesInfo, setHobbiesInfo] = useState("");
   const [showAddEventUI, setShowAddEventUI] = useState<boolean>(false);

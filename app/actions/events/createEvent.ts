@@ -14,7 +14,7 @@ export async function createEvent(payload: RequestPayload) {
     try {
         const db = mongoClient.db('hitmygift');
 
-        const responseData = await db.collection('events').insertOne({ // Await the database operation
+        const event = await db.collection('events').insertOne({ // Await the database operation
             userId: payload.userId,
             date: payload.data.date,
             eventTitle: payload.data.eventTitle,
@@ -25,7 +25,7 @@ export async function createEvent(payload: RequestPayload) {
         // invitedFriends are just a list of userIds. However, some client components need more information like first name, last name, and etc. 
         const friendsData = await getFriendsByIds(payload.data.invitedFriends);
         const transformedData: ServerResponseForEvents = {
-            id: responseData.insertedId.toString(),
+            id: event.insertedId.toString(),
             userId: payload.data.userId,
             date: payload.data.date,
             eventTitle: payload.data.eventTitle,

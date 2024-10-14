@@ -1,4 +1,5 @@
 "use client";
+
 import { createProduct } from "@/app/actions/products/createProduct";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
@@ -9,6 +10,7 @@ import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import ProductImageUploader from "@/components/ProductImageUploader";
 import { v4 as uuidv4 } from 'uuid';
+import { insertMyListProduct } from "@/lib/features/mylist";
 
 type ResponseData = {
   message: string;
@@ -36,7 +38,7 @@ export default function AddProductPopup() {
       setIsLoading(true);
       try {
         console.log('creating product');
-        const data = await createProduct({
+        const responseData = await createProduct({
           userId: userId,
           title: productName,
           currency: currency,
@@ -47,9 +49,13 @@ export default function AddProductPopup() {
         });
         console.log('product created');
   
-        if (data) {
-          console.log(data.message);
-          setResponse(data);
+        if (responseData.data) {
+          console.log(responseData.message);
+          setResponse(responseData);
+
+          dispatch(insertMyListProduct(responseData.data))
+        
+
         }
        
       } catch (e) {
