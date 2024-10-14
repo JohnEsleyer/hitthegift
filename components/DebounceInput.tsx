@@ -55,7 +55,8 @@ export function DebouncedInput({
           }}
           placeholder={placeholder}
           style={{width: width, fontSize: fontSize}}
-          className={`flex ${isCenter && 'justify-center'} border p-2`}
+          className={`flex ${isCenter && 'text-center'} `}
         />
       )
   }
+

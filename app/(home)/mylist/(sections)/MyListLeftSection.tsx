@@ -1,9 +1,7 @@
 "use client";
 
 import React, {
-  startTransition,
   useEffect,
-  useRef,
   useState,
   useTransition,
 } from "react";
@@ -18,8 +16,6 @@ import { getAllEvents } from "@/app/actions/events/getAllEvents";
 import { ServerResponseForEvents } from "@/lib/types/event";
 import Avvvatars from "avvvatars-react";
 import EventsCalendar from "@/components/EventsCalendar";
-import { ProductType } from "@/lib/types/products";
-import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 import EventSkeleton from "@/components/skeletons/EventSkeleton";
 import { updateMyListEvents } from "@/lib/features/mylist";

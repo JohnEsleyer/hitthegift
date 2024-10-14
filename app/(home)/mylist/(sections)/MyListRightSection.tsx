@@ -124,6 +124,7 @@ export default function MyListRightSection() {
                 <WishItem
                   key={product.id}
                   productName={product.title}
+                  imageUrl={product.imageUrl}
                   description={product.description}
                   price={product.price}
                   productUrl={product.productUrl}

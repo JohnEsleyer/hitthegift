@@ -7,6 +7,7 @@ import wishlist from './features/wishlist';
 import insideFriend from './features/insideFriend';
 import friendsList from './features/friendslist';
 import mylist from './features/mylist';
+import productImageUpload from './features/productImageUpload';
 
 export const makeStore = () => {
     let persistedState;
@@ -22,6 +23,7 @@ export const makeStore = () => {
             insideFriend: insideFriend,
             friendsList: friendsList,
             mylist: mylist,
+            productImageUpload: productImageUpload,
         },
         preloadedState: persistedState,
     });
@@ -30,8 +32,7 @@ export const makeStore = () => {
         saveState(store.getState()); // Save state on every change
     });
 
-    return store;
-    
+    return store;  
 };
 
 export type AppStore = ReturnType<typeof makeStore>;

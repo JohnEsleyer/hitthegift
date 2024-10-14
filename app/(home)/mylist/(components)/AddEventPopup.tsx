@@ -12,6 +12,7 @@ import { createEvent } from "@/app/actions/events/createEvent";
 import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
 import Loading from '/public/loading.svg';
 import Image from 'next/image';
+import { insertMyListEvent, updateMyListEvents } from "@/lib/features/mylist";
 
 
 const getCurrentDate = () => {
@@ -65,11 +66,11 @@ export default function AddEventPopup() {
       setHandledAllError(false);
       return;
     }
-    if (selectedFriends.length == 0){
-      setErrorMessage("Please select at least 1 friend for the event");
-      setHandledAllError(false);
-      return;
-    }
+    // if (selectedFriends.length == 0){
+    //   setErrorMessage("Please select at least 1 friend for the event");
+    //   setHandledAllError(false);
+    //   return;
+    // }
     setHandledAllError(true);
 
     setIsLoading(true);
@@ -94,7 +95,13 @@ export default function AddEventPopup() {
             invitedFriends: friendsId,
           }
         });
-
+        if (responseData.data) {
+          dispatch(insertMyListEvent(responseData.data));
+        } else {
+          console.error('No event data returned from the server.');
+          // You can also handle this error case here (e.g., show an error message to the user)
+        }
+        
         dispatch(updateCurrentPopup('none'));
 
       }

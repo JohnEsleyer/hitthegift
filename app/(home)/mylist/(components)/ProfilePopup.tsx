@@ -132,7 +132,7 @@ export default function AddEventPopup() {
             onWait={() => {
               setIsSaving(true);
             }}
-            width={200}
+            width={300}
             isCenter={true}
           />
 

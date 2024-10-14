@@ -1,62 +1,62 @@
 'use client'
 
-import Image from 'next/image';
-import giftloading from '/public/giftloading.svg';
-import { ChangeEvent, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
+import { insertMyListEvent, updateMyListEvents } from '@/lib/features/mylist';
+import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from 'react';
 
 
-
-interface DebounceInputProps{
-  onUserStopTyping: (value: string) => void;
-
+function ComponentA(){
+  const events = useSelector((state: RootState) => state.mylist.events);
+  
+  return (<div>
+    {
+      events.map((event) => (
+        <div key={event.id}>
+          {event.eventTitle}
+          </div>
+      ))
+    }
+  </div>)
 }
 
-function DebouncedInput({onUserStopTyping}: DebounceInputProps){  
-    const [inputValue, setInputValue] = useState('');
-    const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-      const {value} = event.target;
-      setInputValue(value);
-
-
-      // Clear the previous timeout
-      if (typingTimeout){
-        clearTimeout(typingTimeout);
-      }
-
-      setTypingTimeout(
-        setTimeout(() => {
-          onUserStopTyping(value);
-        }, 2000)
-      );
-
-    };
-
-    return (
-      <input
-        type="text"
-        value={inputValue}
-        onChange={handleChange}
-        placeholder="Type something..."
-        className="border p-2"
-      />
-    )
+function ComponentB(){
+  const userId = useSelector((state: RootState) => state.userData.id);
+  const dispatch = useDispatch();
+  return (<div>
+    <button className="outline p-2" onClick={() => {
+      dispatch(insertMyListEvent({
+        id: uuidv4(),
+        date: new Date(),
+        userId: userId, 
+        eventTitle: 'Random Event',
+        invitedFriends: [{
+          id: uuidv4(),
+          firstName: 'First Name',
+          lastName: 'Last Name',
+        }]
+      }))
+    }}> Add event</button>
+  </div>)
 }
-
 
 
 export default function Sandbox() {
-  const [value, setValue] = useState('');
+
+  const [isClient, setIsClient] = useState(false);
 
 
- return (
-  <div>
-   <h1>The value will be updated when the user stops typing for 2 seconds</h1>
-   <p>Value: {value}</p>
-   <DebouncedInput onUserStopTyping={(inputValue) => {
-    setValue(inputValue);
-   }}/>
+  useEffect(()=>{
+    setIsClient(true);
+  }, []);
+
+ return (<div>
+  {isClient ? <div>
+    <ComponentA/>
+    <ComponentB/>
+  </div> : <div></div>}
   </div>
  )
  

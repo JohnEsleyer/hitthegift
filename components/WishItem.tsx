@@ -5,6 +5,7 @@ interface WishItemProps {
   price: string;
   description: string;
   productUrl: string;
+  imageUrl: string;
   showBuyButton?: boolean;
 }
 
@@ -13,6 +14,7 @@ export default function WishItem({
   price,
   description,
   productUrl,
+  imageUrl,
   showBuyButton,
 }: WishItemProps) {
   return (
@@ -20,7 +22,8 @@ export default function WishItem({
       style={{ width: 200 }}
       className="p-4 rounded-xl border border-slate-300"
     >
-      <div style={{ height: 150 }} className=" w-full bg-slate-300"></div>
+      {imageUrl == '' ? <div style={{ height: 150 }} className=" w-full bg-slate-300">
+        </div> : <div style={{height: 150}} className="flex justify-center border rounded-2xl"><img src={imageUrl} /></div>}
       <p style={{fontSize: 12}} className="line-clamp-3 h-16 flex justisfy-center mt-2">{productName}</p>
       <p className="font-bold">${price}</p>
       <p className="line-clamp-6 text-xs mt-2 h-24 ">{description}</p>

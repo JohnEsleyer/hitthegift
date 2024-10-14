@@ -1,6 +1,7 @@
 'use server'
 
 import { mongoClient } from "@/lib/mongodb";
+import { ServerResponseForEvents } from "@/lib/types/event";
 
 
 type RequestPayload = {
@@ -14,6 +15,7 @@ type RequestPayload = {
 }
 
 export async function createProduct(data: RequestPayload) {
+    console.log('Creating product');
     try {
         const db = mongoClient.db('hitmygift');
    
@@ -27,6 +29,9 @@ export async function createProduct(data: RequestPayload) {
             description: data.description,
         });
 
+   
+
+        console.log("create product: SUCCESS");
         return { message: "Product Creation Success", status: 200 };
     } catch (e) {
         console.log(e);

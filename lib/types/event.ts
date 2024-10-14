@@ -8,7 +8,7 @@ export type EventData = {
     invitedFriends: string[]; // A list of Ids
 }
 
-// Type used by clients
+// Type used by some client components
 export type ServerResponseForEvents = {
     id: string;
     date: Date;

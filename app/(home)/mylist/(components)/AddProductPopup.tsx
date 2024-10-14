@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { currencies } from "../constants";
 import Image from 'next/image';
 import Loading from '/public/loading.svg';
+import ProductImageUploader from "@/components/ProductImageUploader";
+import { v4 as uuidv4 } from 'uuid';
 
 type ResponseData = {
   message: string;
@@ -28,19 +30,22 @@ export default function AddProductPopup() {
   });
   const [isLoading, setIsLoading] = useState(false);  
   const userId = useSelector((state: RootState) => state.userData.id);
+  const imageUrl = useSelector((state: RootState) => state.productImageUpload.imageUrl);
 
   const clickAddProduct = async () => {
       setIsLoading(true);
       try {
+        console.log('creating product');
         const data = await createProduct({
           userId: userId,
           title: productName,
           currency: currency,
           price: price,
           productUrl: productUrl,
-          imageUrl: "",
+          imageUrl: imageUrl,
           description: productDescription,
         });
+        console.log('product created');
   
         if (data) {
           console.log(data.message);
@@ -59,13 +64,20 @@ export default function AddProductPopup() {
 
   return (
     <div
-      style={{ width: 500, height: 610, marginTop: 110 }}
+      style={{ width: 500, height: 630, marginTop: 50 }}
       className="pt-4 pr-1 bg-gray-100 rounded-2xl border-2 border-gray"
     >
       <div className="h-full overflow-auto ">
         {/*Image of the Product */}
         <div className="flex justify-center ">
-          <div className=" w-32 h-32 bg-gray-300"></div>
+          <ProductImageUploader
+            width={150}
+            height={150}
+            productId={(() => {
+              return uuidv4();
+            })()}
+            allowEdit={true}
+          />
         </div>
 
         {/*Title input */}
