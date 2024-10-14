@@ -1,46 +1,61 @@
-'use client'
+import { RootState } from "@/lib/store";
+import { useState, ChangeEvent } from "react";
+import { useSelector } from "react-redux";
 
+interface DebounceInputProps{
+    onUserStopTyping: (value: string) => void;
+    onWait: () => void;
+    placeholder: string;
+    fontSize: number;
+    delay: number;
+    width: number;
+    isCenter: boolean;
+    value: string;
+  }
+  
+export function DebouncedInput({
+    onUserStopTyping,
+    onWait,
+    placeholder,
+    fontSize,
+    delay,
+    width,
+    isCenter,
+    value,
+}: DebounceInputProps){  
+      
+      const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+      const [inputValue, setInputValue] = useState(value || '');
 
-import React, { useState, useEffect, useCallback } from "react";
-
-interface DebouncedInputProps {
-  delay: number; // Delay in milliseconds
-  onDebouncedChange: (value: string) => void; // Callback to execute when user stops typing
-  placeholder: string;
-  value: string;
-  fontSize: number;
-  width: number;
-  isCenter: boolean;
-}
-
-export default function DebouncedInput({ delay, onDebouncedChange, placeholder, value, fontSize, width, isCenter}: DebouncedInputProps) {
-  const [inputValue, setInputValue] = useState<string>(value);
-
-  // Debounce logic
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (inputValue.trim()) {
-        onDebouncedChange(inputValue);
-      }
-    }, delay);
-
-    // Clear the timeout if the inputValue changes (i.e., the user is still typing)
-    return () => clearTimeout(handler);
-  }, [inputValue, delay, onDebouncedChange]);
-
-  // Handle input change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
-
-  return (
-    <input
-      style={{fontSize: fontSize, width: width, textAlign: isCenter ? "center" : "left"}}
-      type="text"
-      value={inputValue}
-      onChange={handleChange}
-      placeholder={placeholder}
-    />
-  );
-};
-
+      const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const {value} = event.target;
+        setInputValue(value);
+  
+        // Clear the previous timeout
+        if (typingTimeout){
+          clearTimeout(typingTimeout);
+        }
+  
+        setTypingTimeout(
+          setTimeout(() => {
+            onUserStopTyping(value);
+          }, delay)
+        );
+        
+  
+      };
+  
+      return (
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(event) => {
+            onWait();
+            handleChange(event);
+          }}
+          placeholder={placeholder}
+          style={{width: width, fontSize: fontSize}}
+          className={`flex ${isCenter && 'justify-center'} border p-2`}
+        />
+      )
+  }

@@ -42,6 +42,7 @@ export default function LoginPage() {
   const [errorPassword, setErrorPassword] = useState(false);
 
   const handleSubmit = () => {
+    setErrorMessage('');
     setIsLoading(true);
     setErrorMessage("");
 
@@ -88,6 +89,7 @@ export default function LoginPage() {
 
         if (data) {
           setResponseData(data);
+         
 
           const userData = await getUserInfo(data.userId);
           setTimeout(() => {
@@ -100,6 +102,7 @@ export default function LoginPage() {
               dispatch(updateCurrentPopup("none"));
               router.push("/mylist");
             } else {
+              setErrorMessage(data.message);
               // seterrorMessage(true);
               setIsLoading(false);
             }
@@ -196,7 +199,7 @@ export default function LoginPage() {
             height={30}
           />
         </div>
-        <p
+        {/* <p
           className={`${
             !responseData.message && "invisible"
           } flex justify-center ${
@@ -204,9 +207,9 @@ export default function LoginPage() {
           } `}
         >
           {responseData.message}
-        </p>
+        </p> */}
         <p
-          className={`${
+          className={`h-4 ${
             !errorMessage && "invisible"
           } flex justify-center text-red-500`}
         >

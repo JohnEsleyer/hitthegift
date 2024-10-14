@@ -130,7 +130,7 @@ export default function MyListRightSection() {
                 />
               ))}
             </div> : 
-            <div style={{width: 900, height: 520}} className="text-gray-400 flex justify-center items-center ">
+            <div className="text-gray-400 flex justify-center items-center ">
                You have no products
               </div>}
             </div>
