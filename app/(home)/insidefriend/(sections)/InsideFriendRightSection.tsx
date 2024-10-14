@@ -30,13 +30,13 @@ export default function InsideFriendRightSection(){
                 {isProductsPending ? <div>Loading...</div> : <div className="pt-4 flex flex-wrap gap-2">
                     {products.map((product) => (
                         <WishItem 
-                         key={product.id}
-                         productName={product.title}
-                         description={product.description}
-                         price={product.price}
-                         productUrl={product.productUrl}
-                         showBuyButton={true}
-                        /> 
+                        key={product.id}
+                        productName={product.title}
+                        description={product.description}
+                        price={product.price}
+                        productUrl={product.productUrl}
+                        showBuyButton={true}
+                        imageUrl={product.imageUrl}                        /> 
                     ))}
                 </div>}
                 </div>
