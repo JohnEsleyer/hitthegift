@@ -31,7 +31,9 @@ export default function InsideFriendRightSection(){
                     {products.map((product) => (
                         <WishItem 
                         key={product.id}
-                        productName={product.title}
+                        id={product.userId}
+                        currency={product.currency}
+                        title={product.title}
                         description={product.description}
                         price={product.price}
                         productUrl={product.productUrl}
