@@ -3,6 +3,7 @@ import { EventData, MonthlyInvitedEventsResponse } from '../types/event';
 import { ProductType } from '../types/products';
 
 export interface EditProductPopupState {
+   id: string;
    title: string;
    currency: string;
    productUrl: string;
@@ -12,6 +13,7 @@ export interface EditProductPopupState {
 }
 
 const initialState: EditProductPopupState = {
+   id: '',
    title: '',
    currency: '',
    productUrl: '',
@@ -26,6 +28,7 @@ const editProductPopupSlice = createSlice({
     reducers: {
         updateEditProductAll: (state, action: PayloadAction<ProductType>) => {
             return {
+                id: action.payload.id,
                 title: action.payload.title,
                 currency: action.payload.currency,
                 productUrl: action.payload.productUrl,
@@ -64,6 +67,13 @@ const editProductPopupSlice = createSlice({
                 description: action.payload,
             }
         },
+        updateEditProductId: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                id: action.payload,
+            }
+        },
+
     }
 });
 
@@ -74,6 +84,7 @@ export const {
     updateEditProductCurrency,
     updateEditProductProductUrl,
     updateEditProductDescription,
+    updateEditProductId,
 
 } = editProductPopupSlice.actions;
 export default editProductPopupSlice.reducer; // Ensure this exports the reducer

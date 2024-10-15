@@ -50,11 +50,13 @@ export default function MyListLeftSection() {
     startEventsTransition(async () => {
       const results = await getAllEvents(userId);
       console.log(`status: ${results.message}`);
-      if (results) {
+      if (results.data) {
         // setEvents(results.data || []);
+        console.log("Payload before dispatch:", results.data);
+
         dispatch(updateMyListEvents(results.data || []));
         const dates: Date[] = Array.isArray(results.data) ?(results.data as ServerResponseForEvents[]).map(
-          (event) => event.date
+          (event) => new Date(event.date)
         ) : [];
         console.log(`Dates: ${dates}`);
         setHighlightedDates(dates);
@@ -113,7 +115,7 @@ export default function MyListLeftSection() {
                               style={{ fontSize: 15, width: 30, height: 30 }}
                               className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold rounded-full"
                             >
-                              {event.date.getDate()}
+                              {new Date(event.date).getDate()}
                             </div>
                             <div style={{ width: 200 }} className="flex">
                               <div

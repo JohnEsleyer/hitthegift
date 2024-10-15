@@ -90,7 +90,7 @@ export default function AddEventPopup() {
           data: {
             id: '',
             userId: userId,
-            date: eventDate,
+            date: eventDate.toString(),
             eventTitle: eventTitle,
             invitedFriends: friendsId,
           }

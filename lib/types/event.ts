@@ -2,7 +2,7 @@ import { Friend } from "./friend";
 
 export type EventData = {
     id: string;
-    date: Date;
+    date: string;
     userId: string; //owner of event
     eventTitle: string;
     invitedFriends: string[]; // A list of Ids
@@ -11,7 +11,7 @@ export type EventData = {
 // Type used by some client components
 export type ServerResponseForEvents = {
     id: string;
-    date: Date;
+    date: string;
     userId: string; //owner of event
     eventTitle: string;
     invitedFriends: Friend[]; // A list of Ids
@@ -21,7 +21,7 @@ export type ServerResponseForEvents = {
 export type MonthlyInvitedEventsResponse = {
     id: string;
     userId: string;
-    date: Date;
+    date: string;
     eventTitle: string;
     invitedFriends: string[];
     ownerName: string;

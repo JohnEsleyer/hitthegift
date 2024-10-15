@@ -10,9 +10,10 @@ import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import ProductImageUploader from "@/components/ProductImageUploader";
 import { v4 as uuidv4 } from 'uuid';
-import { insertMyListProduct } from "@/lib/features/mylist";
+import { insertMyListProduct, updateProductStore } from "@/lib/features/mylist";
 import { updateImageUrl } from "@/lib/features/productImageUpload";
 import { updateEditProductCurrency, updateEditProductDescription, updateEditProductPrice, updateEditProductProductUrl, updateEditProductTitle } from "@/lib/features/editProductsPopup";
+import { updateProduct } from "@/app/actions/products/updateProduct";
 
 type ResponseData = {
   message: string;
@@ -34,12 +35,14 @@ export default function EditProductPopup() {
   const [isLoading, setIsLoading] = useState(false);  
   const userId = useSelector((state: RootState) => state.userData.id);
   const imageUrl = useSelector((state: RootState) => state.productImageUpload.imageUrl);
-
+  const productId = useSelector((state: RootState) => state.editProductPopup.id);
+  
   const clickAddProduct = async () => {
       setIsLoading(true);
       try {
         console.log('creating product');
-        const responseData = await createProduct({
+        const responseData = await updateProduct({
+          productId: productId,
           userId: userId,
           title: title,
           currency: currency,
@@ -50,11 +53,20 @@ export default function EditProductPopup() {
         });
         console.log('product created');
   
-        if (responseData.data) {
+        if (responseData.status == 200) {
           console.log(responseData.message);
           setResponse(responseData);
 
-          dispatch(insertMyListProduct(responseData.data))
+          dispatch(updateProductStore({
+            id: productId,
+            title: title,
+            userId: userId,
+            price: price,
+            currency: currency,
+            productUrl: productUrl,
+            imageUrl: imageUrl,
+            description: description
+          }))
         }
        
       } catch (e) {
@@ -107,6 +119,7 @@ export default function EditProductPopup() {
               <input 
                 style={{width: 100}} 
                 className="border rounded-l-full pl-2 "
+                value={price}
                 placeholder="1.00"
                 onChange={(e) => {
                     // setPriceInput(e.target.value);
@@ -196,7 +209,7 @@ export default function EditProductPopup() {
             className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white"
             onClick={clickAddProduct}
           >
-            Add product
+            Save
           </button>
           <button
             className="bg-black rounded-2xl pl-12 pr-12  text-white"

@@ -22,8 +22,8 @@ export async function getAllEventsByMonth(userId: string, month: number) {
         const events = await db.collection<EventData>('events').find({
             userId: userId,
             date: {
-                $gte: startOfMonth, // Greater than or equal to the start of the month
-                $lte: endOfMonth    // Less than or equal to the end of the month
+                $gte: startOfMonth.toString(), // Greater than or equal to the start of the month
+                $lte: endOfMonth.toString()    // Less than or equal to the end of the month
             }
         }).toArray();
 

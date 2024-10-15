@@ -27,7 +27,7 @@ export default function FriendsListLeftSection() {
         setEvents(results.data || []);
         const dates: Date[] = (
           results.data as MonthlyInvitedEventsResponse[]
-        ).map((event) => event.date);
+        ).map((event) => new Date(event.date));
         console.log(`Dates: ${dates}`);
         setHighlightedDates(dates);
         dispatch(updateEvents(events));
@@ -70,7 +70,7 @@ export default function FriendsListLeftSection() {
                       style={{ fontSize: 15, width: 30, height: 30 }}
                       className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold rounded-full"
                     >
-                      {event.date.getDate()}
+                      {(new Date(event.date)).getDate()}
                     </div>
                     <p className="truncate">
                       {event.ownerName} {event.eventTitle}
