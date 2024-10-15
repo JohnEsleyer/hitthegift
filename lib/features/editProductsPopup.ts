@@ -3,7 +3,7 @@ import { EventData, MonthlyInvitedEventsResponse } from '../types/event';
 import { ProductType } from '../types/products';
 
 export interface EditProductPopupState {
-   id: string;
+   id: string; 
    title: string;
    currency: string;
    productUrl: string;

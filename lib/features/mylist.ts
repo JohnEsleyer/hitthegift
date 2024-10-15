@@ -52,6 +52,10 @@ const myListSlice = createSlice({
             state.products = state.products.map((product) =>
                 product.id === updatedProduct.id ? updatedProduct : product
             );
+        },
+        updateEventStore: (state, action: PayloadAction<ServerResponseForEvents>) => {
+            const updatedEvent = action.payload;
+            state.events = state.events.map((event) => event.id === updatedEvent.id ? updatedEvent : event)
         }
         
     }
@@ -63,5 +67,6 @@ export const {
      updateMyListProducts, 
      insertMyListProduct,
      updateProductStore,
+     updateEventStore,
     } = myListSlice.actions;
 export default myListSlice.reducer; // Ensure this exports the reducer

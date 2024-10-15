@@ -9,6 +9,7 @@ import friendsList from './features/friendslist';
 import mylist from './features/mylist';
 import productImageUpload from './features/productImageUpload';
 import editProductPopup from './features/editProductsPopup';
+import editEventPopup from './features/editEventsPopup';
 
 export const makeStore = () => {
     let persistedState;
@@ -26,6 +27,7 @@ export const makeStore = () => {
             mylist: mylist,
             productImageUpload: productImageUpload,
             editProductPopup: editProductPopup,
+            editEventPopup: editEventPopup,
         },
         preloadedState: persistedState,
     });

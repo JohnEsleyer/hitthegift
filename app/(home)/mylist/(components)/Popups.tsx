@@ -10,6 +10,7 @@ import FriendsSidebar from "./FriendsSidebar";
 import ProfilePopup from "./ProfilePopup";
 import DeleteFriend from "./DeleteFriend";
 import EditProductPopup from "./EditProductPopup";
+import EditEventPopup from "./EditEventPopUp";
 
 interface PopupPageProps {
   children: ReactNode;
@@ -101,6 +102,20 @@ export function Popups({ children }: PopupPageProps) {
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}
+
+
+      {/**Edit Event Popup*/}
+      {currentPopup == "editEvent" && (
+        <div
+          style={{ zIndex: 999, position: "absolute" }}
+          className=" flex justify-center items-center w-screen h-screen"
+        >
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+          <EditEventPopup />
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+        </div>
+      )}
+
 
       {/**Profile Popup*/}
       {currentPopup == "profile" && (

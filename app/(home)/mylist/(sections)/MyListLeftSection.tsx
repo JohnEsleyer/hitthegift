@@ -19,12 +19,10 @@ import EventsCalendar from "@/components/EventsCalendar";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 import EventSkeleton from "@/components/skeletons/EventSkeleton";
 import { updateMyListEvents } from "@/lib/features/mylist";
+import { updateEditEventAll } from "@/lib/features/editEventsPopup";
 
 export default function MyListLeftSection() {
-  // const [dateSelected, setDateSelected] = React.useState<Date | undefined>(
-  //   new Date()
-  // );
-  //   const hobbiesInfo = useSelector((state: RootState) => state.userData.hobbyInfo);
+
   const [hobbiesInfo, setHobbiesInfo] = useState("");
   const [showAddEventUI, setShowAddEventUI] = useState<boolean>(false);
   const userId = useSelector((state: RootState) => state.userData.id);
@@ -107,9 +105,20 @@ export default function MyListLeftSection() {
                     >{isClientMounted && <div className="h-full w-full">
                       {events.length > 0 ?
                         events.map((event) => (
-                          <div
+                          <button
+                            onClick={() => {
+                              dispatch(updateEditEventAll({
+                                id: event.id,
+                                eventTitle: event.eventTitle,
+                                date: event.date,
+                                userId: event.userId,
+                                invitedFriends: event.invitedFriends,
+                              }));
+
+                              dispatch(updateCurrentPopup('editEvent'));
+                            }}
                             key={event.id}
-                            className="flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2"
+                            className="w-full hover:bg-gray-300 flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2"
                           >
                             <div
                               style={{ fontSize: 15, width: 30, height: 30 }}
@@ -126,7 +135,7 @@ export default function MyListLeftSection() {
                                       : 100,
                                 }}
                               >
-                                <p className="truncate">{event.eventTitle}</p>
+                                <span className="truncate">{event.eventTitle}</span>
                               </div>
                               <div className="flex-1 flex justify-end">
                                 {event.invitedFriends.map((friend, index) => {
@@ -146,7 +155,7 @@ export default function MyListLeftSection() {
                                 </span>
                               </div>
                             </div>
-                          </div>
+                          </button>
                         )) : 
                         
                         <div className="text-gray-400 w-full h-full flex justify-center items-center ">

@@ -1,6 +1,5 @@
 "use client";
 
-import { createProduct } from "@/app/actions/products/createProduct";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { useEffect, useState, useTransition } from "react";
@@ -11,9 +10,9 @@ import Loading from '/public/loading.svg';
 import ProductImageUploader from "@/components/ProductImageUploader";
 import { v4 as uuidv4 } from 'uuid';
 import { insertMyListProduct, updateProductStore } from "@/lib/features/mylist";
-import { updateImageUrl } from "@/lib/features/productImageUpload";
 import { updateEditProductCurrency, updateEditProductDescription, updateEditProductPrice, updateEditProductProductUrl, updateEditProductTitle } from "@/lib/features/editProductsPopup";
 import { updateProduct } from "@/app/actions/products/updateProduct";
+import { updateImageUrl } from "@/lib/features/productImageUpload";
 
 type ResponseData = {
   message: string;
@@ -34,9 +33,16 @@ export default function EditProductPopup() {
   });
   const [isLoading, setIsLoading] = useState(false);  
   const userId = useSelector((state: RootState) => state.userData.id);
-  const imageUrl = useSelector((state: RootState) => state.productImageUpload.imageUrl);
+  const uploaderImageUrl = useSelector((state: RootState) => state.productImageUpload.imageUrl);
+  const productImageUrl = useSelector((state: RootState) => state.editProductPopup.imageUrl);
   const productId = useSelector((state: RootState) => state.editProductPopup.id);
   
+  useEffect(() => {
+    // This code makes sure that the imageUrl of the product being edited is the done displayed
+    dispatch(updateImageUrl(productImageUrl));  
+  }, []);
+
+
   const clickAddProduct = async () => {
       setIsLoading(true);
       try {
@@ -48,7 +54,7 @@ export default function EditProductPopup() {
           currency: currency,
           price: price,
           productUrl: productUrl,
-          imageUrl: imageUrl,
+          imageUrl: uploaderImageUrl,
           description: description,
         });
         console.log('product created');
@@ -64,7 +70,7 @@ export default function EditProductPopup() {
             price: price,
             currency: currency,
             productUrl: productUrl,
-            imageUrl: imageUrl,
+            imageUrl: uploaderImageUrl,
             description: description
           }))
         }
