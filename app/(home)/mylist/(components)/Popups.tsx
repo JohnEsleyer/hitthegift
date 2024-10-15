@@ -9,6 +9,7 @@ import AddProductPopup from "./AddProductPopup";
 import FriendsSidebar from "./FriendsSidebar";
 import ProfilePopup from "./ProfilePopup";
 import DeleteFriend from "./DeleteFriend";
+import EditProductPopup from "./EditProductPopup";
 
 interface PopupPageProps {
   children: ReactNode;
@@ -75,6 +76,19 @@ export function Popups({ children }: PopupPageProps) {
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}
+      {/**Edit Product  */}
+      {currentPopup == "editProduct" && (
+        <div
+          style={{ zIndex: 999, position: "absolute" }}
+          className=" flex justify-center items-center w-screen h-screen"
+        >
+          {" "}
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+          <EditProductPopup/>
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+        </div>
+      )}
+
 
       {/**Add Event Popup*/}
       {currentPopup == "addEvent" && (

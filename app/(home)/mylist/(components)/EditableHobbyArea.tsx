@@ -74,7 +74,6 @@ export default function EditableHobbyArea(){
         {isTextareaPending ? <TextareaSkeleton/> : <Textarea
           key={"hobbiesInfo"}
           style={{height: 220, width: 280}}
-          
           className="border border-2xl rounded-2xl"
      
           value={hobbiesInfo}
@@ -82,11 +81,11 @@ export default function EditableHobbyArea(){
             handleInputChange(e);
           }}
         />}
-        {/* <span 
-          className="text-gray-600 flex justify-end"
+        <div 
+          className="text-gray-600 w-full flex justify-end"
           >
-          {hobbiesInfo.length + "/500"}
-          </span> */}
+          {(hobbiesInfo.length || 0) + "/500"}
+          </div>
       </div>
     )
 }

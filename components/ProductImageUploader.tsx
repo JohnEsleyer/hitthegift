@@ -3,22 +3,23 @@
 
 import uploadProductImage from '@/app/actions/s3/uploadProductImage';
 import { updateImageUrl } from '@/lib/features/productImageUpload';
+import { RootState } from '@/lib/store';
 import { Gift, ImageUp } from 'lucide-react';
 import { useTransition, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface ProductImageUploaderProps {
   productId: string;
   width: number;
   height: number;
-  allowEdit?: boolean;
+  loadInitialImage?: boolean; // if true, component will try to fetch the image url from redux store and display it
 }
 
 export default function ProductImageUploader({
   productId,
   width,
   height,
-  allowEdit = true,
+  loadInitialImage,
 }: ProductImageUploaderProps) {
   const [isPending, startTransition] = useTransition();
   const [isError, setIsError] = useState(false);
@@ -26,7 +27,19 @@ export default function ProductImageUploader({
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [imageUrl, setImageUrl] = useState('');
+
+  // imageUrl from the editProductPopup component. Used when loadInitialImage is true
+  const reduxImageUrl = useSelector((state: RootState) => state.editProductPopup.imageUrl);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (loadInitialImage){
+      console.log('loadInitialImage');
+      setImageUrl(reduxImageUrl);
+    }
+  }, []);
+
 
   // Handle file selection for the product image
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +106,7 @@ export default function ProductImageUploader({
        />
       )
       }
-      {allowEdit && (
+
         <div style={{ zIndex: 99, bottom: -10, right: -10 }} className="absolute">
           <button className="bg-white p-2 rounded-2xl" onClick={() => setShowImageOptions((prev) => !prev)}>
             <ImageUp/>
@@ -119,7 +132,7 @@ export default function ProductImageUploader({
             </div>
           )}
         </div>
-      )}
+
     </div>
   );
 }

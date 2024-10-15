@@ -8,6 +8,7 @@ import insideFriend from './features/insideFriend';
 import friendsList from './features/friendslist';
 import mylist from './features/mylist';
 import productImageUpload from './features/productImageUpload';
+import editProductPopup from './features/editProductsPopup';
 
 export const makeStore = () => {
     let persistedState;
@@ -24,6 +25,7 @@ export const makeStore = () => {
             friendsList: friendsList,
             mylist: mylist,
             productImageUpload: productImageUpload,
+            editProductPopup: editProductPopup,
         },
         preloadedState: persistedState,
     });

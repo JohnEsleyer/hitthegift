@@ -3,7 +3,7 @@
 import { createProduct } from "@/app/actions/products/createProduct";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { currencies } from "../constants";
 import Image from 'next/image';
@@ -11,20 +11,21 @@ import Loading from '/public/loading.svg';
 import ProductImageUploader from "@/components/ProductImageUploader";
 import { v4 as uuidv4 } from 'uuid';
 import { insertMyListProduct } from "@/lib/features/mylist";
+import { updateImageUrl } from "@/lib/features/productImageUpload";
+import { updateEditProductCurrency, updateEditProductDescription, updateEditProductPrice, updateEditProductProductUrl, updateEditProductTitle } from "@/lib/features/editProductsPopup";
 
 type ResponseData = {
   message: string;
   status: number;
 };
 
-export default function AddProductPopup() {
+export default function EditProductPopup() {
   const dispatch = useDispatch();
-  const [productName, setProductName] = useState("");
-  const [productUrl, setProductUrl] = useState("");
-  // const [autoFill, setAutoFill] = useState("");
-  const [price, setPrice] = useState('');
-  const [productDescription, setProductDescription] = useState("");
-  const [currency, setCurrency] = useState('');
+  const title = useSelector((state: RootState) => state.editProductPopup.title);
+  const productUrl = useSelector((state: RootState) => state.editProductPopup.productUrl);
+  const price = useSelector((state: RootState) => state.editProductPopup.price);
+  const description = useSelector((state: RootState) => state.editProductPopup.description);
+  const currency = useSelector((state: RootState) => state.editProductPopup.currency);
   const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
   const [response, setResponse] = useState<ResponseData>({
     message: "",
@@ -40,12 +41,12 @@ export default function AddProductPopup() {
         console.log('creating product');
         const responseData = await createProduct({
           userId: userId,
-          title: productName,
+          title: title,
           currency: currency,
           price: price,
           productUrl: productUrl,
           imageUrl: imageUrl,
-          description: productDescription,
+          description: description,
         });
         console.log('product created');
   
@@ -54,8 +55,6 @@ export default function AddProductPopup() {
           setResponse(responseData);
 
           dispatch(insertMyListProduct(responseData.data))
-        
-
         }
        
       } catch (e) {
@@ -82,6 +81,7 @@ export default function AddProductPopup() {
             productId={(() => {
               return uuidv4();
             })()}
+            loadInitialImage={true}
           />
         </div>
 
@@ -93,9 +93,10 @@ export default function AddProductPopup() {
               <input
                 className="rounded-full p-2 pl-4"
                 placeholder={"Product name"}
-                value={productName}
+                value={title}
                 onChange={(e) => {
-                  setProductName(e.target.value);
+                //   setTitle(e.target.value);
+                  dispatch(updateEditProductTitle(e.target.value));
                 }}
               />
             </div>
@@ -108,7 +109,8 @@ export default function AddProductPopup() {
                 className="border rounded-l-full pl-2 "
                 placeholder="1.00"
                 onChange={(e) => {
-                    setPrice(e.target.value);
+                    // setPriceInput(e.target.value);
+                    dispatch(updateEditProductPrice(e.target.value));
                 }}
                 />
                     <div className="relative p-2 flex items-center ">
@@ -122,7 +124,8 @@ export default function AddProductPopup() {
                             <ul style={{zIndex: 100, top: 30,right: 1 }} className="flex flex-col h-52 p-4 overflow-auto absolute mt-2 bg-white rounded shadow-md">
                                 {currencies.map((currency) => (
                                     <button onClick={() => {
-                                      setCurrency(currency);
+                                    //   setCurrencyInput(currency);
+                                    dispatch(updateEditProductCurrency(currency));
                                       setShowCurrencyOptions(false);
                                     }} key={currency}>
                                         {currency}
@@ -146,7 +149,8 @@ export default function AddProductPopup() {
               placeholder={"Product URL"}
               value={productUrl}
               onChange={(e) => {
-                setProductUrl(e.target.value);
+                // setProductUrlInput(e.target.value);
+                dispatch(updateEditProductProductUrl(e.target.value));
               }}
             />
           </div>
@@ -177,9 +181,10 @@ export default function AddProductPopup() {
             <label>Description</label>
             <textarea
               className="w-full h-full rounded-2xl p-2 pl-4"
-              value={productDescription}
+              value={description}
               onChange={(e) => {
-                setProductDescription(e.target.value);
+                // setDescriptionInput(e.target.value);
+                dispatch(updateEditProductDescription(e.target.value));
               }}
             />
           </div>

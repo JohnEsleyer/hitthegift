@@ -2,18 +2,13 @@
 
 import { startTransition, useEffect, useState, useTransition } from "react";
 
-import Image from "next/image";
-import Friends from "/public/friends.png";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
-import { ProductType } from "@/lib/types/products";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import WishItem from "../../../../components/WishItem";
-import { useRouter } from "next/navigation";
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
 import { CircleX, Send } from "lucide-react";
-import Loading from "/public/loading.svg";
 import addFriend from "@/app/actions/user/addFriend";
 import { updateMyListProducts } from "@/lib/features/mylist";
 
@@ -133,11 +128,14 @@ export default function MyListRightSection() {
                       {products.map((product) => (
                         <WishItem
                           key={product.id}
-                          productName={product.title}
+                          id={product.id}
+                          title={product.title}
                           imageUrl={product.imageUrl}
                           description={product.description}
                           price={product.price}
+                          currency={product.currency}
                           productUrl={product.productUrl}
+                          owner={true}
                         />
                       ))}
                     </div>
