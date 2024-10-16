@@ -1,8 +1,6 @@
 'use client';
 
-
-import uploadProductImage from '@/app/actions/s3/uploadProductImage';
-import { updateImageUrl } from '@/lib/features/productImageUpload';
+import { updateBase64Image } from '@/lib/features/productImageUpload';
 import { RootState } from '@/lib/store';
 import { Gift, ImageUp } from 'lucide-react';
 import { useTransition, useState, useEffect } from 'react';
@@ -34,12 +32,11 @@ export default function ProductImageUploader({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (loadInitialImage){
+    if (loadInitialImage) {
       console.log('loadInitialImage');
       setImageUrl(reduxImageUrl);
     }
-  }, []);
-
+  }, [loadInitialImage, reduxImageUrl]);
 
   // Handle file selection for the product image
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,92 +44,88 @@ export default function ProductImageUploader({
     setFile(selectedFile);
   };
 
-  // Handle the upload of the selected image to the server
-  const handleUpload = async () => {
+  // Handle the upload of the selected image to the localStorage
+  const handleUpload = () => {
     setShowImageOptions(false);
     if (!file || !productId) {
-      setUploadStatus('Please select a file and provide a product ID.');
+      setUploadStatus('Please select a file');
       return;
     }
 
-    // Rename file to include productId and preserve the extension
-    const fileExtension = file.name.split('.').pop();
-    const renamedFile = new File([file], `${productId}.${fileExtension}`, {
-      type: file.type,
-    });
+    const reader = new FileReader();
 
-    const formData = new FormData();
-    formData.append('file', renamedFile); // Append the renamed file
-
-    try {
-      setUploadStatus('Uploading...');
-      const result = await uploadProductImage(formData);
-
-      if (result.success) {
-        setUploadStatus(`File uploaded successfully: ${result.url}`);
-        setImageUrl(result.url || '');
-        dispatch(updateImageUrl(result.url || ''));
-      } else {
-        setUploadStatus(`Error: ${result.error}`);
+    reader.onload = () => {
+      const base64Image = reader.result as string;
+      try {
+        // Store the base64 image in localStorage with the key as productId
+        localStorage.setItem(`product_image_${productId}`, base64Image);
+        setUploadStatus('File stored successfully in localStorage.');
+        setImageUrl(base64Image);
+        dispatch(updateBase64Image(base64Image));
+      } catch (error) {
+        setUploadStatus('Failed to store the file in localStorage.');
       }
-    } catch (error: any) {
-      setUploadStatus(`Upload failed: ${error.message}`);
-    }
+    };
+
+    reader.onerror = () => {
+      setUploadStatus('Failed to read the file.');
+    };
+
+    // Convert the file to a base64 string
+    reader.readAsDataURL(file);
   };
 
   return (
     <div className="relative">
-      {imageUrl == '' ? (
-         <div
-         style={{
-           width: width,
-           height: height,
-           backgroundColor: '#e0e0e0',
-           display: 'flex',
-           alignItems: 'center',
-           justifyContent: 'center',
-         }}
-       >
-         <Gift color='#7d7d7d'/>
-       </div>
-     ) : (
-       <img
-         className="rounded-md"
-         src={imageUrl}
-         width={width}
-         height={height}
-         style={{ objectFit: 'cover' }}
-         alt="Product"
-       />
-      )
-      }
-
-        <div style={{ zIndex: 99, bottom: -10, right: -10 }} className="absolute">
-          <button className="bg-white p-2 rounded-2xl" onClick={() => setShowImageOptions((prev) => !prev)}>
-            <ImageUp/>
-          </button>
-          {showImageOptions && (
-            <div
-              style={{ zIndex: 100, width: 220, right:-50 }}
-              className="p-2 absolute bg-white shadow-md"
-            >
-              <input
-                type="file"
-                onChange={handleFileChange}
-                accept="image/*"
-                style={{ width: 210 }}
-                className="text-xs"
-              />
-              <button
-                onClick={handleUpload}
-                className="mt-2 w-full border border-black"
-              >
-                Upload
-              </button>
-            </div>
-          )}
+      {imageUrl === '' ? (
+        <div
+          style={{
+            width: width,
+            height: height,
+            backgroundColor: '#e0e0e0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Gift color="#7d7d7d" />
         </div>
+      ) : (
+        <img
+          className="rounded-md"
+          src={imageUrl}
+          width={width}
+          height={height}
+          style={{ objectFit: 'cover' }}
+          alt="Product"
+        />
+      )}
 
+      <div style={{ zIndex: 99, bottom: -10, right: -10 }} className="absolute">
+        <button className="bg-white p-2 rounded-2xl" onClick={() => setShowImageOptions((prev) => !prev)}>
+          <ImageUp />
+        </button>
+        {showImageOptions && (
+          <div
+            style={{ zIndex: 100, width: 220, right: -50 }}
+            className="p-2 absolute bg-white shadow-md"
+          >
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept="image/*"
+              style={{ width: 210 }}
+              className="text-xs"
+            />
+            <button
+              onClick={handleUpload}
+              className="mt-2 w-full border border-black"
+            >
+              Upload
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

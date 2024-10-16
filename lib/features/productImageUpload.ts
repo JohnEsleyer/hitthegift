@@ -2,24 +2,24 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { EventData, MonthlyInvitedEventsResponse, ServerResponseForEvents } from '../types/event';
 
 export interface ProductImageUploadState {
-   imageUrl: string;
+   base64Image: string;
 }
 
 const initialState: ProductImageUploadState = {
-   imageUrl: ''
+   base64Image: ''
 };
 
 const productImageUploadSlice = createSlice({
     name: 'productImageUpload',
     initialState,
     reducers: {
-        updateImageUrl: (state, action: PayloadAction<string>) => {
+        updateBase64Image: (state, action: PayloadAction<string>) => {
             return {
-                imageUrl: action.payload,
+                base64Image: action.payload,
             };
         },
     }
 });
 
-export const { updateImageUrl } = productImageUploadSlice.actions;
+export const { updateBase64Image } = productImageUploadSlice.actions;
 export default productImageUploadSlice.reducer; // Ensure this exports the reducer

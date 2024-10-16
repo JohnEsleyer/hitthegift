@@ -66,11 +66,7 @@ export default function AddEventPopup() {
       setHandledAllError(false);
       return;
     }
-    // if (selectedFriends.length == 0){
-    //   setErrorMessage("Please select at least 1 friend for the event");
-    //   setHandledAllError(false);
-    //   return;
-    // }
+
     setHandledAllError(true);
 
     setIsLoading(true);

@@ -16,7 +16,7 @@ export default async function uploadProfile(formData: FormData) {
     }
 
     // Use userId as the folder name
-    const fileName = file.name;
+    const fileName = file.name.split('.').slice(0,-1).join('.') + '.webp';
 
     // Convert file into a Buffer
     const fileBuffer = Buffer.from(await file.arrayBuffer());

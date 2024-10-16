@@ -12,7 +12,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { insertMyListProduct, updateProductStore } from "@/lib/features/mylist";
 import { updateEditProductCurrency, updateEditProductDescription, updateEditProductPrice, updateEditProductProductUrl, updateEditProductTitle } from "@/lib/features/editProductsPopup";
 import { updateProduct } from "@/app/actions/products/updateProduct";
-import { updateImageUrl } from "@/lib/features/productImageUpload";
+import { imageUrlToBase64 } from "@/utils/imageUrlToBase64";
+import { updateBase64Image } from "@/lib/features/productImageUpload";
+import { handleBase64ToFormData } from "@/utils/base64ToFormData";
+import uploadProductImage from "@/app/actions/s3/uploadProductImage";
 
 type ResponseData = {
   message: string;
@@ -33,48 +36,78 @@ export default function EditProductPopup() {
   });
   const [isLoading, setIsLoading] = useState(false);  
   const userId = useSelector((state: RootState) => state.userData.id);
-  const uploaderImageUrl = useSelector((state: RootState) => state.productImageUpload.imageUrl);
+  const selectedImage = useSelector((state: RootState) => state.productImageUpload.base64Image);
   const productImageUrl = useSelector((state: RootState) => state.editProductPopup.imageUrl);
   const productId = useSelector((state: RootState) => state.editProductPopup.id);
   
   useEffect(() => {
-    // This code makes sure that the imageUrl of the product being edited is the done displayed
-    dispatch(updateImageUrl(productImageUrl));  
+    // This code makes sure that the imageUrl of the product being edited is the one displayed
+    const handleImageConversion = async () => {
+      try {
+        // 1. Convert productImageUrl to a base64 string
+        const base64Image = await imageUrlToBase64(productImageUrl);
+    
+        // 2. Dispatch the base64Image so that the image uploader can use it
+        dispatch(updateBase64Image(base64Image || ''));
+      } catch (error) {
+        console.error('Error converting image to base64:', error);
+        // Optionally, handle errors by dispatching a default or empty base64 string
+        dispatch(updateBase64Image(''));
+      }
+    };
+    
+    handleImageConversion();
+   
   }, []);
 
 
-  const clickAddProduct = async () => {
+  const clickSaveProduct = async () => {
       setIsLoading(true);
       try {
-        console.log('creating product');
-        const responseData = await updateProduct({
-          productId: productId,
-          userId: userId,
-          title: title,
-          currency: currency,
-          price: price,
-          productUrl: productUrl,
-          imageUrl: uploaderImageUrl,
-          description: description,
-        });
-        console.log('product created');
-  
-        if (responseData.status == 200) {
-          console.log(responseData.message);
-          setResponse(responseData);
 
-          dispatch(updateProductStore({
-            id: productId,
-            title: title,
+
+        // Upload selectedImage to S3
+        // 1. Convert base64 file string to FormData
+        const formData = handleBase64ToFormData(
+          selectedImage,
+          "productImage.webp",
+        );
+        // 2. Upload
+        const result = await uploadProductImage(formData);
+
+        if (result.success){
+          console.log('creating product');
+          const responseData = await updateProduct({
+            productId: productId,
             userId: userId,
-            price: price,
+            title: title,
             currency: currency,
+            price: price,
             productUrl: productUrl,
-            imageUrl: uploaderImageUrl,
-            description: description
-          }))
+            imageUrl: result.url || '',
+            description: description,
+          });
+          console.log('product created');
+    
+          if (responseData.status == 200) {
+            console.log(responseData.message);
+            setResponse(responseData);
+  
+            dispatch(updateProductStore({
+              id: productId,
+              title: title,
+              userId: userId,
+              price: price,
+              currency: currency,
+              productUrl: productUrl,
+              imageUrl: result.url || '',
+              description: description
+            }))
+          }
+        }else{
+          console.error('Failed to upload product image');
         }
-       
+             
       } catch (e) {
         console.log(e);
       }
@@ -213,7 +246,7 @@ export default function EditProductPopup() {
         <div className="mt-4  flex justify-center gap-8">
           <button
             className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white"
-            onClick={clickAddProduct}
+            onClick={clickSaveProduct}
           >
             Save
           </button>
