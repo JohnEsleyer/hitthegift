@@ -151,7 +151,8 @@ export default function RegisterPage() {
         const responseData = await response.json();
 
         console.log(`registered user: ${responseData.userId}`);
-        if (response) {
+        console.log(`Status: ${response.status}`);
+        if (response.status == 200) {
           setResponseMessage(responseData.message);
           setTimeout(() => {
          

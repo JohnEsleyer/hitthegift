@@ -42,6 +42,7 @@ export default function UserProfile({width, height, allowEdit}:UserProfileProps)
 
 
     useEffect(()=> {
+      console.log(`Upload status: ${uploadStatus}`);
        fetchProfile();
     },[uploadStatus]);
 
@@ -56,20 +57,15 @@ export default function UserProfile({width, height, allowEdit}:UserProfileProps)
       };
     
       const handleUpload = async () => {
+        console.log('handle Upload')
         setShowProfileOptions(false)
         if (!file || !userId) {
           setUploadStatus('Please select a file and provide a user ID.');
           return;
         }
     
-        // Extract file extension and rename file to "profile.<extension>"
-        const fileExtension = file.name.split('.').pop(); // Get the extension from the file name
-        const renamedFile = new File([file], `${userId}.${fileExtension}`, {
-          type: file.type,
-        });
-    
         const formData = new FormData();
-        formData.append('file', renamedFile); // Append the renamed file
+        formData.append('file', file); // Append the renamed file
     
         try {
           setUploadStatus('Uploading...');
@@ -93,7 +89,7 @@ export default function UserProfile({width, height, allowEdit}:UserProfileProps)
             {isPending ? <div className="profile-skeleton" style={{ width: width, height: height }}></div>
              : 
              <div>
-                {isError ? <Avvvatars value={userName} size={width}/> :<img className="rounded-full" src={imageUrl} width={width} height={height}/>}
+                {imageUrl == "" ? <Avvvatars value={userName} size={width}/> : <img className="rounded-full" src={imageUrl} width={width} height={height}/>}
             </div>}
             {allowEdit && <div style={{zIndex: 99, bottom:10, right:10}} className="absolute">
                 <button onClick={()=>{setShowProfileOptions((prev) => !prev)}}><Pencil/></button>
@@ -102,6 +98,7 @@ export default function UserProfile({width, height, allowEdit}:UserProfileProps)
                     <button onClick={handleUpload} className="mt-2 pl-2 pr-2 w-full border border-2xl border-black ">Upload</button>
                 </div>}
             </div>}
+
         </div>
     )
 }

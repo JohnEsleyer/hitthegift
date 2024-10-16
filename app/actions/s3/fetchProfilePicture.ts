@@ -13,14 +13,14 @@ export async function fetchProfilePicture(userId: string) {
     // Parameters for checking the existence of the file
     const params = {
       Bucket: bucketName,
-      Key: `${userId}.jpeg`, // Check for {userId}.jpeg
+      Key: `${userId}.webp`, // Check for {userId}.jpeg
     };
 
     // Check if the object exists in the S3 bucket
     await s3.headObject(params).promise();
 
     // Construct the file URL since it exists
-    const fileUrl = `https://${bucketName}.${process.env.SPACES_ENDPOINT}/${userId}.jpeg`;
+    const fileUrl = `https://${bucketName}.${process.env.SPACES_CDN_ENDPOINT}/${userId}.webp`;
 
     console.log(fileUrl);
     console.log('fetchProfilePicture: Success');
