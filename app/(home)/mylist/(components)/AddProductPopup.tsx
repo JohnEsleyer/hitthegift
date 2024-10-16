@@ -13,6 +13,8 @@ import { v4 as uuidv4 } from "uuid";
 import { insertMyListProduct } from "@/lib/features/mylist";
 import { handleBase64ToFormData } from "@/utils/base64ToFormData";
 import uploadProductImage from "@/app/actions/s3/uploadProductImage";
+import { createObjectId } from "@/app/actions/mongoActions";
+
 
 type ResponseData = {
   message: string;
@@ -47,12 +49,16 @@ export default function AddProductPopup() {
         selectedImage,
         "productImage.webp"
       );
+
+      const productId = await createObjectId();
+
       // 2. Upload
-      const result = await uploadProductImage(formData);
+      const result = await uploadProductImage(formData, productId.toString());
       
       if (result.success){
         console.log("creating product");
         const responseData = await createProduct({
+          _id: productId.toString(),
           userId: userId,
           title: productName,
           currency: currency,

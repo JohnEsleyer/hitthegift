@@ -3,9 +3,11 @@
 import { mongoClient } from "@/lib/mongodb";
 import { ServerResponseForEvents } from "@/lib/types/event";
 import { ProductType } from "@/lib/types/products";
+import { ObjectId } from "mongodb";
 
 
 type RequestPayload = {
+    _id: string;
     userId: string;
     title: string;
     price: string;
@@ -21,6 +23,7 @@ export async function createProduct(data: RequestPayload) {
         const db = mongoClient.db('hitmygift');
    
         const product = await db.collection('products').insertOne({ // Await the database operation
+            _id: new ObjectId(data._id),
             userId: data.userId,
             title: data.title, 
             productUrl: data.productUrl,
@@ -31,7 +34,7 @@ export async function createProduct(data: RequestPayload) {
         });
 
         const responseData: ProductType = {
-            id: product.insertedId.toString(),
+            id: data._id,
             userId: data.userId,
             title: data.title, 
             productUrl: data.productUrl,

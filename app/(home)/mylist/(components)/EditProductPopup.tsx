@@ -73,7 +73,7 @@ export default function EditProductPopup() {
           "productImage.webp",
         );
         // 2. Upload
-        const result = await uploadProductImage(formData);
+        const result = await uploadProductImage(formData, productId);
 
         if (result.success){
           console.log('creating product');

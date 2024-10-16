@@ -1,30 +1,13 @@
 'use server'
 
 import { mongoClient } from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
+// Used by the client to create ObjectId in string format.
+export async function createObjectId(){
+    const strObjectId = new ObjectId();
 
-export async function testAction(data: string){
-    console.log("Hello "+data);
-}
-
-export async function testMongo(){
-    console.log(mongoClient.db('hitmygift').collections.length);
-    try{
-        const db = mongoClient.db('hitmygift');
-        db.collection('users').insertOne({
-            firstName: "Ralph",
-            lastName: "Policarpio",
-            email: "ralph@gmail.com",
-            password: "mypassword",
-            hobbyInfo: "mypassword",
-            showInterest: true
-        });
-        // return {message: "Registration Failed"};
-    }catch(e){
-        console.log(e);
-        // return {message: "Registration Success"};
-    }
-
+    return strObjectId.toString();
 }
 
 export async function deleteAllUsers(){
