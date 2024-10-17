@@ -3,6 +3,7 @@
 import { ProductType } from "@/lib/types/products";
 import getAllFriends from "../user/getAllFriends"
 import { getUserProducts } from "./getUserProducts";
+import { getProfilePicture } from "../s3/getProfilePicture";
 
 interface FriendsProducts {
     friendId: string;
@@ -22,13 +23,16 @@ export default async function getFriendsProducts(userId: string) {
             const friendsProducts: FriendsProducts[] = (
                 await Promise.all(
                     friends.map(async (friend) => {
+
+                        // Fetch friend profile picture
+                        const friendProfilePictureUrl = await getProfilePicture(friend.id);
                         const userProductsResponse = await getUserProducts(friend.id);
                         if (userProductsResponse && userProductsResponse.data) {
                             return {
-                                friendId: friend.id,
-                                friendFirstName: friend.firstName,
-                                friendImageURL: '',
-                                products: userProductsResponse.data,
+                                friendId: friend.id || '',
+                                friendFirstName: friend.firstName || '',
+                                friendImageURL: friendProfilePictureUrl.data || '',
+                                products: userProductsResponse.data || '',
                             };
                         }
                         return undefined; // Return undefined if no products found

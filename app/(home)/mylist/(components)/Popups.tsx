@@ -8,9 +8,11 @@ import AddEventPopup from "./AddEventPopup";
 import AddProductPopup from "./AddProductPopup";
 import FriendsSidebar from "./FriendsSidebar";
 import ProfilePopup from "./ProfilePopup";
-import DeleteFriend from "./DeleteFriend";
 import EditProductPopup from "./EditProductPopup";
 import EditEventPopup from "./EditEventPopUp";
+import DeleteFriendPopup from "./DeleteFriendPopup";
+import DeleteFriendRequestPopup from "./DeleteFriendRequest";
+import { updateIsSidebarOpen } from "@/lib/features/friendsSidebar";
 
 interface PopupPageProps {
   children: ReactNode;
@@ -29,6 +31,7 @@ export function Popups({ children }: PopupPageProps) {
     if (currentPopup !== "none") {
       console.log("Closing Popup");
       dispatch(updateCurrentPopup("none"));
+      dispatch(updateIsSidebarOpen(false));
     }
   };
 
@@ -130,16 +133,30 @@ export function Popups({ children }: PopupPageProps) {
       )}
 
        {/**Delete Friend Popup*/}
-       {currentPopup == "deletefriend" && (
+       {currentPopup == "deleteFriend" && (
         <div
           style={{ zIndex: 999, position: "absolute" }}
           className=" flex justify-center items-center w-screen h-screen"
         >
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
-          <DeleteFriend/>
+          <DeleteFriendPopup/>
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}
+
+       {/**Delete FriendRequest Popup*/}
+       {currentPopup == "deleteFriendRequest" && (
+        <div
+          style={{ zIndex: 999, position: "absolute" }}
+          className=" flex justify-center items-center w-screen h-screen"
+        >
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+          <DeleteFriendRequestPopup/>
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+        </div>
+      )}
+
+
     </div>
   );
 }

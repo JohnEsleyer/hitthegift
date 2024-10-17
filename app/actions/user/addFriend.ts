@@ -3,6 +3,8 @@
 import { mongoClient } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
+
+// Add friend directly (skipping the friend request)
 export default async function addFriend(userId: string, friendEmail: string) {
     try {
         const db = mongoClient.db('hitmygift');

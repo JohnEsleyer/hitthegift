@@ -1,5 +1,5 @@
 'use client'
-import { fetchProfilePicture } from "@/app/actions/s3/fetchProfilePicture";
+import { getProfilePicture } from "@/app/actions/s3/getProfilePicture";
 import uploadProfile from "@/app/actions/s3/uploadProfile";
 import { RootState } from "@/lib/store";
 import Avvvatars from "avvvatars-react";
@@ -27,7 +27,7 @@ export default function UserProfile({width, height, allowEdit}:UserProfileProps)
         setIsError(false);
         startTransition(async ()=>{
             try{
-                const res = await fetchProfilePicture(userId);
+                const res = await getProfilePicture(userId);
                 if (res.success){
                     setImageUrl(res.data as string);
                 }else{

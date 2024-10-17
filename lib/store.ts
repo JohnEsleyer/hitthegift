@@ -5,11 +5,12 @@ import { loadState, saveState } from '@/utils/localStorage';
 import popupsSlice from './features/popups';
 import wishlist from './features/wishlist';
 import insideFriend from './features/insideFriend';
-import friendsList from './features/friendslist';
+import friendsListPage from './features/friendslistPage';
 import mylist from './features/mylist';
 import productImageUpload from './features/productImageUpload';
 import editProductPopup from './features/editProductsPopup';
 import editEventPopup from './features/editEventsPopup';
+import friendsSidebar from './features/friendsSidebar';
 
 export const makeStore = () => {
     let persistedState;
@@ -23,11 +24,12 @@ export const makeStore = () => {
             popups: popupsSlice,
             wishlist: wishlist,
             insideFriend: insideFriend,
-            friendsList: friendsList,
+            friendsListPage: friendsListPage,
             mylist: mylist,
             productImageUpload: productImageUpload,
             editProductPopup: editProductPopup,
             editEventPopup: editEventPopup,
+            friendsSidebar: friendsSidebar,
         },
         preloadedState: persistedState,
     });

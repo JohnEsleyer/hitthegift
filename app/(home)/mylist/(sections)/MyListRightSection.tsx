@@ -11,18 +11,24 @@ import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
 import { CircleX, Send } from "lucide-react";
 import addFriend from "@/app/actions/user/addFriend";
 import { updateMyListProducts } from "@/lib/features/mylist";
+import { sendFriendRequest } from "@/app/actions/user/sendFriendRequest";
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
 
   const [isProductsPending, startProductsTransition] = useTransition();
-  const userId = useSelector((state: RootState) => state.userData.id);
-  // const [products, setProducts] = useState<ProductType[]>([]);
-  const products = useSelector((state: RootState) => state.mylist.products);
+
   const [showShareInput, setShowShareInput] = useState(false);
   const [friendEmail, setFriendEmail] = useState("");
   const [isSending, startSendTransition] = useTransition();
   const [isClientMounted, setIsClientMounted] = useState(false);
+
+  const userId = useSelector((state: RootState) => state.userData.id);
+  const products = useSelector((state: RootState) => state.mylist.products);
+
+  // Used to disable the click function of wish items when friends sidebar is showing 
+  const isSidebarOpen = useSelector((state: RootState) => state.friendsSidebar.isSidebarOpen);
+
 
   useEffect(() => {
     setIsClientMounted(true);
@@ -40,7 +46,7 @@ export default function MyListRightSection() {
     setFriendEmail("");
     startSendTransition(async () => {
       try {
-        const res = await addFriend(userId, friendEmail);
+        await sendFriendRequest(userId, friendEmail);
       } catch (e) {
         console.log(e);
       }

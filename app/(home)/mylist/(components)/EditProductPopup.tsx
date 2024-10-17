@@ -64,8 +64,6 @@ export default function EditProductPopup() {
   const clickSaveProduct = async () => {
       setIsLoading(true);
       try {
-
-
         // Upload selectedImage to S3
         // 1. Convert base64 file string to FormData
         const formData = handleBase64ToFormData(

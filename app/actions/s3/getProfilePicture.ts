@@ -2,7 +2,7 @@
 
 import { s3 } from "@/lib/s3"; // Adjust the import path based on your project structure
 
-export async function fetchProfilePicture(userId: string) {
+export async function getProfilePicture(userId: string) {
   const bucketName = 'profile-hitmygift';
 
   try {

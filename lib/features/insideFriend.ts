@@ -6,6 +6,7 @@ export interface InsideFriendState {
    friends: string[];
    isOpenChatbox: boolean;
    conversationId: string;
+   profileImageUrl: string;
 }
 
 const initialState: InsideFriendState = {
@@ -14,6 +15,7 @@ const initialState: InsideFriendState = {
    friends: [],
    isOpenChatbox: false,
    conversationId: '',
+   profileImageUrl: '',
 };
 
 const insideFriendSlice = createSlice({
@@ -44,6 +46,12 @@ const insideFriendSlice = createSlice({
                 conversationId: action.payload,
             }
         },
+        updateProfileImageUrl: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                profileImageUrl: action.payload,
+            }
+        },
     }
 });
 
@@ -52,5 +60,6 @@ export const {
     updateFriendName, 
     updateIsOpenChatbox,
     updateConversationId,
+    updateProfileImageUrl,
 } = insideFriendSlice.actions;
 export default insideFriendSlice.reducer; // Ensure this exports the reducer

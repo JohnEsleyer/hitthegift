@@ -7,7 +7,7 @@ import { RootState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import EventsCalendar from "@/components/EventsCalendar";
 import { MonthlyInvitedEventsResponse } from "@/lib/types/event";
-import { updateEvents } from "@/lib/features/friendslist";
+import { updateEvents } from "@/lib/features/friendslistPage";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 import FriendEventSkeleton from "@/components/skeletons/FriendEventSkeleton";
 

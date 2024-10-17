@@ -2,8 +2,10 @@
 
 import { updateEditProductAll } from "@/lib/features/editProductsPopup";
 import { updateCurrentPopup } from "@/lib/features/popups";
+import { RootState } from "@/lib/store";
 import { Edit, Link, Pencil, ShoppingCart } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { ReactNode } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 interface WishItemProps {
   id: string;
@@ -30,13 +32,27 @@ export default function WishItem({
 }: WishItemProps) {
 
   const dispatch = useDispatch();
+    // Used to disable the click function of wish items when friends sidebar is showing 
+    const isSidebarOpen = useSelector((state: RootState) => state.friendsSidebar.isSidebarOpen);
+
+    // Wrapper component to enable/disable link functionality of WishItem
+  function EnableAnchor({enable, children} : {children: ReactNode, enable: boolean}): ReactNode {
+    if (enable){
+      return (
+      <a href={productUrl} target={"_blank"}>
+        {children}
+        </a>)
+    }
+
+    return (<div>{children}</div>)
+  }
 
   return (
     <div className="relative">
-    <a href={productUrl} target={"_blank"} >
+   <EnableAnchor enable={!isSidebarOpen}>
     <div
       style={{ width: 200 }}
-      className={` p-4 rounded-xl border border-slate-300`}
+      className={` p-4 rounded-xl border ${!isSidebarOpen && 'hover:bg-gray-200'} border-slate-300`}
     >
       <div className="relative">
       {imageUrl == '' ? <div style={{ height: 150 }} className=" w-full bg-slate-300">
@@ -52,7 +68,8 @@ export default function WishItem({
       </a>}
       </div>
     </div>
-    </a>
+    </EnableAnchor>
+
     {owner  && <div style={{top:130, right: 10, }} className="absolute flex">
         <button onClick={() => {
           dispatch(updateCurrentPopup('editProduct'))

@@ -3,8 +3,6 @@
 import { mongoClient } from "@/lib/mongodb";
 import { ProductType } from "@/lib/types/products";
 
-
-
 export async function getUserProducts(id: string) {
     try {
         const db = mongoClient.db('hitmygift');

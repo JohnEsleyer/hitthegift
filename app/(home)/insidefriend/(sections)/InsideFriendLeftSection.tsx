@@ -13,12 +13,14 @@ import { Friend } from "@/lib/types/friend";
 import { updateFriendName } from "@/lib/features/insideFriend";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 import FriendProfileSkeleton from "@/components/skeletons/FriendProfileSkeleton";
+import { getProfilePicture } from "@/app/actions/s3/getProfilePicture";
 
 // Selected friend page
 export default function InsideFriendLeftSection(){
     const dispatch = useDispatch();
 
     const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
+    const [profileImageUrl, setProfileImageUrl] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [hobbiesInfo, setHobbiesInfo] = useState('');
@@ -53,6 +55,16 @@ export default function InsideFriendLeftSection(){
             }
         });
 
+        // Fetch friend's profile image 
+        const fetchFriendProfilePicture = async () => {
+            const response = await getProfilePicture(friendId);
+            if (response.success){
+                setProfileImageUrl(response.data || '');
+            }
+        }
+        
+        fetchFriendProfilePicture();
+
 
     },[]);
 
@@ -66,7 +78,9 @@ export default function InsideFriendLeftSection(){
                     {/**Friend's profile */}
                     <div className="flex  p-2">
                         <div className="flex items-center">
-                            <Avvvatars size={45} value={name}/>
+                            {profileImageUrl == '' ? <Avvvatars size={45} value={name}/> : <div>
+                                <img src={profileImageUrl} className="rounded-full " alt="" width={60} height={60}/>
+                                </div> }
                         </div>
                        <div className="p-2">
                        <p>{name}</p>
