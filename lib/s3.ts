@@ -1,7 +1,5 @@
 import AWS from 'aws-sdk';
 
-
-
 // Endpoint is in DigitalOcean
 const spacesEndpoint = new AWS.Endpoint(process.env.SPACES_ENDPOINT || '');
 

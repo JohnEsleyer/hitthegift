@@ -5,6 +5,7 @@ import { RootState } from '@/lib/store';
 import { Gift, ImageUp } from 'lucide-react';
 import { useTransition, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { EmptyItem } from './EmptyItem';
 
 interface ProductImageUploaderProps {
   productId: string;
@@ -78,18 +79,7 @@ export default function ProductImageUploader({
   return (
     <div className="relative">
       {imageUrl === '' ? (
-        <div
-          style={{
-            width: width,
-            height: height,
-            backgroundColor: '#e0e0e0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Gift color="#7d7d7d" />
-        </div>
+        <EmptyItem width={width} height={height}/>
       ) : (
         <img
           className="rounded-md"

@@ -3,7 +3,9 @@
 import acceptFriendRequest from "@/app/actions/user/acceptFriendRequest";
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import getFriendRequests from "@/app/actions/user/getFriendRequests";
+import { DebouncedInput } from "@/components/DebounceInput";
 import FriendSkeleton from "@/components/skeletons/FriendSkeleton";
+import UserProfileImage from "@/components/UserProfileImage";
 import {
   updateIsSidebarOpen,
   updateToDeleteFriend,
@@ -27,6 +29,9 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   const [isPending, startTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [searchResults, setSearchResults] = useState<Friend[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
 
   // States about Friend Request
   const [friendRequests, setFriendRequests] = useState<
@@ -38,6 +43,23 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   // Did the sidebar just opened? Used to prevent some useEffect to be perform actions on initial render
   const [justOpened, setJustOpened] = useState(true);
 
+  const handleSearch = (query: string) => {
+    setSearchLoading(true);
+    const trimmedQuery = query.trim().toLowerCase();
+    const results = friends.filter(
+      (friend) =>
+        friend.firstName.toLowerCase().includes(trimmedQuery) ||
+        friend.lastName.toLowerCase().includes(trimmedQuery)
+    );
+
+    setSearchResults(results);
+    setSearchLoading(false);
+  };
+
+  const handleSearchWait = () => {
+    setSearchLoading(true);
+  };
+
   function fetchFriends() {
     dispatch(updateIsSidebarOpen(true));
     startTransition(async () => {
@@ -46,6 +68,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
       console.log(`status: ${results?.status}`);
       if (results) {
         setFriends(results.friends || []);
+        setSearchResults(results.friends || []);
       }
 
       setJustOpened(false);
@@ -84,7 +107,20 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   return (
     <div className="h-full overflow-auto">
       <div className="flex items-center rounded-xl p-2 bg-white w-fulls">
-        <input type="text" style={{ width: 230 }} placeholder="Search friend" />
+        <DebouncedInput 
+          onUserStopTyping={handleSearch}
+          onWait={handleSearchWait}
+          placeholder="Search friends..."
+          fontSize={16}
+          delay={20000}
+          width={300}
+          isCenter={false}
+          value=""
+          onChange={(event) => {
+            setSearchInput(event.target.value);
+          }}
+
+        />
         <Search style={{ width: 26, height: 20, strokeWidth: 3 }} />
       </div>
 
@@ -100,56 +136,71 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
         </div>
       ) : (
         <div>
-          <p>Requests</p>
-          {friendRequests.length > 0 ? <div>
-            {friendRequests.map((friendRequest) => (
-              <div key={friendRequest.id} className="flex border border-gray-400 border-2 rounded-2xl pl-2 pr-2 p-1 mt-2 flex justify-between">
-                <div className="flex items-center">
-                  {friendRequest.sender.imageUrl == "" ? (
-                    <Avvvatars
-                      size={48}
-                      value={friendRequest.sender.firstName}
-                    />
-                  ) : (
-                    <img
-                      src={friendRequest.sender.imageUrl}
-                      width={40}
-                      height={40}
-                    />
-                  )}
-                  <p>{friendRequest.sender.firstName}</p>
+       
+          {friendRequests.length > 0 ? (
+            <div>
+              {!searchLoading && searchInput.length == 0 && 
+              <div>
+                   <p>Requests</p>
+              {friendRequests.map((friendRequest) => (
+                <div
+                  key={friendRequest.id}
+                  className="flex border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2 flex justify-between"
+                >
+                  <div className="flex items-center">
+                    {friendRequest.sender.imageUrl == "" ? (
+                      <Avvvatars
+                        size={48}
+                        value={friendRequest.sender.firstName}
+                      />
+                    ) : (
+                      <img
+                        className="border rounded-full"
+                        src={friendRequest.sender.imageUrl}
+                        alt={friendRequest.sender.imageUrl}
+                        width={48}
+                        height={48}
+                      />
+                    )}
+                    <p>{friendRequest.sender.firstName}</p>
+                  </div>
+                  <div className="flex">
+                    <button
+                      onClick={() => {
+                        handleAcceptFriendRequest(friendRequest.id);
+                        // Remove the accepted friend request from state
+                        setFriendRequests((prev) =>
+                          prev.filter(
+                            (element) => element.id !== friendRequest.id
+                          )
+                        );
+                      }}
+                    >
+                      <Check color={"green"} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        dispatch(updateToDeleteFriendRequest(friendRequest.id));
+                        dispatch(updateCurrentPopup("deleteFriendRequest"));
+                      }}
+                    >
+                      <X color={"red"} />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex">
-                  <button
-                    onClick={() => {
-                      handleAcceptFriendRequest(friendRequest.id);
-                      // Remove the accepted friend request from state
-                      setFriendRequests((prev) =>
-                        prev.filter(
-                          (element) => element.id !== friendRequest.id
-                        )
-                      );
-                    }}
-                  >
-                    <Check color={"green"} />
-                  </button>
-                  <button
-                    onClick={() => {
-                      dispatch(updateToDeleteFriendRequest(friendRequest.id));
-                      dispatch(updateCurrentPopup("deleteFriendRequest"));
-                    }}
-                  >
-                    <X color={"red"} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div> : <div className="flex justify-center items-center text-gray-300">No Friend Request</div>}
+              ))}
+              </div>}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center text-gray-300">
+              No Friend Request
+            </div>
+          )}
         </div>
       )}
 
       {/**Friends Section */}
-      {isPending ? (
+      {isPending || searchLoading ? (
         <div>
           <FriendSkeleton />
           <FriendSkeleton />
@@ -159,17 +210,24 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
         </div>
       ) : (
         <div>
-          {friends.length > 0 ? (
+          {searchResults.length > 0 ? (
             <div>
               <p>Friends</p>
-              {friends.map((friend) => (
+            <div>
+              {searchResults.map((friend) => (
                 <div
                   key={friend.id}
-                  className="border border-gray-400 border-2 rounded-2xl pl-2 pr-2 p-1 mt-2  flex justify-between "
+                  className="border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2  flex justify-between "
                 >
                   <div className="flex items-center gap-2 ">
                     <div className="flex justify-center items-center w-12 h-12 bg-blue-400 rounded-full">
-                      <Avvvatars size={48} value={friend.firstName} />
+                      <UserProfileImage
+                        userId={friend.id}
+                        alt={friend.firstName}
+                        userName={friend.firstName}
+                        width={48}
+                        height={48}
+                      />
                     </div>
                     <span>{friend.firstName}</span>
                   </div>
@@ -184,12 +242,17 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
                   </button>
                 </div>
               ))}
+              </div>
             </div>
           ) : (
             <div className="text-gray-400 mt-24 flex justify-center items-center">
               No friends to show
             </div>
           )}
+          {/* Display a message when there are no search results */}
+          {/* {!searchLoading && searchResults.length === 0 && (
+            <div>No friends found</div>
+          )} */}
         </div>
       )}
     </div>

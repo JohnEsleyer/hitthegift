@@ -6,6 +6,7 @@ import { RootState } from "@/lib/store";
 import { Edit, Link, Pencil, ShoppingCart } from "lucide-react";
 import { ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { EmptyItem } from "./EmptyItem";
 
 interface WishItemProps {
   id: string;
@@ -55,8 +56,7 @@ export default function WishItem({
       className={` p-4 rounded-xl border ${!isSidebarOpen && 'hover:bg-gray-200'} border-slate-300`}
     >
       <div className="relative">
-      {imageUrl == '' ? <div style={{ height: 150 }} className=" w-full bg-slate-300">
-        </div> : <div style={{height: 150}} className="flex justify-center border rounded-2xl"><img src={imageUrl} /></div>}
+      {imageUrl == '' ? <EmptyItem width={165} height={150}/> : <div style={{height: 150}} className="flex justify-center border rounded-2xl"><img src={imageUrl} alt={imageUrl}/></div>}
       
       </div>
       <p style={{fontSize: 12}} className="line-clamp-3 h-16 flex justisfy-center mt-2">{title}</p>

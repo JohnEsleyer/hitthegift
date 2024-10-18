@@ -33,8 +33,6 @@ export default function FriendsListRightSection(){
         });
     }, []);
 
-    
-
     return (
         <div className="ml-8 h-screen">
             {/**Search bar */}

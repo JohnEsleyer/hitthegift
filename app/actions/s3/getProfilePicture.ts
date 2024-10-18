@@ -20,7 +20,7 @@ export async function getProfilePicture(userId: string) {
     await s3.headObject(params).promise();
 
     // Construct the file URL since it exists
-    const fileUrl = `https://${bucketName}.${process.env.SPACES_CDN_ENDPOINT}/${userId}.webp`;
+    const fileUrl = `https://${bucketName}.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/${userId}.webp`;
 
     console.log(fileUrl);
     console.log('fetchProfilePicture: Success');

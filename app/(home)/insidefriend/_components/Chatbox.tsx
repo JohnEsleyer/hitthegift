@@ -4,12 +4,13 @@ import createMessage from "@/app/actions/chat/createMessage";
 import fetchMessages from "@/app/actions/chat/fetchMessages";
 import { ChatBubble } from "@/components/ChatBubble";
 import ChatboxSkeleton from "@/components/skeletons/ChatboxSkeleton";
+import UserProfileImage from "@/components/UserProfileImage";
 import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
 import { RootState } from "@/lib/store";
 import { ChatMessage, Message } from "@/lib/types/message";
 import { getLastElement } from "@/utils/getLastElement";
 import Avvvatars from "avvvatars-react";
-import { Minus, Send } from "lucide-react";
+import { Minus, RotateCcw, Send } from "lucide-react";
 import { WithId } from "mongodb";
 import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,7 +33,8 @@ export default function Chatbox() {
   const [isSending, startSendingTransition] = useTransition();
 
   const handleSend = () => {
-
+    
+    if (messageContent.length !== 0){
 
     setMessages((prev) => [
       ...prev,
@@ -58,6 +60,7 @@ export default function Chatbox() {
       }
     })
     setMessageContent('');
+  }
   };
 
   useEffect(() => {
@@ -81,7 +84,7 @@ export default function Chatbox() {
   },[isSending])
 
 
-  useEffect(() => {
+  const handleFetchMessages = ()=>{
     startChatTransition(async () => {
       console.log(`id sent to server: ${userId}`);
       try{
@@ -111,7 +114,13 @@ export default function Chatbox() {
         console.log(e);
       }
     })
+  }
+
+  useEffect(() => {
+    handleFetchMessages();
   }, []);
+
+  
 
 
   return (
@@ -121,10 +130,21 @@ export default function Chatbox() {
     >
       <div className="w-full flex justify-between shadow-md p-2 h-12 ">
         <div className="flex items-center gap-2">
-          <Avvvatars value={friendName} />
+          <UserProfileImage
+            userId={friendId}
+            userName={friendName}
+            alt={""}
+            width={30}
+            height={30}
+          />
           <span>{friendName}</span>
         </div>
-        <div className="p-2">
+        <div className="flex items-center gap-1 p-2">
+          <button  onClick={() => {
+            handleFetchMessages();
+          }}>
+            <RotateCcw size={20} />
+          </button>
           <button
             onClick={() => {
               dispatch(updateIsOpenChatbox(false));
@@ -137,7 +157,8 @@ export default function Chatbox() {
       <div className="flex-1 overflow-auto overflow-x-hidden ">
         {!isPending ? (
           <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-            {messages.map((chatMessage, index) => {
+            {messages.length > 0 ? <div>
+              {messages.map((chatMessage, index) => {
               // const isUserMessage = chatMessage.message.sender === userId;
 
               return (<ChatBubble
@@ -148,7 +169,9 @@ export default function Chatbox() {
                 deliveryStatus={chatMessage.status}
                 isSender={chatMessage.message.sender == userId}
               />);
-            })}
+            })}</div> : <div style={{height: 250}} className="w-full flex justify-center items-center text-gray-300">
+                No Messages
+              </div>}
           </div>
         ) : (
           <div className="flex-1 overflow-auto overflow-x-hidden">

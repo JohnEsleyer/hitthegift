@@ -17,6 +17,10 @@ import { insertMyListEvent, updateEventStore, updateMyListEvents } from "@/lib/f
 import { updateEditEventDate, updateEditEventInvitedFriends, updateEditEventTitle } from "@/lib/features/editEventsPopup";
 import { convertTo12HourFormat, getMeridiem } from "@/utils/convertTo12Hour";
 import { updateEvent } from "@/app/actions/events/updateEvent";
+import UserProfileImage from "@/components/UserProfileImage";
+import giftloading from '/public/giftloading.svg';
+import { CircleSkeleton } from "@/components/skeletons/CircleSkeleton";
+
 
 const getCurrentDate = () => {
   const today = new Date();
@@ -218,26 +222,43 @@ export default function EditEventPopup() {
         />
       </div>
       {/**Friend Section **/}
-      <div>
+      <div className="w-full">
         <span className="text-xl pt-2">Friend you{"'"}ll share this event</span>
         <div className="flex gap-2 overflow-auto w-96 h-8 ">
           <div className="flex w-full">
             {selectedFriends.map((friend) => (
               <div key={friend.id} onClick={() => handleRemoveSelectedFriend(friend)}>
-                <Avvvatars  value={`${friend.firstName}`} />
+                <UserProfileImage
+                userId={friend.id}
+                userName={friend.firstName}
+                alt=""
+                width={30}
+                height={30}
+                /> 
               </div>
             ))}
           </div>
         </div>
         <span className="text-xl pt-2 ">Select Friend</span>
-        <div className="h-8">
+        <div className="h-8 w-full">
           {isFriendPending ? (
-            <div>Loading...</div>
+            <div className="flex">
+              <CircleSkeleton height={30} width={30}/>
+              <CircleSkeleton height={30} width={30}/>
+              <CircleSkeleton height={30} width={30}/>
+              <CircleSkeleton height={30} width={30}/>
+            </div>
           ) : (
             <div className="flex w-full">
               {friends.map((friend) => (
                 <div key={friend.id} onClick={() => handleSelectFriend(friend)}>
-                  <Avvvatars  value={`${friend.firstName}`} />
+                     <UserProfileImage
+                      userId={friend.id}
+                      userName={friend.firstName}
+                      alt=""
+                      width={30}
+                      height={30}
+                      /> 
                 </div>
               ))}
             </div>

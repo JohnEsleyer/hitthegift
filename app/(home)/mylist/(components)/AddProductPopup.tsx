@@ -43,45 +43,52 @@ export default function AddProductPopup() {
   const clickAddProduct = async () => {
     setIsLoading(true);
     try {
-      // Upload selectedImage to S3
-      // 1. Convert base64 file string to FormData
-      const formData = handleBase64ToFormData(
-        selectedImage,
-        "productImage.webp"
-      );
-
       const productId = await createObjectId();
-
-      // 2. Upload
-      const result = await uploadProductImage(formData, productId.toString());
-      
-      if (result.success){
-        console.log("creating product");
+    
+      // Function to create a product
+      const createNewProduct = async (imageUrl: string) => {
+        console.log("Creating product...");
         const responseData = await createProduct({
           _id: productId.toString(),
-          userId: userId,
+          userId,
           title: productName,
-          currency: currency,
-          price: price,
-          productUrl: productUrl,
-          imageUrl: result.url || '',
-          description: productDescription,
+          currency: currency || '',
+          price: price || '',
+          productUrl: productUrl || '',
+          imageUrl,
+          description: productDescription || '',
         });
-        console.log("product created");
-  
+    
         if (responseData.data) {
           console.log(responseData.message);
           setResponse(responseData);
-  
           dispatch(insertMyListProduct(responseData.data));
+        } else {
+          console.error('Failed to create product', responseData);
         }
-      }else{
-        console.error('Failed to upload product image');
+      };
+    
+      // Check if user has selected an image
+      if (selectedImage.length > 0) {
+        // Convert base64 file string to FormData
+        const formData = handleBase64ToFormData(
+          selectedImage,
+          "productImage.webp"
+        );
+    
+        // Upload the image to S3
+        const result = await uploadProductImage(formData, productId.toString());
+    
+        // Create a product with the uploaded image URL
+        await createNewProduct(result.url || '');
+      } else {
+        // Create a product without an image
+        await createNewProduct('');
       }
-     
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error('Error creating product:', error);
     }
+    
 
     setTimeout(() => {
       dispatch(updateCurrentPopup("none"));

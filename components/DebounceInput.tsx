@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 interface DebounceInputProps{
     onUserStopTyping: (value: string) => void;
     onWait: () => void;
+    onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
     placeholder: string;
     fontSize: number;
     delay: number;
@@ -16,6 +17,7 @@ interface DebounceInputProps{
 export function DebouncedInput({
     onUserStopTyping,
     onWait,
+    onChange,
     placeholder,
     fontSize,
     delay,
@@ -28,6 +30,9 @@ export function DebouncedInput({
       const [inputValue, setInputValue] = useState(value || '');
 
       const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if(onChange){
+          onChange(event);
+        }
         const {value} = event.target;
         setInputValue(value);
   

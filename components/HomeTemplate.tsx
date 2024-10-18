@@ -19,7 +19,8 @@ import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversatio
 import { Conversation } from "@/lib/types/conversation";
 import { WithId } from "mongodb";
 import Friends from '/public/friends.png';
-import UserProfile from "./UserProfile";
+import UserProfile from "./EditableUserProfile";
+import UserProfileImage from "./UserProfileImage";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -37,6 +38,7 @@ export default function HomeTemplate({
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const isOpenChatbox = useSelector((state: RootState) => state.insideFriend.isOpenChatbox);
   const userId = useSelector((state: RootState) => state.userData.id);
+  const userName = useSelector((state: RootState) => state.userData.firstName);
   const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
   const userFirstname = useSelector((state: RootState) => state.userData.firstName);
   const dispatch = useDispatch();
@@ -75,7 +77,13 @@ export default function HomeTemplate({
                     setShowProfileOptions((prev) => !prev);
                   }}
                 >
-                <UserProfile width={30} height={30} />
+               <UserProfileImage
+                userId={userId}
+                userName={userName}
+                width={30}
+                height={30}
+                alt={""}
+               />
                 </button>
                 {showProfileOptions && (
                   <ul

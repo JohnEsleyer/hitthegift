@@ -14,7 +14,7 @@ export default function FriendProfileSkeleton(){
             </div>
         </div>
         <span className="text-xl font-bold bg-gray-300 rounded w-40 h-6 mb-2"></span> {/* Interests header placeholder */}
-        <div style={{ height: 120, width: 260 }} className="shadow-md border rounded-2xl p-2">
+        <div style={{ height: 120, width: 290 }} className="shadow-md border rounded-2xl p-2">
             <div className="h-full bg-gray-300 rounded"></div> {/* Hobbies info placeholder */}
         </div>
         <div style={{ height: 100 }}></div>

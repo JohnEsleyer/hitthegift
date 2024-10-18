@@ -68,7 +68,7 @@ export default function MyListLeftSection() {
         <div className={""}>
           <div>
             <div
-              style={{ height: 665 }}
+              style={{ height: 675 }}
               className=" flex flex-col border rounded-2xl"
             >
               {/* <span>{hobbiesInfo}</span> */}

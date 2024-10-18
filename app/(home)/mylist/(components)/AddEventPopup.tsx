@@ -13,6 +13,8 @@ import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
 import Loading from '/public/loading.svg';
 import Image from 'next/image';
 import { insertMyListEvent, updateMyListEvents } from "@/lib/features/mylist";
+import UserProfileImage from "@/components/UserProfileImage";
+import { CircleSkeleton } from "@/components/skeletons/CircleSkeleton";
 
 
 const getCurrentDate = () => {
@@ -207,7 +209,13 @@ export default function AddEventPopup() {
           <div className="flex w-full">
             {selectedFriends.map((friend) => (
               <div key={friend.id} onClick={() => handleRemoveSelectedFriend(friend)}>
-                <Avvvatars  value={`${friend.firstName}`} />
+                  <UserProfileImage
+                      userId={friend.id}
+                      userName={friend.firstName}
+                      alt=""
+                      width={30}
+                      height={30}
+                      /> 
               </div>
             ))}
           </div>
@@ -215,12 +223,23 @@ export default function AddEventPopup() {
         <span className="text-xl pt-2 ">Select Friend</span>
         <div className="h-8">
           {isFriendPending ? (
-            <div>Loading...</div>
+            <div className="flex">
+            <CircleSkeleton height={30} width={30}/>
+            <CircleSkeleton height={30} width={30}/>
+            <CircleSkeleton height={30} width={30}/>
+            <CircleSkeleton height={30} width={30}/>
+          </div>
           ) : (
             <div className="flex w-full">
               {friends.map((friend) => (
                 <div key={friend.id} onClick={() => handleSelectFriend(friend)}>
-                  <Avvvatars  value={`${friend.firstName}`} />
+                   <UserProfileImage
+                      userId={friend.id}
+                      userName={friend.firstName}
+                      alt=""
+                      width={30}
+                      height={30}
+                      /> 
                 </div>
               ))}
             </div>

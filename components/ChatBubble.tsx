@@ -5,6 +5,7 @@ import Avvvatars from "avvvatars-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Image from 'next/image';
+import UserProfileImage from "./UserProfileImage";
 
 interface ChatBubbleProps {
   avatarUrl: string;
@@ -23,17 +24,15 @@ export function ChatBubble({
   }: ChatBubbleProps){
 
     const userName = useSelector((state: RootState) => state.userData.firstName);
+    const userId = useSelector((state: RootState) => state.userData.id);
     const friendName = useSelector((state: RootState) => state.insideFriend.friendName);
+    const friendId = useSelector((state: RootState) => state.insideFriend.friendId)
 
     return (
       <div className={`flex items-start ${isSender ? 'justify-end' : 'justify-start'}`}>
       {!isSender && (
         <div className="pl-2 pt-2">
-        {avatarUrl ? <Image
-          className="w-8 h-8 rounded-full"
-          src={avatarUrl}
-          alt={`${friendName}'s avatar`}
-        /> : <Avvvatars value={`${friendName}`} /> }
+        <UserProfileImage userId={friendId} userName={friendName} alt="" width={30} height={30}/>
         </div>
       )}
       <div>
@@ -58,11 +57,7 @@ export function ChatBubble({
       
       {isSender && (
         <div className="pr-2 pt-2">
-        {avatarUrl ?  <Image
-          className="w-8 h-8 rounded-full"
-          src={avatarUrl}
-          alt={`${userName}'s avatar`}
-        /> : <Avvvatars value={`${userName}`} /> }
+        <UserProfileImage userId={userId} userName={userName} alt="" width={30} height={30}/>
         </div>
       )}
     </div>

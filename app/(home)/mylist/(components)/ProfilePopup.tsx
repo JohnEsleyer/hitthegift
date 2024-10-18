@@ -7,7 +7,7 @@ import getUserInfo from "@/app/actions/user/getUserInfo";
 
 import updateUserBirthday from "@/app/actions/user/updateUserBirthday";
 
-import UserProfile from "@/components/UserProfile";
+import UserProfile from "@/components/EditableUserProfile";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import { DebouncedInput } from "@/components/DebounceInput";
 import updateUserFirstName from "@/app/actions/user/updateUserFirstName";
@@ -107,7 +107,7 @@ export default function AddEventPopup() {
             )}
           </div>
 
-          <UserProfile width={120} height={120} allowEdit={true} />
+          <UserProfile width={120} height={120} />
           <div className="mt-2 flex justify-center">
             <DebouncedInput
               value={firstName}

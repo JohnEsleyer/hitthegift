@@ -14,6 +14,7 @@ import { updateFriendName } from "@/lib/features/insideFriend";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 import FriendProfileSkeleton from "@/components/skeletons/FriendProfileSkeleton";
 import { getProfilePicture } from "@/app/actions/s3/getProfilePicture";
+import UserProfileImage from "@/components/UserProfileImage";
 
 // Selected friend page
 export default function InsideFriendLeftSection(){
@@ -88,14 +89,21 @@ export default function InsideFriendLeftSection(){
                        </div>
                     </div>
                     <span className="text-xl font-bold">Interests and hobbies</span>
-                    <div style={{height: 120, width: 260}} className="shadow-md border rounded-2xl  p-2">
+                    <div style={{height: 120, width: 290}} className="shadow-md border rounded-2xl  p-2">
                         {hobbiesInfo}
                     </div>
                     <div style={{height: 100}}></div>
                     <span>People with whom this list has been shared</span>
                     {isFriendsPending ? <div>Loading...</div> :  <div className="flex">
                         {friends.map((friend) => (
-                            <Avvvatars key={friend.id} value={friend.firstName}/>
+                            <UserProfileImage
+                                key={friend.id}
+                                userId={friend.id}
+                                userName={friend.firstName}
+                                alt=""
+                                width={30}
+                                height={30}
+                            />
                         ))}
                     </div> }
                 </div>}

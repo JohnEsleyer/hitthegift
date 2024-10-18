@@ -7,13 +7,12 @@ import { Pen, Pencil } from "lucide-react";
 import { useTransition, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-interface UserProfileProps{
+interface EditableUserProfileProps{
     width: number;
     height: number;
-    allowEdit?: boolean;
 }
 
-export default function UserProfile({width, height, allowEdit}:UserProfileProps){
+export default function EditableUserProfile({width, height}:EditableUserProfileProps){
     const userId = useSelector((state: RootState) => state.userData.id);
     const userName = useSelector((state: RootState) => state.userData.firstName);
     const [isPending, startTransition] = useTransition();
@@ -89,15 +88,15 @@ export default function UserProfile({width, height, allowEdit}:UserProfileProps)
             {isPending ? <div className="profile-skeleton" style={{ width: width, height: height }}></div>
              : 
              <div>
-                {imageUrl == "" ? <Avvvatars value={userName} size={width}/> : <img className="rounded-full" src={imageUrl} width={width} height={height}/>}
+                {imageUrl == "" ? <Avvvatars value={userName} size={width}/> : <img className="rounded-full" src={imageUrl} alt={imageUrl} width={width} height={height}/>}
             </div>}
-            {allowEdit && <div style={{zIndex: 99, bottom:10, right:10}} className="absolute">
+          <div style={{zIndex: 99, bottom:10, right:10}} className="absolute">
                 <button onClick={()=>{setShowProfileOptions((prev) => !prev)}}><Pencil/></button>
                 {showProfileOptions && <div style={{zIndex: 100, width: 220}} className="p-2 absolute bg-white shadow-md">
                     <input type="file" onChange={handleFileChange} accept="image/*" style={{width: 210}} className="text-xs" />
                     <button onClick={handleUpload} className="mt-2 pl-2 pr-2 w-full border border-2xl border-black ">Upload</button>
                 </div>}
-            </div>}
+            </div>
 
         </div>
     )

@@ -33,7 +33,6 @@ const friendsSidebarSlice = createSlice({
             return {
                 ...state,
                 isSidebarOpen: action.payload,
-                
             }
         }
     }
