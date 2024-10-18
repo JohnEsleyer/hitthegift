@@ -40,7 +40,7 @@ export default function DeleteFriendRequestPopup() {
       style={{ height: 230 }}
       className="flex flex-col justify-center border border-gray items-center rounded-2xl p-16 bg-white "
     >
-      <p className="mt-4">Are you sure you want to delete this friend request?</p>
+      <p className="mt-4">Are you sure you want to reject this friend request?</p>
       <div className="flex gap-4 mt-4">
         <button
           onClick={handleDeleteFriendRequest}

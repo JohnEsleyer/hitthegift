@@ -26,8 +26,6 @@ export default function MyListRightSection() {
   const userId = useSelector((state: RootState) => state.userData.id);
   const products = useSelector((state: RootState) => state.mylist.products);
 
-  // Used to disable the click function of wish items when friends sidebar is showing 
-  const isSidebarOpen = useSelector((state: RootState) => state.friendsSidebar.isSidebarOpen);
 
 
   useEffect(() => {
