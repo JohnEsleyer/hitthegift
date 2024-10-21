@@ -25,7 +25,6 @@ export function DebouncedInput({
     isCenter,
     value,
 }: DebounceInputProps){  
-      
       const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
       const [inputValue, setInputValue] = useState(value || '');
 

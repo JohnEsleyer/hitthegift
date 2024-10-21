@@ -6,10 +6,11 @@ import { format, getDaysInMonth, startOfMonth, addDays, isSameDay } from "date-f
 
 interface CalendarProps {
     highlightedDates: Date[]; // List of dates to be highlighted
+    onClick?: (date: Date) => void; // onClick callback for when user clicks on Next or Previous buttons.
   }
 
 
-export default function EventsCalendar({ highlightedDates } : CalendarProps) {
+export default function EventsCalendar({ highlightedDates, onClick } : CalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [daysArray, setDaysArray] = useState<Date[]>([]);
   
@@ -23,6 +24,9 @@ export default function EventsCalendar({ highlightedDates } : CalendarProps) {
       }
   
       setDaysArray(days);
+      if (onClick){
+        onClick(currentDate);
+      }
     }, [currentDate]);
   
     const isHighlighted = (day: Date) => {

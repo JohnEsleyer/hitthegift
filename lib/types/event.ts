@@ -18,7 +18,7 @@ export type ServerResponseForEvents = {
 }
 
 // Type used by /friendslist
-export type MonthlyInvitedEventsResponse = {
+export type InvitedEventsResponse = {
     id: string;
     userId: string;
     date: string;

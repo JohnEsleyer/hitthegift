@@ -53,7 +53,6 @@ export default function EditEventPopup() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     // Knowing whether date hour is AM or PM
     setMeridiem(getMeridiem(new Date(dateSelected).getHours()))
 
@@ -61,7 +60,13 @@ export default function EditEventPopup() {
     startFriendTransition(async () => {
       const results = await getAllFriends(userId);
       if (results) {
-        setFriends(results.friends || []);
+        // Filter unselected friends
+
+        const filterFriends = results.friends.filter(
+          (friend) => !selectedFriends.some((selected) => selected.id === friend.id)
+        );
+        
+        setFriends(filterFriends || []);
       }
     });
 

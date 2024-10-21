@@ -13,6 +13,7 @@ import EditEventPopup from "./EditEventPopUp";
 import DeleteFriendPopup from "./DeleteFriendPopup";
 import DeleteFriendRequestPopup from "./DeleteFriendRequest";
 import { updateIsSidebarOpen } from "@/lib/features/friendsSidebar";
+import ShareWishlistPopup from "./ShareWishlistPopup";
 
 interface PopupPageProps {
   children: ReactNode;
@@ -156,7 +157,17 @@ export function Popups({ children }: PopupPageProps) {
         </div>
       )}
 
-
+      {/**Send Wishlist and Add Friend Popup */}
+      {currentPopup == "shareWishlist" && (
+        <div
+          style={{ zIndex: 999, position: "absolute" }}
+          className=" flex justify-center items-center w-screen h-screen"
+        >
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+          <ShareWishlistPopup/>
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+        </div>
+      )}
     </div>
   );
 }

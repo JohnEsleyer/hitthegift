@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EventData, MonthlyInvitedEventsResponse } from '../types/event';
+import { EventData, InvitedEventsResponse } from '../types/event';
 
 export interface FriendsListPageState {
 
-    events: MonthlyInvitedEventsResponse[];
+    events: InvitedEventsResponse[];
 }
 
 const initialState: FriendsListPageState = {
@@ -15,7 +15,7 @@ const friendsListSlice = createSlice({
     name: 'friendlistpage',
     initialState,
     reducers: {
-        updateEvents: (state, action: PayloadAction<MonthlyInvitedEventsResponse[]>) => {
+        updateEvents: (state, action: PayloadAction<InvitedEventsResponse[]>) => {
             return {
                 ...state,
                 events: action.payload,

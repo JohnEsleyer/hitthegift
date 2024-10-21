@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EventData, MonthlyInvitedEventsResponse } from '../types/event';
 
 export interface FriendsSidebarState {
     toDeleteFriend: string; // ID of friend

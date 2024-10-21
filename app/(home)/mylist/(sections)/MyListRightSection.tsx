@@ -18,7 +18,6 @@ export default function MyListRightSection() {
 
   const [isProductsPending, startProductsTransition] = useTransition();
 
-  const [showShareInput, setShowShareInput] = useState(false);
   const [friendEmail, setFriendEmail] = useState("");
   const [isSending, startSendTransition] = useTransition();
   const [isClientMounted, setIsClientMounted] = useState(false);
@@ -67,41 +66,12 @@ export default function MyListRightSection() {
           <button
             className="bg-blue-500 text-white pl-2 pr-2 rounded-full"
             onClick={() => {
-              setShowShareInput(true);
+              dispatch(updateCurrentPopup('shareWishlist'));
             }}
           >
             Share list
           </button>
-          {showShareInput && (
-            <div className="flex">
-              <input
-                style={{ width: 160 }}
-                className="rounded border p-2 text-xs"
-                placeholder="friendname@email.com"
-                value={friendEmail}
-                onChange={(e) => {
-                  setFriendEmail(e.target.value);
-                }}
-              ></input>
-              {isSending ? (
-                <div className="text-xs flex items-center justify-center p-2">
-                  Sent
-                </div>
-              ) : (
-                <button onClick={handleShareList} className="p-1">
-                  <Send color={"#0088d6"} />
-                </button>
-              )}
-              <button
-                onClick={() => {
-                  setShowShareInput(false);
-                }}
-                className="p-1"
-              >
-                <CircleX />
-              </button>
-            </div>
-          )}
+         
         </div>
       </div>
       {/**Body */}

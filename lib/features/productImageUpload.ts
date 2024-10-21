@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EventData, MonthlyInvitedEventsResponse, ServerResponseForEvents } from '../types/event';
 
 export interface ProductImageUploadState {
    base64Image: string;

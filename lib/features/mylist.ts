@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EventData, MonthlyInvitedEventsResponse, ServerResponseForEvents } from '../types/event';
+import {  ServerResponseForEvents } from '../types/event';
 import { ProductType } from '../types/products';
 
 // States for /mylist page

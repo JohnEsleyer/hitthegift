@@ -22,7 +22,21 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
 
         const receiverId = receiver._id.toString(); // Get the receiver's ID
 
-        // Create a new friend request record
+        // Check if a friend request already exists between senderId and receiverId
+        const existingRequest = await db.collection('friendRequest').findOne({
+            senderId: senderId,
+            receiverId: receiverId
+        });
+
+        if (existingRequest) {
+            console.log('Friend request already exists');
+            return {
+                status: 400,
+                message: 'Friend request already exists'
+            };
+        }
+
+        // Create a new friend request record if no existing request is found
         const friendRequest = {
             senderId: senderId,
             receiverId: receiverId
@@ -50,3 +64,4 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
         };
     }
 }
+

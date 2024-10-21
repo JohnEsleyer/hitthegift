@@ -20,6 +20,7 @@ import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 import EventSkeleton from "@/components/skeletons/EventSkeleton";
 import { updateMyListEvents } from "@/lib/features/mylist";
 import { updateEditEventAll } from "@/lib/features/editEventsPopup";
+import UserProfileImage from "@/components/UserProfileImage";
 
 export default function MyListLeftSection() {
 
@@ -141,10 +142,14 @@ export default function MyListLeftSection() {
                                 {event.invitedFriends.map((friend, index) => {
                                   if (index < 2) {
                                     return (
-                                      <Avvvatars
-                                        key={friend.id}
-                                        value={`${friend.firstName}`}
-                                      />
+                                     <UserProfileImage
+                                     key={friend.id}
+                                      userId={friend.id}
+                                      userName={friend.firstName}
+                                      alt=""
+                                      width={30}
+                                      height={30}
+                                     /> 
                                     );
                                   }
                                 })}

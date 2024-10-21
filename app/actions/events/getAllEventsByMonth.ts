@@ -8,6 +8,7 @@ import getFriendsByIds from "../user/getFriendsByIds";
 
 // Get all my events by the specified month.
 export async function getAllEventsByMonth(userId: string, month: number) {
+    console.log('Executing getAllEventsByMonth');
     try {
         const db = mongoClient.db('hitmygift');
 

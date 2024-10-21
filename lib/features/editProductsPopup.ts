@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EventData, MonthlyInvitedEventsResponse } from '../types/event';
 import { ProductType } from '../types/products';
 
 export interface EditProductPopupState {
