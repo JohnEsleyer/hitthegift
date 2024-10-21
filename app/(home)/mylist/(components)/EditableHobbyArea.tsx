@@ -8,13 +8,20 @@ import { updateHobbyInfo } from "@/lib/features/userData";
 import { RootState } from "@/lib/store";
 import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import loading from '/public/loading.svg';
+import Image from 'next/image';
 
 
-export default function EditableHobbyArea(){
+interface EditableHobbyAreaProps{
+  onPending?: (isPending: boolean) => void; // Callback for when user is still typing.
+}
+
+export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
     const [hobbiesInfo, setHobbiesInfo] = useState('');
     const [debouncedValue, setDebouncedValue] = useState(hobbiesInfo);
     const userId = useSelector((state: RootState) => state.userData.id);
     const [isTextareaPending, startTextareaTransition] = useTransition();
+    const [isTyping, setIsTyping] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -25,10 +32,20 @@ export default function EditableHobbyArea(){
         setHobbiesInfo(value);
     };
 
+
+    useEffect(() => {
+      if (onPending){
+        onPending(isTextareaPending);
+      }
+    }, [isTextareaPending]);
+
+
     // debounce mechanism
     useEffect(() => {
+        setIsTyping(true);
         const handler = setTimeout(() => {
           setDebouncedValue(hobbiesInfo); // Set the debounced value after user stops typing
+          setIsTyping(false);
         }, 1000); // Delay duration (e.g., 500ms)
     
         return () => {
@@ -65,9 +82,6 @@ export default function EditableHobbyArea(){
     
       }, []);
     
-
-
-
     return (
         <div className="flex flex-col p-2  flex items-center">
         <span style={{marginBottom: 17}} className="text-xl">My hobbies and interest</span>
@@ -75,16 +89,21 @@ export default function EditableHobbyArea(){
           key={"hobbiesInfo"}
           style={{height: 220, width: 280}}
           className="border border-2xl rounded-2xl"
-     
+          maxLength={500}
           value={hobbiesInfo}
           onChange={(e)=>{
             handleInputChange(e);
           }}
         />}
         <div 
-          className="text-gray-600 w-full flex justify-end"
+          className=" w-full flex justify-between"
           >
+            <div>
+              {isTyping && <div className="flex"><Image src={loading} alt="" width={20} height={20}/> <p>Saving</p></div>}
+            </div>
+            <div className="text-gray-600">
           {(hobbiesInfo.length || 0) + "/500"}
+            </div>
           </div>
       </div>
     )

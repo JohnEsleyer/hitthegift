@@ -23,7 +23,6 @@ export default function FriendsListLeftSection() {
 
   useEffect(() => {
     startEventsTransition(async () => {
-      const currentDate = new Date();
       const results = await getAllInvitedEvents(userId);
       console.log(`status: ${results.message}`);
       if (results) {

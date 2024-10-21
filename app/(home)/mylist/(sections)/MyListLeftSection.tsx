@@ -24,8 +24,7 @@ import UserProfileImage from "@/components/UserProfileImage";
 
 export default function MyListLeftSection() {
 
-  const [hobbiesInfo, setHobbiesInfo] = useState("");
-  const [showAddEventUI, setShowAddEventUI] = useState<boolean>(false);
+
   const userId = useSelector((state: RootState) => state.userData.id);
   // const [events, setEvents] = useState<ServerResponseForEvents[]>([]);
   const events = useSelector((state: RootState) => state.mylist.events);
@@ -40,7 +39,6 @@ export default function MyListLeftSection() {
     const fetchHobbyData = async () => {
       const hobbyData = await getUserHobbies(userId);
       if (hobbyData.status == 200) {
-        setHobbiesInfo(hobbyData.hobbiesInfo as string);
         console.log(hobbyData.message);
       }
     };
@@ -74,7 +72,7 @@ export default function MyListLeftSection() {
             >
               {/* <span>{hobbiesInfo}</span> */}
               {/** My hobbies and interests */}
-              <EditableHobbyArea />
+              <EditableHobbyArea/>
               {/**My events section */}
 
               <div>

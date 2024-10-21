@@ -13,6 +13,9 @@ import { DebouncedInput } from "@/components/DebounceInput";
 import updateUserFirstName from "@/app/actions/user/updateUserFirstName";
 import updateUserEmail from "@/app/actions/user/updateUserEmail";
 import { updateUserFirstNameStore } from "@/lib/features/userData";
+import loading from '/public/loading.svg';
+import Image from 'next/image';
+
 
 export default function AddEventPopup() {
   const userId = useSelector((state: RootState) => state.userData.id);
@@ -101,8 +104,9 @@ export default function AddEventPopup() {
         <div className="w-full flex flex-col items-center justify-center">
           <div className="flex flex-col items-left w-full h-8">
             {isSaving && (
-              <div>
-                <span className="text-xs flex">Saving</span>
+              <div className="flex" style={{width: 50}}>
+                <Image src={loading} alt="" width={20} height={20}/> 
+                <span className="text-xs flex items-center pl-2">Saving</span>
               </div>
             )}
           </div>
