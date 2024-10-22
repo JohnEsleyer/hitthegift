@@ -60,7 +60,7 @@ export default function WishItem({
       
       </div>
       <p style={{fontSize: 12}} className="line-clamp-3 h-16 flex justisfy-center mt-2">{title}</p>
-      <p className="font-bold">${price}</p>
+      <p className="font-bold">{price} {currency}</p>
       <p className="line-clamp-6 text-xs mt-2 h-24 ">{description}</p>
       <div className="flex justify-center items-center">
       {showBuyButton && <a href={productUrl} target={"_blank"} className="bg-blue-500 text-white p-2 pl-4 pr-4 rounded-2xl mt-2">

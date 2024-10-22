@@ -4,7 +4,7 @@ import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { currencies } from "../constants";
+import { currencies } from "./constants";
 import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import ProductImageUploader from "@/components/ProductImageUploader";
@@ -18,6 +18,7 @@ import { handleBase64ToFormData } from "@/utils/base64ToFormData";
 import uploadProductImage from "@/app/actions/s3/uploadProductImage";
 import { Trash2 } from "lucide-react";
 import { deleteProduct } from "@/app/actions/products/deleteProduct";
+import CountryFlag from "./CountryFlag";
 
 type ResponseData = {
   message: string;
@@ -246,18 +247,20 @@ export default function EditProductPopup() {
                         <button className=" " onClick={() => {
                             setShowCurrencyOptions((prev) => !prev);
                         }}>
-                            USD
+                            {currency}
                         </button>
                         {
                         showCurrencyOptions && (
-                            <ul style={{zIndex: 100, top: 30,right: 1 }} className="flex flex-col h-52 p-4 overflow-auto absolute mt-2 bg-white rounded shadow-md">
+                            <ul style={{zIndex: 100,width:80, top: 30,right: 1 }} className="flex flex-col h-52 p-2 overflow-auto absolute mt-2 bg-white rounded shadow-md">
                                 {currencies.map((currency) => (
-                                    <button onClick={() => {
+                                    <button
+                                    className="flex justify-between hover:bg-gray-200 w-full"
+                                    onClick={() => {
                                     //   setCurrencyInput(currency);
                                     dispatch(updateEditProductCurrency(currency));
-                                      setShowCurrencyOptions(false);
+                                    setShowCurrencyOptions(false);
                                     }} key={currency}>
-                                        {currency}
+                                        <CountryFlag currency={currency}/> <span>{currency}</span>
                                     </button>
                                 ))}
                             </ul>

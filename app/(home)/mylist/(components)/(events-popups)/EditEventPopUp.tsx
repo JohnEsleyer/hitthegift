@@ -2,7 +2,7 @@
 "use client";
 import { Calendar } from "@/components/ui/calendar";
 import { useEffect, useState, useTransition } from "react";
-import HourSelector from "./HourSelector";
+import HourSelector from "../HourSelector";
 import Avvvatars from "avvvatars-react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
