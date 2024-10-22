@@ -13,13 +13,15 @@ import { createEvent } from "@/app/actions/events/createEvent";
 import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
 import Loading from '/public/loading.svg';
 import Image from 'next/image';
-import { insertMyListEvent, updateEventStore, updateMyListEvents } from "@/lib/features/mylist";
+import { deleteMyListEvents, insertMyListEvent, updateEventStore, updateMyListEvents } from "@/lib/features/mylist";
 import { updateEditEventDate, updateEditEventInvitedFriends, updateEditEventTitle } from "@/lib/features/editEventsPopup";
 import { convertTo12HourFormat, getMeridiem } from "@/utils/convertTo12Hour";
 import { updateEvent } from "@/app/actions/events/updateEvent";
 import UserProfileImage from "@/components/UserProfileImage";
 import giftloading from '/public/giftloading.svg';
 import { CircleSkeleton } from "@/components/skeletons/CircleSkeleton";
+import { Trash2 } from "lucide-react";
+import { deleteEvent } from "@/app/actions/events/deleteEvent";
 
 
 const getCurrentDate = () => {
@@ -48,6 +50,10 @@ export default function EditEventPopup() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [handledAllError, setHandledAllError] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [isDeletePending, startDeleteTransition] = useTransition();
+  const [deleteFailed, setDeleteFailed] = useState(false);
+
   const eventId = useSelector((state: RootState) => state.editEventPopup.id);
 
   const dispatch = useDispatch();
@@ -126,7 +132,6 @@ export default function EditEventPopup() {
   };
 
   const handleSelectFriend = (friend: Friend) => {
-    // setSelectedFriends((prev) => [friend, ...prev]);
 
     const updatedSelectedFriends: Friend[] = [
         friend,
@@ -138,13 +143,75 @@ export default function EditEventPopup() {
 
   const handleRemoveSelectedFriend = (friend: Friend) => {
     setFriends((prev) => [friend, ...prev]);
-    // setSelectedFriends((prev) =>
-    //   prev.filter((element) => element.id !== friend.id)
-    // );
 
     const updatedSelectedFriends: Friend[] = selectedFriends.filter((element) => element.id !== friend.id);
     dispatch(updateEditEventInvitedFriends(updatedSelectedFriends));
   };
+
+  const handleDeleteEvent = () => {
+    startDeleteTransition(async () => {
+      setDeleteFailed(false);
+      try{
+        const res = await deleteEvent(eventId);
+        if (res){
+          console.log(res.status);
+          dispatch(deleteMyListEvents(eventId));
+          dispatch(updateCurrentPopup('none'));
+        }
+      }catch(e){
+        console.log(e);
+        setDeleteFailed(true);
+      }
+    });
+  }
+
+
+  // The following will be displayed if user clicks on the delete icon
+  if (showConfirmDelete){
+    return (
+      <div
+      style={{ height: 230 }}
+      className="flex flex-col justify-center border border-gray items-center rounded-2xl p-16 bg-white "
+    >
+      <p className="mt-4">Are you sure you want to delete this product?</p>
+      <div className="flex gap-4 mt-4">
+        <button
+          onClick={handleDeleteEvent}
+          className="text-white bg-blue-500 rounded-2xl p-2 pl-4 pr-4"
+        >
+          Yes
+        </button>
+        <button
+          onClick={() => {
+            setShowConfirmDelete(false);
+          }}
+          className="text-white bg-black rounded-2xl p-2 pl-4 pr-4"
+        >
+          No
+        </button>
+      </div>
+      <div
+        style={{ height: 40 }}
+        className="h-4 mt-2 w-full flex flex-col justify-center items-center"
+      >
+        <Image
+          className={`${!isDeletePending && "invisible"} mt-4`}
+          src={Loading}
+          alt=""
+          width={30}
+          height={30}
+        />
+         {deleteFailed && <p className={`text-red-600`}>
+          Failed to delete product
+        </p>}
+      </div>
+    </div>
+    )
+  }
+
+
+
+
 
   return (
     <div
@@ -157,7 +224,11 @@ export default function EditEventPopup() {
           <span>{getCurrentDate().month}</span>
           <span>{getCurrentDate().year}</span>
         </div>
-     
+
+        {/*Delete product */}
+        <button onClick={() => setShowConfirmDelete(true)}>
+          <Trash2 className="hover:text-red-500"/>
+        </button>
       </div>
       {/**Calendar Section **/}
       <Calendar

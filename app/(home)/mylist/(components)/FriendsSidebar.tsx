@@ -192,7 +192,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
               </div>}
             </div>
           ) : (
-            <div className="flex justify-center items-center text-gray-300">
+            <div className="mt-2 flex justify-center items-center text-gray-300">
               No Friend Request
             </div>
           )}

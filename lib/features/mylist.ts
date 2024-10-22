@@ -32,6 +32,12 @@ const myListSlice = createSlice({
                 ]
             }
         },
+        deleteMyListEvents: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                events: state.events.filter((event) => event.id == action.payload),
+            }
+        },
         updateMyListProducts: (state, action: PayloadAction<ProductType[]>) => {
             return {
                 ...state,
@@ -47,6 +53,12 @@ const myListSlice = createSlice({
                 ]
             }
         },
+        deleteMyListProductById: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                products: state.products.filter((product) => product.id !== action.payload),
+            }
+        },
         updateProductStore: (state, action: PayloadAction<ProductType>) => {
             const updatedProduct = action.payload;
             state.products = state.products.map((product) =>
@@ -56,7 +68,7 @@ const myListSlice = createSlice({
         updateEventStore: (state, action: PayloadAction<ServerResponseForEvents>) => {
             const updatedEvent = action.payload;
             state.events = state.events.map((event) => event.id === updatedEvent.id ? updatedEvent : event)
-        }
+        },
         
     }
 });
@@ -68,5 +80,7 @@ export const {
      insertMyListProduct,
      updateProductStore,
      updateEventStore,
+     deleteMyListProductById,
+     deleteMyListEvents
     } = myListSlice.actions;
 export default myListSlice.reducer; // Ensure this exports the reducer

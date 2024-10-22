@@ -132,14 +132,7 @@ export default function AddEventPopup() {
           <span>{getCurrentDate().month}</span>
           <span>{getCurrentDate().year}</span>
         </div>
-        <button
-          className="underline"
-          onClick={() => {
-            dispatch(updateCurrentPopup("none"));
-          }}
-        >
-          Close
-        </button>
+       
       </div>
       {/**Calendar Section **/}
       <Calendar

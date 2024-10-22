@@ -23,14 +23,14 @@ import { updateEditEventAll } from "@/lib/features/editEventsPopup";
 import UserProfileImage from "@/components/UserProfileImage";
 
 export default function MyListLeftSection() {
-
-
   const userId = useSelector((state: RootState) => state.userData.id);
   // const [events, setEvents] = useState<ServerResponseForEvents[]>([]);
   const events = useSelector((state: RootState) => state.mylist.events);
   const [isEventsPending, startEventsTransition] = useTransition();
   const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
   const [isClientMounted, setIsClientMounted] = useState(false);
+  const [displayedEvents, setDisplayedEvents] = useState<ServerResponseForEvents[]>([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const dispatch = useDispatch();
 
@@ -60,6 +60,25 @@ export default function MyListLeftSection() {
       }
     });
   }, []);
+
+  useEffect(() => {
+
+    // Filter events by the selected month
+    const filteredEvents = events.filter((event) => {
+      const tempDate = new Date(event.date);
+      return tempDate.getMonth() === selectedDate.getMonth();
+    });
+
+    // Sort the filtered events by date (earliest to latest)
+    const sortedEvents = filteredEvents.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateA - dateB; // Ascending order (earliest date first)
+    });
+
+    setDisplayedEvents(sortedEvents);
+  }, [selectedDate]);
+
 
   return (
     <HomeLeftTemplate highlight="mylist">
@@ -102,8 +121,8 @@ export default function MyListLeftSection() {
                       style={{ height: 130 }}
                       className="overflow-auto w-full flex flex-col items-between "
                     >{isClientMounted && <div className="h-full w-full">
-                      {events.length > 0 ?
-                        events.map((event) => (
+                      {displayedEvents.length > 0 ?
+                        displayedEvents.map((event) => (
                           <button
                             onClick={() => {
                               dispatch(updateEditEventAll({
@@ -170,10 +189,12 @@ export default function MyListLeftSection() {
                   )}
                 </div>
               </div>
-
               {/**Calendar Section */}
               <div className="transformCalendar flex pr-4 items-center justify-center w-full">
-                <EventsCalendar highlightedDates={highlightedDates} />
+                <EventsCalendar 
+                  highlightedDates={highlightedDates}
+                  onClick={(date) => setSelectedDate(date)}
+                />
               </div>
             </div>
           </div>
@@ -182,3 +203,4 @@ export default function MyListLeftSection() {
     </HomeLeftTemplate>
   );
 }
+

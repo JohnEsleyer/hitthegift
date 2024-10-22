@@ -9,13 +9,15 @@ import Image from 'next/image';
 import Loading from '/public/loading.svg';
 import ProductImageUploader from "@/components/ProductImageUploader";
 import { v4 as uuidv4 } from 'uuid';
-import { insertMyListProduct, updateProductStore } from "@/lib/features/mylist";
+import { deleteMyListProductById, insertMyListProduct, updateProductStore } from "@/lib/features/mylist";
 import { updateEditProductCurrency, updateEditProductDescription, updateEditProductPrice, updateEditProductProductUrl, updateEditProductTitle } from "@/lib/features/editProductsPopup";
 import { updateProduct } from "@/app/actions/products/updateProduct";
 import { imageUrlToBase64 } from "@/utils/imageUrlToBase64";
 import { updateBase64Image } from "@/lib/features/productImageUpload";
 import { handleBase64ToFormData } from "@/utils/base64ToFormData";
 import uploadProductImage from "@/app/actions/s3/uploadProductImage";
+import { Trash2 } from "lucide-react";
+import { deleteProduct } from "@/app/actions/products/deleteProduct";
 
 type ResponseData = {
   message: string;
@@ -39,7 +41,10 @@ export default function EditProductPopup() {
   const selectedImage = useSelector((state: RootState) => state.productImageUpload.base64Image);
   const productImageUrl = useSelector((state: RootState) => state.editProductPopup.imageUrl);
   const productId = useSelector((state: RootState) => state.editProductPopup.id);
-  
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [isDeletePending, startDeleteTransition] = useTransition();
+  const [deleteFailed, setDeleteFailed] = useState(false);
+
   useEffect(() => {
     // This code makes sure that the imageUrl of the product being edited is the one displayed
     const handleImageConversion = async () => {
@@ -116,12 +121,86 @@ export default function EditProductPopup() {
       }, 3000);
   };
 
+
+
+  const handleDeleteProduct = () => {
+    startDeleteTransition(async ()=>{
+      setDeleteFailed(false);
+      try{
+        const res = await deleteProduct(productId);
+        if (res){
+          console.log(res.status);
+          dispatch(deleteMyListProductById(productId));
+          dispatch(updateCurrentPopup('none'));
+        }
+      }catch(e){
+        console.log(e);
+        setDeleteFailed(true);
+      }
+    });
+  }
+
+
+  // The following will be displayed if user clicks on the delete icon
+  if (showConfirmDelete){
+    return (
+      <div
+      style={{ height: 230 }}
+      className="flex flex-col justify-center border border-gray items-center rounded-2xl p-16 bg-white "
+    >
+      <p className="mt-4">Are you sure you want to delete this product?</p>
+      <div className="flex gap-4 mt-4">
+        <button
+          onClick={handleDeleteProduct}
+          className="text-white bg-blue-500 rounded-2xl p-2 pl-4 pr-4"
+        >
+          Yes
+        </button>
+        <button
+          onClick={() => {
+            setShowConfirmDelete(false);
+          }}
+          className="text-white bg-black rounded-2xl p-2 pl-4 pr-4"
+        >
+          No
+        </button>
+      </div>
+      <div
+        style={{ height: 40 }}
+        className="h-4 mt-2 w-full flex flex-col justify-center items-center"
+      >
+        <Image
+          className={`${!isDeletePending && "invisible"} mt-4`}
+          src={Loading}
+          alt=""
+          width={30}
+          height={30}
+        />
+         {deleteFailed && <p className={`text-red-600`}>
+          Failed to delete product
+        </p>}
+      </div>
+    </div>
+    )
+  }
+
+
+
+
   return (
     <div
       style={{ width: 500, height: 630, marginTop: 50 }}
       className="pt-4 pr-1 bg-gray-100 rounded-2xl border-2 border-gray"
     >
       <div className="h-full overflow-auto ">
+
+        {/*Delete product */}
+        <div className="flex justify-start pl-4 ">
+          <button onClick={() => setShowConfirmDelete(true)}>
+          <Trash2 className="hover:text-red-500" size={25}/>
+          </button>
+        </div>
+
         {/*Image of the Product */}
         <div className="flex justify-center ">
           <ProductImageUploader

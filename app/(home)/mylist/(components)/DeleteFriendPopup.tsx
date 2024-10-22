@@ -8,6 +8,8 @@ import Loading from "/public/loading.svg";
 import Image from "next/image";
 import deleteFriend from "@/app/actions/user/deleteFriend";
 
+
+
 export default function DeleteFriendPopup() {
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
