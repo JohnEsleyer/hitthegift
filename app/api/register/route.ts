@@ -22,6 +22,7 @@ export async function POST(req: Request) {
             hobbyInfo: data.hobbyInfo,
             birthday: data.birthday,
             showInterest: data.showInterest,
+            verified: false,
             friendsList: [
  
             ],

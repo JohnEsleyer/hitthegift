@@ -2,6 +2,7 @@
 
 import { mongoClient } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import sendInviteByEmail from "../email/sendInviteByEmail";
 
 export async function sendFriendRequest(senderId: string, receiverEmail: string) {
     try {
@@ -14,9 +15,12 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
 
         if (!receiver) {
             console.log('Receiver not found');
+            // Send invitation email to the given email address
+            await sendInviteByEmail(senderId, receiverEmail);
+
             return {
-                status: 400,
-                message: 'Receiver not found'
+                status: 200,
+                message: 'Receiver not found. An invitation email is sent to the given email address'
             };
         }
 

@@ -7,6 +7,7 @@ export type UserData = {
     birthday: string;
     hobbyInfo: string;
     showInterest: boolean;
+    verified: boolean;
     friendsList: string[];
     conversations: string[];
 }

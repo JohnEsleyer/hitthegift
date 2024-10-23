@@ -54,8 +54,9 @@ export default function SendWishlistPopup() {
       />
 
       <p className="text-xs text-gray-500">
-        Your wishlist will be shared automatically with your new friend
+        Your wishlist will be shared automatically with your new friend.
       </p>
+  
       <div className="mt-6 pl-8  h-12 pr-8 w-full flex justify-between">
         <div className="w-24 flex justify-center">
           {false ? (

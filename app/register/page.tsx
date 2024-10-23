@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { createUser } from "../actions/auth/createUser";
 import { termsAndConditions } from "./constants";
 import { useRouter } from "next/navigation";
 import Loading from "/public/loading.svg";
@@ -9,7 +8,6 @@ import { UserData } from "@/lib/types/user";
 import { useDispatch } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { updateUserFirstNameStore, updateUserId } from "@/lib/features/userData";
-import updateUserFirstName from "../actions/user/updateUserFirstName";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -30,6 +28,7 @@ export default function RegisterPage() {
     hobbyInfo: "",
     birthday: "",
     showInterest: true,
+    verified: false,
     friendsList: [],
     conversations: [],
   });
