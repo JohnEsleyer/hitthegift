@@ -8,6 +8,7 @@ import Loading from "/public/loading.svg";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import {
+  updateUserData,
   updateUserFirstNameStore,
   updateUserId,
 } from "@/lib/features/userData";
@@ -90,13 +91,21 @@ export default function LoginPage() {
         if (data) {
           setResponseData(data);
          
-
           const userData = await getUserInfo(data.userId);
           setTimeout(() => {
-            if (response.status == 200) {
-              dispatch(updateUserId(data.userId));
-
-              dispatch(updateUserFirstNameStore(userData.firstName as string));
+            if (response.status == 200 && userData) {
+              // dispatch(updateUserId(data.userId));
+              // dispatch(updateUserFirstNameStore(userData.firstName as string));
+              dispatch(updateUserData({
+                id: data.userId || '',
+                firstName: userData.firstName || '',
+                lastName: userData.lastName || '',
+                verified: userData.verified || false,
+                verificationToken: userData.verificationToken || '',
+                email: userData.email || "",
+                hobbyInfo: userData.hobbyInfo || '',
+                showInterest: false,
+              }));
 
               // seterrorMessage(false);
               dispatch(updateCurrentPopup("none"));
@@ -199,15 +208,7 @@ export default function LoginPage() {
             height={30}
           />
         </div>
-        {/* <p
-          className={`${
-            !responseData.message && "invisible"
-          } flex justify-center ${
-            responseData.status == 200 ? "text-green-600" : "text-red-500"
-          } `}
-        >
-          {responseData.message}
-        </p> */}
+      
         <p
           className={`h-4 ${
             !errorMessage && "invisible"

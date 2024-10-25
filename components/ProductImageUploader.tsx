@@ -2,7 +2,7 @@
 
 import { updateBase64Image } from '@/lib/features/productImageUpload';
 import { RootState } from '@/lib/store';
-import { Gift, ImageUp } from 'lucide-react';
+import {ImageUp } from 'lucide-react';
 import { useTransition, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EmptyItem } from './EmptyItem';

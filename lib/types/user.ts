@@ -8,6 +8,7 @@ export type UserData = {
     hobbyInfo: string;
     showInterest: boolean;
     verified: boolean;
+    verificationToken: string;
     friendsList: string[];
     conversations: string[];
 }

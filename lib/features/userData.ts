@@ -4,8 +4,8 @@ export interface UserDataState {
     id: string;
     firstName: string;
     lastName: string;
-    username: string;
     verified: boolean;
+    verificationToken: string;
     email: string;
     hobbyInfo: string;
     showInterest: boolean;
@@ -15,8 +15,8 @@ const initialState: UserDataState = {
     id: '',
     firstName: '',
     lastName: '',
-    username: '',
     verified: false, 
+    verificationToken: '',
     email: '',
     hobbyInfo: 'This is the value of hobbyInfo in redux',
     showInterest: true,

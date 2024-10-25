@@ -3,7 +3,7 @@
 import { mongoClient } from "@/lib/mongodb";
 import { UserData } from "@/lib/types/user";
 import { ObjectId } from "mongodb";
-
+import verifyVerificationToken from "../email/verifyVerificationToken";
 
 export default async function getUserInfo(userId: string){
     
@@ -16,9 +16,11 @@ export default async function getUserInfo(userId: string){
         if (user){
             console.log(user._id);
             return {
-                hobbiesInfo: user.hobbyInfo,
+                hobbyInfo: user.hobbyInfo,
                 firstName: user.firstName,
                 lastName: user.lastName,
+                verified: user.verified,
+                verificationToken: user.verificationToken,
                 email: user.email,
                 birthday: user.birthday,
                 status: 200,

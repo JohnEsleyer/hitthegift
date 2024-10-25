@@ -1,6 +1,4 @@
-import { RootState } from "@/lib/store";
 import { useState, ChangeEvent } from "react";
-import { useSelector } from "react-redux";
 
 interface DebounceInputProps{
     onUserStopTyping: (value: string) => void;

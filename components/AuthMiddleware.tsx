@@ -2,7 +2,6 @@
 
 import { useEffect, ReactNode, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import jwt from "jsonwebtoken";
 import Cookies from "js-cookie"; // You'll need js-cookie package to get cookies on the client side
 import verifyToken from "@/app/actions/auth/verifyToken";
 import Image from 'next/image';

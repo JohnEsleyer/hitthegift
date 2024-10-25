@@ -44,7 +44,7 @@ export default function InsideFriendLeftSection(){
                 const fullName = `${result.firstName} ${result.lastName}`;
                 setName(fullName);
                 setEmail(result.email || '');
-                setHobbiesInfo(result.hobbiesInfo || '');
+                setHobbiesInfo(result.hobbyInfo || '');
                 dispatch(updateFriendName(`${result.firstName} ${result.lastName}`));
             }
         });

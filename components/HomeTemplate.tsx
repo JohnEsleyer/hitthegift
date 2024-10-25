@@ -2,7 +2,6 @@
 
 import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
 import { updateCurrentPopup } from "@/lib/features/popups";
-import Avvvatars from "avvvatars-react";
 import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,15 +11,13 @@ import Loading from "/public/loading.svg";
 import AuthMiddleware from "@/components/AuthMiddleware";
 import { RootState } from "@/lib/store";
 import { updateConversationId, updateIsOpenChatbox } from "@/lib/features/insideFriend";
-import Chatbox from "@/app/(home)/insidefriend/_components/Chatbox";
+import Chatbox from "@/app/(protected)/insidefriend/_components/Chatbox";
 import { MessageSquareText } from "lucide-react";
-import { Popups } from "@/app/(home)/mylist/(components)/Popups";
+import { Popups } from "@/app/(protected)/mylist/(components)/Popups";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
-import { Conversation } from "@/lib/types/conversation";
-import { WithId } from "mongodb";
 import Friends from '/public/friends.png';
-import UserProfile from "./EditableUserProfile";
 import UserProfileImage from "./UserProfileImage";
+import EmailVerifier from "./EmailVerifier";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -46,14 +43,15 @@ export default function HomeTemplate({
 
   return (
     <div className="w-screen h-screen flex overflow-auto overflow-x-hidden">
-      <AuthMiddleware>
-        <RenderClientOnly
+      <RenderClientOnly
           loading={
             <div className="flex w-full justify-center items-center">
               <Image src={Loading} alt="" className="w-8 h-8" />
             </div>
           }
         >
+      <AuthMiddleware>
+          <EmailVerifier>
           <Popups>
             <div className="flex w-full h-full ">
               <div className=" h-full " 
@@ -146,8 +144,9 @@ export default function HomeTemplate({
           </div>}
             </div>
           </Popups>
-        </RenderClientOnly>
+          </EmailVerifier>
       </AuthMiddleware>
+      </RenderClientOnly>
     </div>
   );
 }

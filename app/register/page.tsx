@@ -7,7 +7,7 @@ import Image from "next/image";
 import { UserData } from "@/lib/types/user";
 import { useDispatch } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
-import { updateUserFirstNameStore, updateUserId } from "@/lib/features/userData";
+import { updateUserData, updateUserFirstNameStore, updateUserId } from "@/lib/features/userData";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,6 +29,7 @@ export default function RegisterPage() {
     birthday: "",
     showInterest: true,
     verified: false,
+    verificationToken: '',
     friendsList: [],
     conversations: [],
   });
@@ -155,9 +156,21 @@ export default function RegisterPage() {
           setResponseMessage(responseData.message);
           setTimeout(() => {
          
-            dispatch(updateUserId(responseData.userId));
-            dispatch(updateUserFirstNameStore(userData.firstName));
+            // dispatch(updateUserId(responseData.userId));
+            // dispatch(updateUserFirstNameStore(userData.firstName));
+            dispatch(updateUserData({
+              id: responseData.userId,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              verified: userData.verified,
+              verificationToken: responseData.verificationToken,
+              email: userData.email,
+              hobbyInfo: userData.hobbyInfo,
+              showInterest: false,
+            }));
             
+            
+
             setIsError(false);
             dispatch(updateCurrentPopup('none'));
             router.push("/mylist");

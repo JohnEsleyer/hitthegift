@@ -1,10 +1,8 @@
 'use client'
 
 import { RootState } from "@/lib/store";
-import Avvvatars from "avvvatars-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import Image from 'next/image';
 import UserProfileImage from "./UserProfileImage";
 
 interface ChatBubbleProps {
