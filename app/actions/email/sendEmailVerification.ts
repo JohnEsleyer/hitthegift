@@ -4,6 +4,8 @@ import nodemailer from 'nodemailer';
 import verifyEmail from './emails/verifyEmail';
 import getUserInfo from '../user/getUserInfo';
 
+
+
 export default async function sendEmailVerification(
     userId: string,
     targetEmail: string, 

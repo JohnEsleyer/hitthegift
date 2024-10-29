@@ -30,33 +30,41 @@ const userDataSlice = createSlice({
             return action.payload;
         },
         updateHobbyInfo: (state, action: PayloadAction<string>) => {
-            console.log('updating from state...' + action.payload);
             return {
                 ...state,
                 hobbyInfo: action.payload,
             };
         },
         updateUserId: (state, action: PayloadAction<string>) => {
-            console.log('updating user id...');
             return {
                 ...state,
                 id: action.payload,
             }
         },
         updateUserFirstNameStore: (state, action: PayloadAction<string>) => {
-            console.log('updating user first name...');
             return {
                 ...state,
                 firstName: action.payload,
             }
         },
         updateUserLastName: (state, action: PayloadAction<string>) => {
-            console.log('updating user last name...');
             return {
                 ...state,
                 lastName: action.payload,
             }
         },
+        updateUserVerified: (state, action:PayloadAction<boolean>) => {
+            return {
+                ...state,
+                verified: action.payload,
+            }
+        },
+        updateUserVerificationToken: (state, action:PayloadAction<string>) => {
+            return{
+                ...state,
+                verificationToken: action.payload,
+            }
+        }
     }
 });
 
@@ -66,5 +74,7 @@ export const {
     updateUserId,
     updateUserFirstNameStore,
     updateUserLastName,
+    updateUserVerified,
+    updateUserVerificationToken,
 } = userDataSlice.actions;
 export default userDataSlice.reducer; // Ensure this exports the reducer

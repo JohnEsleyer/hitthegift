@@ -32,6 +32,7 @@ export default function RegisterPage() {
     verificationToken: '',
     friendsList: [],
     conversations: [],
+    resetToken: '',
   });
 
   // States to display red border if error

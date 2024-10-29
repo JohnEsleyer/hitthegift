@@ -29,10 +29,9 @@ export async function POST(req: Request) {
             showInterest: data.showInterest,
             verified: false,
             verificationToken: verificationToken,
-            friendsList: [
- 
-            ],
+            friendsList: [],
             conversations: [],
+            resetToken: '',
         });
 
         const payload = {userId: res.insertedId.toString()};

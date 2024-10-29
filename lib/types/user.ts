@@ -11,4 +11,5 @@ export type UserData = {
     verificationToken: string;
     friendsList: string[];
     conversations: string[];
+    resetToken: string;
 }

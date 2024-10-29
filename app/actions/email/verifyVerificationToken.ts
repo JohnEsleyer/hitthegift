@@ -3,6 +3,10 @@
 import { mongoClient } from "@/lib/mongodb";
 import { UserData } from "@/lib/types/user";
 
+
+// Verifies the verification token sent to the user's email.
+// Sets the verified property to true and sets the verificationToken to 'none'
+
 export default async function verifyVerificationToken(token: string, userEmail: string){
 
     try{
@@ -24,9 +28,9 @@ export default async function verifyVerificationToken(token: string, userEmail: 
 
         // Mark the user as verified
         await db.collection<UserData>('users').updateOne({
-            email: 'ralphpolicarpio513@gmail.com',
+            email: userEmail,
         }, {
-            $set: {verified: true}
+            $set: {verified: true, verificationToken: 'none'}
         })
 
         console.log(`Email verified for ${userEmail}`);

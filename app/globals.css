@@ -240,8 +240,6 @@ button:focus {
   width: 70%; /* Shorter line width */
 }
 
-
-
 /*Friend Skeleton*/
 /* SkeletonFriendItem.css */
 .skeleton-friend-item {
@@ -382,4 +380,11 @@ button:focus {
 .hide-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+.bg-gradient-radial {
+  .bg-gradient-radial {
+    background-image: radial-gradient(circle, #FEFEFE, #E7C279, #CC0D23);
+  }
+  
 }
