@@ -84,10 +84,10 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
     
     return (
         <div className="flex flex-col p-2  flex items-center">
-        <span style={{marginBottom: 17}} className="text-xl">My hobbies and interest</span>
+        <p className="w-64">My hobbies and interest</p>
         {isTextareaPending ? <TextareaSkeleton/> : <Textarea
           key={"hobbiesInfo"}
-          style={{height: 220, width: 280}}
+          style={{height: 150, width: 280}}
           className="border border-2xl rounded-2xl"
           maxLength={500}
           value={hobbiesInfo}
@@ -96,12 +96,13 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
           }}
         />}
         <div 
+        style={{height: 16}}
           className=" w-full flex justify-between"
           >
             <div>
-              {isTyping && <div className="flex"><Image src={loading} alt="" width={20} height={20}/> <p>Saving</p></div>}
+              {isTyping && <div className="flex"><Image src={loading} alt="" width={20} height={20}/> <p className="text-xs">Saving</p></div>}
             </div>
-            <div className="text-gray-600">
+            <div className="text-gray-600 text-xs">
           {(hobbiesInfo.length || 0) + "/500"}
             </div>
           </div>

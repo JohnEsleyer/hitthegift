@@ -5,6 +5,8 @@ import sendPasswordResetRequest from "../actions/email/sendPasswordResetEmail";
 import { useRouter, useSearchParams } from "next/navigation";
 import verifyResetToken from "../actions/email/verifyResetToken";
 import ResetPasswordPage from "./ResetPasswordPage";
+import giftloading from "/public/giftloading.svg";
+import Image from 'next/image';
 
 // Example Query: domain.com/forgot-password?token=3423juhfwuie&emai=johndoe@gmail.com
 
@@ -57,9 +59,9 @@ function ForgotPassword(){
   return (
     <div>
 
-    {!isValidQuery ?  <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-[#FEFEFE] via-[#E7C279] to-[#CC0D23]">
+    {!isValidQuery ?  <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-[#661009] to-red-700">
   <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
-    <h1 className="text-2xl font-bold text-center mb-4 text-[#15621F]">Forgot Password</h1>
+    <h1 className="text-2xl font-bold text-center mb-4 text-black">Forgot Password</h1>
     <p className="text-gray-600 text-center mb-6">
       Please enter your email address to receive password reset instructions.
     </p>
@@ -72,7 +74,7 @@ function ForgotPassword(){
           type="email"
           id="email"
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D52C1F] focus:border-transparent"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
           placeholder="you@example.com"
           value={email}
           onChange={(e) => {setEmail(e.target.value)}}
@@ -84,7 +86,7 @@ function ForgotPassword(){
       <button
         type="submit"
         onClick={handleSendPasswordRequest}
-        className="w-full bg-gradient-to-r from-[#D52C1F] to-[#E7C279] hover:from-[#15621F] hover:to-[#CC0D23] text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
+        className="w-full  text-black bg-yellow-500  border hover:from-[#15621F] hover:to-[#CC0D23] font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
       >
         Send Reset Link
       </button>}

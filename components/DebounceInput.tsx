@@ -49,6 +49,7 @@ export function DebouncedInput({
   
       return (
         <input
+        
           type="text"
           value={inputValue}
           onChange={(event) => {

@@ -13,7 +13,7 @@ import { createEvent } from "@/app/actions/events/createEvent";
 import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
 import Loading from '/public/loading.svg';
 import Image from 'next/image';
-import { deleteMyListEvents, insertMyListEvent, updateEventStore, updateMyListEvents } from "@/lib/features/mylist";
+import { deleteMyListEventById, insertMyListEvent, updateEventStore, updateMyListEvents } from "@/lib/features/mylist";
 import { updateEditEventDate, updateEditEventInvitedFriends, updateEditEventTitle } from "@/lib/features/editEventsPopup";
 import { convertTo12HourFormat, getMeridiem } from "@/utils/convertTo12Hour";
 import { updateEvent } from "@/app/actions/events/updateEvent";
@@ -155,7 +155,7 @@ export default function EditEventPopup() {
         const res = await deleteEvent(eventId);
         if (res){
           console.log(res.status);
-          dispatch(deleteMyListEvents(eventId));
+          dispatch(deleteMyListEventById(eventId));
           dispatch(updateCurrentPopup('none'));
         }
       }catch(e){

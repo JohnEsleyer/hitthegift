@@ -42,6 +42,8 @@ export default function LoginPage() {
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = () => {
     setErrorMessage('');
     setIsLoading(true);
@@ -93,7 +95,8 @@ export default function LoginPage() {
          
           const userData = await getUserInfo(data.userId);
           setTimeout(() => {
-            if (response.status == 200 && userData) {
+            console.log(`Response Status: ${response.status}`)
+            if (data.status == 200 && userData) {
               // dispatch(updateUserId(data.userId));
               // dispatch(updateUserFirstNameStore(userData.firstName as string));
               dispatch(updateUserData({
@@ -138,7 +141,7 @@ export default function LoginPage() {
         <input
           className={`${
             errorEmail ? "border-red-500" : "border-gray-300"
-          } border-2 p-2 rounded-2xl  rounded`}
+          } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
           type="text"
           placeholder="firstname@email.com"
           value={loginData.email}
@@ -151,11 +154,12 @@ export default function LoginPage() {
           }}
         />
         <label className="pt-8">Password:</label>
+        <div className={`relative`}>
         <input
-          className={`${
+          type={showPassword ? "text":  "password"}
+           className={`${
             errorPassword ? "border-red-500" : "border-gray-300"
-          } border-2 p-2 rounded-2xl rounded`}
-          type="password"
+          } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
           placeholder="******"
           value={loginData.password}
           onChange={(e) => {
@@ -166,6 +170,14 @@ export default function LoginPage() {
             }));
           }}
         />
+        <button
+          type="button"
+          className="absolute right-2 top-3 text-gray-500 hover:text-gray-700"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? "Hide" : "Show"}
+        </button>
+        </div>
         {/**Check box */}
         <div className=" flex items-center pt-2">
           <input
@@ -216,7 +228,7 @@ export default function LoginPage() {
         >
           {errorMessage}
         </p>
-        <span className="pt-8 underline">Forgot Password</span>
+        <Link href={"/forgot-password"}className="pt-8 underline">Forgot Password</Link>
       </div>
     </div>
   );

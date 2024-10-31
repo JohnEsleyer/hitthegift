@@ -193,7 +193,6 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
             </div>
           ) : (
             <div className="mt-2 flex justify-center items-center text-gray-300">
-              No Friend Request
             </div>
           )}
         </div>
@@ -245,8 +244,8 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
               </div>
             </div>
           ) : (
-            <div className="text-gray-400 mt-24 flex justify-center items-center">
-              No friends to show
+            <div className="text-gray-300 mt-24 flex justify-center items-center">
+              No Friends to Show
             </div>
           )}
           {/* Display a message when there are no search results */}

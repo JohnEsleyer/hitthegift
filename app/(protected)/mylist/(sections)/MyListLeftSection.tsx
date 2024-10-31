@@ -1,10 +1,6 @@
 "use client";
 
-import React, {
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
+import React, { useEffect, useState, useTransition } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
@@ -21,15 +17,30 @@ import EventSkeleton from "@/components/skeletons/EventSkeleton";
 import { updateMyListEvents } from "@/lib/features/mylist";
 import { updateEditEventAll } from "@/lib/features/editEventsPopup";
 import UserProfileImage from "@/components/UserProfileImage";
+import Link from "next/link";
+import { House, Users } from "lucide-react";
+import { Spicy_Rice } from 'next/font/google';
+import { Rubik } from "next/font/google";
+
+
+const spicyrice = Spicy_Rice({
+  weight: "400",
+  subsets: ['latin']
+});
+
 
 export default function MyListLeftSection() {
+
+  
   const userId = useSelector((state: RootState) => state.userData.id);
   // const [events, setEvents] = useState<ServerResponseForEvents[]>([]);
   const events = useSelector((state: RootState) => state.mylist.events);
   const [isEventsPending, startEventsTransition] = useTransition();
   const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
   const [isClientMounted, setIsClientMounted] = useState(false);
-  const [displayedEvents, setDisplayedEvents] = useState<ServerResponseForEvents[]>([]);
+  const [displayedEvents, setDisplayedEvents] = useState<
+    ServerResponseForEvents[]
+  >([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const dispatch = useDispatch();
@@ -52,9 +63,11 @@ export default function MyListLeftSection() {
         console.log("Payload before dispatch:", results.data);
 
         dispatch(updateMyListEvents(results.data || []));
-        const dates: Date[] = Array.isArray(results.data) ?(results.data as ServerResponseForEvents[]).map(
-          (event) => new Date(event.date)
-        ) : [];
+        const dates: Date[] = Array.isArray(results.data)
+          ? (results.data as ServerResponseForEvents[]).map(
+              (event) => new Date(event.date)
+            )
+          : [];
         console.log(`Dates: ${dates}`);
         setHighlightedDates(dates);
       }
@@ -62,7 +75,6 @@ export default function MyListLeftSection() {
   }, []);
 
   useEffect(() => {
-
     // Filter events by the selected month
     const filteredEvents = events.filter((event) => {
       const tempDate = new Date(event.date);
@@ -77,130 +89,123 @@ export default function MyListLeftSection() {
     });
 
     setDisplayedEvents(sortedEvents);
-  }, [selectedDate]);
-
+  }, [selectedDate, events ]);
 
   return (
-    <HomeLeftTemplate highlight="mylist">
-      <div className="h-full ml-2 ">
-        <div className={""}>
-          <div>
-            <div
-              style={{ height: 675 }}
-              className=" flex flex-col border rounded-2xl"
-            >
-              {/* <span>{hobbiesInfo}</span> */}
-              {/** My hobbies and interests */}
-              <EditableHobbyArea/>
-              {/**My events section */}
+    <div className=" h-screen flex flex-col ">
+        <div className="flex-1 flex justify-center ">
+        <p style={{
+        fontSize: 30,
+        }} className={`${spicyrice.className} font-bold text-black`}>HitMyGift</p>
 
-              <div>
-                <div className="flex justify-between">
-                  <span>My Events</span>
-                  <button
-                    className="pl-2 pr-2 bg-blue-600 text-white rounded-full"
-                    onClick={() => {
-                      dispatch(updateCurrentPopup("addEvent"));
-                    }}
-                  >
-                    Add event
-                  </button>
-                </div>
-                <div>
-                  {isEventsPending ? (
-                    <div
-                      style={{ height: 130 }}
-                      className="overflow-auto flex flex-col items-between "
-                    >
-                      <EventSkeleton />
-                      <EventSkeleton />
-                      <EventSkeleton />
-                    </div>
-                  ) : (
-                   <div
-                      style={{ height: 130 }}
-                      className="overflow-auto w-full flex flex-col items-between "
-                    >{isClientMounted && <div className="h-full w-full">
-                      {displayedEvents.length > 0 ?
-                        displayedEvents.map((event) => (
-                          <button
-                            onClick={() => {
-                              dispatch(updateEditEventAll({
-                                id: event.id,
-                                eventTitle: event.eventTitle,
-                                date: event.date,
-                                userId: event.userId,
-                                invitedFriends: event.invitedFriends,
-                              }));
-
-                              dispatch(updateCurrentPopup('editEvent'));
-                            }}
-                            key={event.id}
-                            className="w-full hover:bg-gray-300 flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2"
-                          >
-                            <div
-                              style={{ fontSize: 15, width: 30, height: 30 }}
-                              className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold rounded-full"
-                            >
-                              {new Date(event.date).getDate()}
-                            </div>
-                            <div style={{ width: 200 }} className="flex">
-                              <div
-                                style={{
-                                  width:
-                                    event.invitedFriends.length == 1
-                                      ? 130
-                                      : 100,
-                                }}
-                              >
-                                <span className="truncate">{event.eventTitle}</span>
-                              </div>
-                              <div className="flex-1 flex justify-end">
-                                {event.invitedFriends.map((friend, index) => {
-                                  if (index < 2) {
-                                    return (
-                                     <UserProfileImage
-                                     key={friend.id}
-                                      userId={friend.id}
-                                      userName={friend.firstName}
-                                      alt=""
-                                      width={30}
-                                      height={30}
-                                     /> 
-                                    );
-                                  }
-                                })}
-                                <span className="text-gray-500 flex items-center">
-                                  {event.invitedFriends.length < 3
-                                    ? ""
-                                    : "+" + (event.invitedFriends.length - 2)}
-                                </span>
-                              </div>
-                            </div>
-                          </button>
-                        )) : 
-                        
-                        <div className="text-gray-400 w-full h-full flex justify-center items-center ">
-                          You have no events
-                          
-                          </div>}
-                        </div>}
-                    </div>
-                  )}
-                </div>
-              </div>
-              {/**Calendar Section */}
-              <div className="transformCalendar flex pr-4 items-center justify-center w-full">
-                <EventsCalendar 
-                  highlightedDates={highlightedDates}
-                  onClick={(date) => setSelectedDate(date)}
-                />
-              </div>
-            </div>
-          </div>
         </div>
+        <div className="flex justify-center gap-4 p-2">
+          <span className="flex text-blue-600 "><House/> My List</span>
+          <Link href="/friendslist" className="flex"> <Users/> Friends List</Link>
+        </div>
+      <div style={{}} className="flex-5 ml-2 overflow-auto hide-scrollbar border rounded-2xl">
+      <EditableHobbyArea />
+      <button
+        className="ml-2 pl-2 pr-2 text-white rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
+        onClick={() => {
+          dispatch(updateCurrentPopup("addEvent"));
+        }}
+      >
+        Add event
+      </button>
+      <div>
+        {isEventsPending ? (
+          <div
+            style={{ height: 130 }}
+            className="overflow-auto flex flex-col items-between "
+          >
+            <EventSkeleton />
+            <EventSkeleton />
+            <EventSkeleton />
+          </div>
+        ) : (
+          <div
+            style={{ height: 130 }}
+            className="overflow-auto w-full flex flex-col items-center"
+          >
+            {isClientMounted && (
+              <div style={{width:280}} className="h-full">
+                {displayedEvents.length > 0 ? (
+                  displayedEvents.map((event) => (
+                    <button
+                      onClick={() => {
+                        dispatch(
+                          updateEditEventAll({
+                            id: event.id,
+                            eventTitle: event.eventTitle,
+                            date: event.date,
+                            userId: event.userId,
+                            invitedFriends: event.invitedFriends,
+                          })
+                        );
+
+                        dispatch(updateCurrentPopup("editEvent"));
+                      }}
+                      key={event.id}
+                      style={{width: 280}}
+                      className="hover:bg-gray-300 flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2"
+                    >
+                      <div
+                        style={{ fontSize: 15, width: 30, height: 30 }}
+                        className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold rounded-full"
+                      >
+                        {new Date(event.date).getDate()}
+                      </div>
+                      <div style={{ width: 200 }} className="flex">
+                        <div
+                          style={{
+                            width: event.invitedFriends.length == 1 ? 130 : 100,
+                          }}
+                        >
+                          <div style={{width:150}} className="truncate text-left">{event.eventTitle}</div>
+                        </div>
+                        <div className="flex-1 flex justify-end">
+                          {event.invitedFriends.map((friend, index) => {
+                            if (index < 2) {
+                              return (
+                                <UserProfileImage
+                                  key={friend.id}
+                                  userId={friend.id}
+                                  userName={friend.firstName}
+                                  alt=""
+                                  width={30}
+                                  height={30}
+                                />
+                              );
+                            }
+                          })}
+                          <span className="text-gray-500 flex items-center">
+                            {event.invitedFriends.length < 3
+                              ? ""
+                              : "+" + (event.invitedFriends.length - 2)}
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  ))
+                ) : (
+                  <div className="text-gray-400 w-full h-full flex justify-center items-center ">
+                    You have no events
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    </HomeLeftTemplate>
+      {/**Calendar Section */}
+      <div className="transformCalendar flex pr-4 items-center justify-center w-full">
+        <EventsCalendar
+          highlightedDates={highlightedDates}
+          onClick={(date) => setSelectedDate(date)}
+        />
+      </div>
+      </div>
+    </div>
   );
 }
-

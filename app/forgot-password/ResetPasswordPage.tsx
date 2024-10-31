@@ -12,7 +12,6 @@ interface ResetPasswordPageProps {
 }
 
 export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
-  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -27,10 +26,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
     e.preventDefault();
 
     // Check if the forms are not empty and are valid
-    if (oldPassword == ""){
-      setErrorMessage('Please input your old password.');
-      return;
-    }
+
 
     if (newPassword == ""){
       setErrorMessage('Please input your new password');
@@ -49,28 +45,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
 
     startResetTransition(async () => {
       try {
-        // Authenticate user to validate the old password input
-        const authRes = await fetch("/api/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            password: oldPassword,
-          }),
-        });
-  
-        const authData: {
-          message: string;
-          status: number;
-          userId: string;
-        } = await authRes.json();
-  
-        if (authData.status != 200) {
-          setErrorMessage("Invalid password");
-          return;
-        }
+     
   
         const res = await updateUserPasswordByEmail(email, newPassword);
         if (res.status == 200) {
@@ -90,13 +65,13 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
   };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-[#FEFEFE] via-[#E7C279] to-[#CC0D23]">
-      {isSuccessful ? <div className="bg-white p-8 rounded-xl shadow-lg w-96 max-s-sm">
+    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-[#661009] to-red-700">
+      {isSuccessful ? <div style={{height: 400}} className="flex flex-col justify-center bg-white p-8 rounded-xl shadow-lg w-96 max-s-sm">
         <p className="text-2xl font-bold text-center mb-4 text-[#15621F]">Password Reset is Successful</p>
         
         <div className="flex justify-center ">
         <Link href={'/login'}
-            className="bg-gradient-to-r from-[#D52C1F] to-[#E7C279] hover:from-[#15621F] hover:to-[#CC0D23] text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
+            className="bg-amber-400 text-black font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
           >
             Go to login page
           </Link>
@@ -111,32 +86,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
           password.
         </p>
         <form onSubmit={handlePasswordReset}>
-          <div className="mb-4">
-            <label
-              htmlFor="oldPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Old Password
-            </label>
-            <div className="relative">
-              <input
-                type={showOldPassword ? "text" : "password"}
-                id="oldPassword"
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D52C1F] focus:border-transparent"
-                placeholder="Enter your old password"
-                value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
-                onClick={() => setShowOldPassword(!showOldPassword)}
-              >
-                {showOldPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-          </div>
+          
           <div className="mb-4">
             <label
               htmlFor="newPassword"
@@ -149,7 +99,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
                 type={showNewPassword ? "text" : "password"}
                 id="newPassword"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D52C1F] focus:border-transparent"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                 placeholder="Enter your new password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -175,7 +125,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
                 type={showConfirmNewPassword ? "text" : "password"}
                 id="confirmNewPassword"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D52C1F] focus:border-transparent"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                 placeholder="Confirm your new password"
                 value={confirmNewPassword}
                 onChange={(e) => setConfirmNewPassword(e.target.value)}
@@ -193,7 +143,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
           </div>
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#D52C1F] to-[#E7C279] hover:from-[#15621F] hover:to-[#CC0D23] text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
+            className="w-full bg-yellow-400 text-black font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
           >
             Reset Password
           </button>

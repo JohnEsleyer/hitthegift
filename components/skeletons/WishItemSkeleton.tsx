@@ -6,7 +6,7 @@ export default function WishItemSkeleton(){
     return (  
      <div
      style={{ width: 200 }}
-     className="p-4 rounded-xl border border-slate-300"
+     className="bg-white p-4 rounded-xl border border-slate-300"
    >
      {/* Skeleton for product image */}
      <div className="skeleton-box" style={{ height: 150, width: '100%' }}></div>

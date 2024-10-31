@@ -50,10 +50,23 @@ export default function WishItem({
 
   return (
     <div className="relative">
-   <EnableAnchor enable={!isSidebarOpen}>
+      <button onClick={() =>{
+        console.log("Clicked");
+        dispatch(updateCurrentPopup('editProduct'));
+        dispatch(updateEditProductAll({
+          id: id,
+          userId: '',
+          price: price,
+          currency: currency,
+          title: title,
+          productUrl: productUrl,
+          imageUrl: imageUrl,
+          description: description,
+        }));
+      }}>
     <div
       style={{ width: 200 }}
-      className={` p-4 rounded-xl border ${!isSidebarOpen && 'hover:bg-gray-200'} border-slate-300`}
+      className={` p-4 rounded-xl border bg-white ${!isSidebarOpen && 'hover:scale-105'} border-slate-300`}
     >
       <div className="relative">
       {imageUrl == '' ? <EmptyItem width={165} height={150}/> : <div style={{height: 150}} className="flex justify-center border rounded-2xl"><img src={imageUrl} alt={imageUrl}/></div>}
@@ -68,24 +81,15 @@ export default function WishItem({
       </a>}
       </div>
     </div>
-    </EnableAnchor>
 
-    {owner  && <div style={{top:130, right: 10, }} className="absolute flex">
-        <button onClick={() => {
-          dispatch(updateCurrentPopup('editProduct'))
-          dispatch(updateEditProductAll({
-            id: id,
-            userId: '',
-            price: price,
-            currency: currency,
-            title: title,
-            productUrl: productUrl,
-            imageUrl: imageUrl,
-            description: description,
-          }))
-        }} className="hover:bg-gray-200 bg-white rounded-2xl p-2 border shadow-md"><Edit size={20}/></button>
-       
-      </div>}
+    {owner  && 
+        <EnableAnchor enable={!isSidebarOpen}>
+    <div style={{top:130, right: 10, }} className="absolute flex">
+        <div className="hover:bg-slate-200 bg-amber-500 rounded-2xl p-2 shadow-md"><ShoppingCart size={20}/></div>
+      </div>
+      </EnableAnchor>
+      }
+      </button>
     </div>
   );
 }

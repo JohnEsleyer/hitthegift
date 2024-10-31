@@ -2,6 +2,7 @@ import { comparePassword } from "@/lib/hashPassword";
 import { mongoClient } from "@/lib/mongodb";
 import { LoginData } from "@/lib/types/authTypes";
 import jwt from 'jsonwebtoken';
+import { ObjectId, WithId } from "mongodb";
 import { cookies } from 'next/headers';
 
 export async function POST(req: Request){
@@ -21,9 +22,9 @@ export async function POST(req: Request){
         if (!user){
             return new Response(JSON.stringify({
                 message: 'Invalid email or password',
-                status: 401,
+                status: 590,
             }), {
-                status: 401,
+                status: 500,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -56,9 +57,12 @@ export async function POST(req: Request){
         // Set the token in the response header
         cookies().set('token', token);
 
+
+        console.log(`isVerified: ${user.verified}`);
         return new Response(JSON.stringify({
             message: 'Login successful',
             userId: user._id,
+            verified: user.verified,
             status: 200,
         }), {
            

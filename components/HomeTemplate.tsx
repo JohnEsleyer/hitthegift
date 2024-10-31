@@ -54,16 +54,18 @@ export default function HomeTemplate({
           <EmailVerifier>
           <Popups>
             <div className="flex w-full h-full ">
-              <div className=" h-full " 
-              style={{ width: 300 }}
-              >
-                <div style={{width: 330}} className="transformLeftSection ">
-                {leftSide}
+
+              {/**Layout */}
+              <div className="grid grid-cols-4">
+                <div className="col-span-1">
+                  {leftSide}
+                </div>
+                <div className="col-span-3">
+                  {rightSide}
                 </div>
               </div>
-              <div className="h-full overflow-auto flex-1 ">
-                {rightSide}
-              </div>
+
+
               {/**Profile*/}
               <div
                 style={{ zIndex: 90, right: 30 }}

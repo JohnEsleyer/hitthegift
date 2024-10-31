@@ -2,6 +2,7 @@
 
 import sendEmailVerification from "@/app/actions/email/sendEmailVerification";
 import { RootState } from "@/lib/store";
+import { MailCheck } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -29,10 +30,15 @@ export default function EmailVerifier({children}: EmailVerifierProps){
     }
  
     if (!isVerified){
-        return ( <div className="w-screen flex items-center justify-center bg-blue-50 p-4">
+        return ( <div className="w-screen flex items-center justify-center bg-gray-300 p-4">
             <div className="max-w-lg w-full bg-white shadow-md rounded-lg p-6 text-center">
-              <h1 className="text-2xl font-semibold text-blue-600 mb-4">
-                📧 Verify Your Email to Get Started
+              <div className="flex justify-center">
+                <div className="bg-red-500 p-6 rounded-full">
+                <MailCheck  size={32} color="white"/>
+                </div>
+              </div>
+              <h1 className="text-2xl font-semibold text-black mb-4">
+                Verify Your Email to Get Started
               </h1>
               <p className="text-gray-700 mb-4">
                 Hi there! It looks like you haven't verified your email yet.
@@ -42,7 +48,7 @@ export default function EmailVerifier({children}: EmailVerifierProps){
                 We've sent a verification link to <span className="font-semibold">{userEmail}</span>. Just click on that link, and you'll be all set!
               </p>
               <div className="text-left mb-6">
-                <h2 className="text-lg font-semibold text-blue-500 mb-2">If you haven't received the email:</h2>
+                <h2 className="text-lg font-semibold text-black mb-2">If you haven't received the email:</h2>
                 <ul className="list-disc list-inside text-gray-600 space-y-2">
                   <li>Check your spam or junk folder — sometimes, our emails might end up there.</li>
                   <li>Make sure you entered the correct email address during registration.</li>
@@ -54,7 +60,7 @@ export default function EmailVerifier({children}: EmailVerifierProps){
               <button
                 onClick={onResendVerification}
                 disabled={!enableResend}
-                className={`${enableResend ? 'bg-blue-500 hover:bg-blue-600 text-white ' : 'bg-gray-300'} font-semibold py-2 px-4 rounded-lg mb-4`}
+                className={`${enableResend ? 'bg-red-500 text-white ' : 'bg-gray-300'} font-semibold py-2 px-4 rounded-lg mb-4`}
               >
                 {enableResend ? 'Resend Verification Email' : 'Email Sent!'}
               </button>

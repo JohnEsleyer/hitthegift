@@ -44,7 +44,7 @@ export default function SendWishlistPopup() {
       <input
         type="text"
         style={{ width: 400 }}
-        className="border rounded-2xl pl-2 pr-2"
+        className="border rounded-2xl p-2"
         placeholder="friendname@email.com"
         value={friendEmail}
         onChange={(e) => {

@@ -8,10 +8,11 @@ import { RootState } from "@/lib/store";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import WishItem from "../../../../components/WishItem";
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
-import { CircleX, Send } from "lucide-react";
+import { CircleX, Gift, Send, UserPlus } from "lucide-react";
 import addFriend from "@/app/actions/user/addFriend";
 import { updateMyListProducts } from "@/lib/features/mylist";
 import { sendFriendRequest } from "@/app/actions/user/sendFriendRequest";
+
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
@@ -25,6 +26,10 @@ export default function MyListRightSection() {
   const userId = useSelector((state: RootState) => state.userData.id);
   const products = useSelector((state: RootState) => state.mylist.products);
 
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
 
   useEffect(() => {
@@ -39,53 +44,40 @@ export default function MyListRightSection() {
     });
   }, []);
 
-  const handleShareList = async () => {
-    setFriendEmail("");
-    startSendTransition(async () => {
-      try {
-        await sendFriendRequest(userId, friendEmail);
-      } catch (e) {
-        console.log(e);
-      }
-    });
-  };
-
+ 
   return (
-    <div className="pl-8 w-full h-full">
-      <div className="mt-12 flex justify-between items-center">
+    <div className="w-full h-screen flex flex-col">
+    
+      <div style={{height:90}} className="pl-2 flex items-end pb-4 gap-2 ">
         {/**Buttons*/}
-        <div className="h-4 flex gap-2 items-center ">
-          <button
-            className="bg-blue-500 text-white pl-2 pr-2 rounded-full"
+        <button
+            className="text-white p-2 rounded-full flex bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
             onClick={() => {
               dispatch(updateCurrentPopup("addProduct"));
             }}
           >
+            <Gift/>
             Add Product
           </button>
           <button
-            className="bg-blue-500 text-white pl-2 pr-2 rounded-full"
+            className="text-white p-2 rounded-full flex bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
             onClick={() => {
               dispatch(updateCurrentPopup('shareWishlist'));
             }}
           >
+            <UserPlus />
             Share list
           </button>
-         
-        </div>
       </div>
-      {/**Body */}
-      <div style={{ position: "relative" }}>
+      <div className="w-full ml-4 pl-2 flex-1 overflow-auto rounded-2xl border bg-gray-200">
+            {/**Body */}
+      <div style={{ position: "relative", width: screenSize.width - 400}} className="h-full hide-scrollbar">
         <div
-          style={{
-            position: "absolute",
-            top: 0,
-            maxWidth: 1000,
-          }}
-          className=" mt-4 pt-4"
+
+          className=" pt-4"
         >
           {isProductsPending ? (
-            <div className="flex flex-wrap gap-8 h-full">
+            <div className="pl-4 flex flex-wrap gap-8">
               <WishItemSkeleton />
               <WishItemSkeleton />
               <WishItemSkeleton />
@@ -98,7 +90,7 @@ export default function MyListRightSection() {
               {
                 isClientMounted && <div>
                   {products.length > 0 ? (
-                    <div className="flex flex-wrap gap-8 h-full">
+                    <div className="p-2 w-full flex flex-wrap gap-8 h-full">
                       {products.map((product) => (
                         <WishItem
                           key={product.id}
@@ -123,18 +115,10 @@ export default function MyListRightSection() {
             </div>
           )}
         </div>
-        <div
-          className="flex justify-end items-center"
-          style={{
-            position: "absolute",
-            top: 270,
-            right: 9,
-            bottom: 0,
-            width: 90,
-            zIndex: 90,
-          }}
-        ></div>
+ 
       </div>
+      </div>
+      
     </div>
   );
 }

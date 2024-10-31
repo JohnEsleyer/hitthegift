@@ -32,10 +32,10 @@ const myListSlice = createSlice({
                 ]
             }
         },
-        deleteMyListEvents: (state, action: PayloadAction<string>) => {
+        deleteMyListEventById: (state, action: PayloadAction<string>) => {
             return {
                 ...state,
-                events: state.events.filter((event) => event.id == action.payload),
+                events: state.events.filter((event) => event.id !== action.payload),
             }
         },
         updateMyListProducts: (state, action: PayloadAction<ProductType[]>) => {
@@ -81,6 +81,6 @@ export const {
      updateProductStore,
      updateEventStore,
      deleteMyListProductById,
-     deleteMyListEvents
+     deleteMyListEventById,
     } = myListSlice.actions;
 export default myListSlice.reducer; // Ensure this exports the reducer

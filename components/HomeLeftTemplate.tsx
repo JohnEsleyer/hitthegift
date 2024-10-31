@@ -9,9 +9,9 @@ interface HomeLeftTemplateProps{
 
 export function HomeLeftTemplate({children, highlight} : HomeLeftTemplateProps){
     return (
-        <div className="h-full ">
+        <div className="h-screen bg-red-300">
         <div
-          style={{ width: 291, marginTop:25 }}
+          style={{ width: 291, marginTop:20 }}
           className={` border-gray-400 flex justify-center ml-4  gap-8`}
         >
           <a href={"/mylist"}

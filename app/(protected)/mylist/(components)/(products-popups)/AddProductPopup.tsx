@@ -29,7 +29,7 @@ export default function AddProductPopup() {
   // const [autoFill, setAutoFill] = useState("");
   const [price, setPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
-  const [currency, setCurrency] = useState("");
+  const [currency, setCurrency] = useState("USD");
   const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
   const [response, setResponse] = useState<ResponseData>({
     message: "",
