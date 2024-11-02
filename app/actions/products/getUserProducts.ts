@@ -1,9 +1,14 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { ProductType } from "@/lib/types/products";
+import { MongoClient } from "mongodb";
+
 
 export async function getUserProducts(id: string) {
+
+    const uri = process.env.MONGODB_URI || '';
+
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
         
@@ -42,10 +47,14 @@ export async function getUserProducts(id: string) {
         }
       } catch (e) {
         console.error(e);
+        
         return {
           message: "Failed to fetch products",
           status: 500,
         };
+      }finally{
+        mongoClient.close();
       }
+   
 }
 

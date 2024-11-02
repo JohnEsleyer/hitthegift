@@ -1,12 +1,12 @@
 import { comparePassword } from "@/lib/hashPassword";
-import { mongoClient } from "@/lib/mongodb";
 import { LoginData } from "@/lib/types/authTypes";
 import jwt from 'jsonwebtoken';
-import { ObjectId, WithId } from "mongodb";
+import { MongoClient } from "mongodb";
 import { cookies } from 'next/headers';
 
 export async function POST(req: Request){
-
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try{
         console.log(`processing request...`)
         const requestData: LoginData = await req.json();
@@ -20,6 +20,7 @@ export async function POST(req: Request){
 
         // Validate user 
         if (!user){
+             ;
             return new Response(JSON.stringify({
                 message: 'Invalid email or password',
                 status: 590,
@@ -36,6 +37,8 @@ export async function POST(req: Request){
         console.log(`isMatch value: ${isMatch}`);
         if (!isMatch){
             console.log("Passwords don't match");
+
+             ;
             return new Response(JSON.stringify({
                 message: 'Invalid email or password',
                 status: 401,
@@ -59,6 +62,8 @@ export async function POST(req: Request){
 
 
         console.log(`isVerified: ${user.verified}`);
+
+         ;
         return new Response(JSON.stringify({
             message: 'Login successful',
             userId: user._id,
@@ -74,6 +79,8 @@ export async function POST(req: Request){
     }catch(e){
         console.log("Failed");
         console.log(e);
+
+         ;
         return new Response(JSON.stringify({
             message: 'Login Failed',
             status: 500,

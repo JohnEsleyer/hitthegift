@@ -1,10 +1,13 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { Conversation } from "@/lib/types/conversation";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 export default async function findOrCreateConversation(userId: string, friendId: string) {
+    const uri = process.env.MONGODB_URI || '';
+
+    const mongoClient = new MongoClient(uri);
+    
     try {
         const db = mongoClient.db('hitmygift');
         
@@ -20,6 +23,7 @@ export default async function findOrCreateConversation(userId: string, friendId:
                 participants: conversation.participants,
                 createdAt: conversation.createdAt,
             };
+             ;
             return {
                 status: 200,
                 data: conversationSimplified,
@@ -37,7 +41,7 @@ export default async function findOrCreateConversation(userId: string, friendId:
             participants: [userId, friendId],
             createdAt: new Date(),
         };
-
+         
         return {
             status: 200,
             data: conversationSimplified,
@@ -47,5 +51,7 @@ export default async function findOrCreateConversation(userId: string, friendId:
         return {
             status: 500,
         };
+    }finally{
+        mongoClient.close();
     }
 }

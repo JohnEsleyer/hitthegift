@@ -15,6 +15,7 @@ import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 import FriendProfileSkeleton from "@/components/skeletons/FriendProfileSkeleton";
 import { getProfilePicture } from "@/app/actions/s3/getProfilePicture";
 import UserProfileImage from "@/components/UserProfileImage";
+import { useWindowSize } from "@/utils/hooks/useWindowSize";
 
 // Selected friend page
 export default function InsideFriendLeftSection(){
@@ -29,7 +30,8 @@ export default function InsideFriendLeftSection(){
     const [isFriendsPending, startFriendsTransition] = useTransition();
     const [isPendingUserInfo, startUserInfoTransition] = useTransition();
     const [friendNotFound, setFriendNotFound] = useState(false);
-
+    const {width, height} = useWindowSize();
+    
     useEffect(()=>{
         if (!friendId){
             setFriendNotFound(true);
@@ -71,11 +73,9 @@ export default function InsideFriendLeftSection(){
 
     return (
         <HomeLeftTemplate highlight={'friendslist'}>
-        <div className="h-screen">
-            <div>
             <div className="p-2 flex flex-col gap-4">
                 
-                {isPendingUserInfo ? <FriendProfileSkeleton/> : <div className="mt-2 p-2 border border-gray-200 rounded-2xl">
+                {isPendingUserInfo ? <FriendProfileSkeleton/> : <div >
                     {/**Friend's profile */}
                     <div className="flex  p-2">
                         <div className="flex items-center">
@@ -89,8 +89,8 @@ export default function InsideFriendLeftSection(){
                        </div>
                     </div>
                     <span className="text-xl font-bold">Interests and hobbies</span>
-                    <div style={{height: 120, width: 290}} className="shadow-md border rounded-2xl  p-2">
-                        {hobbiesInfo}
+                    <div style={{height: 120, width: 290}} className="shadow-md border overflow-auto rounded-2xl  p-2">
+                        <p style={{fontSize: 13}} className="break-words">{hobbiesInfo}</p>
                     </div>
                     <div style={{height: 100}}></div>
                     <span>People with whom this list has been shared</span>
@@ -107,11 +107,7 @@ export default function InsideFriendLeftSection(){
                         ))}
                     </div> }
                 </div>}
-                
-
             </div>
-            </div>
-        </div>
         </HomeLeftTemplate>
     );
 }

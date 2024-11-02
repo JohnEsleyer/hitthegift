@@ -12,25 +12,18 @@ import { CircleX, Gift, Send, UserPlus } from "lucide-react";
 import addFriend from "@/app/actions/user/addFriend";
 import { updateMyListProducts } from "@/lib/features/mylist";
 import { sendFriendRequest } from "@/app/actions/user/sendFriendRequest";
+import { useWindowSize } from "@/utils/hooks/useWindowSize";
 
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
 
   const [isProductsPending, startProductsTransition] = useTransition();
-
-  const [friendEmail, setFriendEmail] = useState("");
-  const [isSending, startSendTransition] = useTransition();
   const [isClientMounted, setIsClientMounted] = useState(false);
-
   const userId = useSelector((state: RootState) => state.userData.id);
   const products = useSelector((state: RootState) => state.mylist.products);
 
-  const [screenSize, setScreenSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
+  const {width, height} = useWindowSize();
 
   useEffect(() => {
     setIsClientMounted(true);
@@ -48,7 +41,7 @@ export default function MyListRightSection() {
   return (
     <div className="w-full h-screen flex flex-col">
     
-      <div style={{height:90}} className="pl-2 flex items-end pb-4 gap-2 ">
+      <div style={{height:75}} className="ml-8 flex items-end pb-4 gap-2 ">
         {/**Buttons*/}
         <button
             className="text-white p-2 rounded-full flex bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
@@ -69,11 +62,10 @@ export default function MyListRightSection() {
             Share list
           </button>
       </div>
-      <div className="w-full ml-4 pl-2 flex-1 overflow-auto rounded-2xl border bg-gray-200">
+      <div className="w-full ml-8 pl-2 flex-1 overflow-auto rounded-2xl border bg-gray-200">
             {/**Body */}
-      <div style={{ position: "relative", width: screenSize.width - 400}} className="h-full hide-scrollbar">
+      <div style={{ position: "relative", width: width - 420}} className="h-full hide-scrollbar">
         <div
-
           className=" pt-4"
         >
           {isProductsPending ? (
@@ -115,10 +107,10 @@ export default function MyListRightSection() {
             </div>
           )}
         </div>
- 
       </div>
       </div>
-      
     </div>
   );
 }
+
+

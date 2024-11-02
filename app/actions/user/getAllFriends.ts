@@ -1,12 +1,11 @@
 'use server'
-import { mongoClient } from "@/lib/mongodb";
 import { Friend } from "@/lib/types/friend";
 import { UserData } from "@/lib/types/user";
-import { ObjectId } from "mongodb";
-
+import { MongoClient, ObjectId } from "mongodb";
 
 export default async function getAllFriends(userId: string) {
-    console.log(`ID received: ${userId}`);
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
         const user = await db.collection<UserData>('users').findOne({
@@ -29,8 +28,8 @@ export default async function getAllFriends(userId: string) {
                         _id: new ObjectId(friendIdStr),
                     });
 
-
                     if (friend) {
+                         
                         return {
                             id: friendIdStr,
                             firstName: friend.firstName,
@@ -44,8 +43,7 @@ export default async function getAllFriends(userId: string) {
             // Filter out any null values
             userFriends = friendsData.filter((friend): friend is Friend => friend !== null);
 
-            console.log(`LENGTH: ${userFriends.length}`);
-            console.log('Status: 200');
+             
             return {
                 friends: userFriends,
                 status: 200,
@@ -53,9 +51,12 @@ export default async function getAllFriends(userId: string) {
         }
     } catch (error) {
         console.error('Error fetching friends:', error);
+         
         return {
             friends: [],
             status: 500,
         };
+    }finally{
+        mongoClient.close();
     }
 }

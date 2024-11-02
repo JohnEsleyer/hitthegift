@@ -1,11 +1,7 @@
 'use server'
 
-'use server';
 
-import { mongoClient } from "@/lib/mongodb";
-import { ServerResponseForEvents } from "@/lib/types/event";
-import { ProductType } from "@/lib/types/products";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 type UpdateRequestPayload = {
     productId: string;
@@ -19,7 +15,8 @@ type UpdateRequestPayload = {
 };
 
 export async function updateProduct(data: UpdateRequestPayload) {
-    console.log('Updating product');
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
         const { productId, ...updateData } = data;
@@ -39,9 +36,13 @@ export async function updateProduct(data: UpdateRequestPayload) {
         }
 
         console.log("update product: SUCCESS");
+         
         return { message: "Product Update Success", status: 200 };
     } catch (e) {
         console.log(e);
+         
         return { message: "Product Update Failed", status: 500 };
+    }finally{
+        mongoClient.close();
     }
 }

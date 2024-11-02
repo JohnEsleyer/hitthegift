@@ -1,7 +1,6 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 type UserData = {
     _id: ObjectId;
@@ -14,12 +13,15 @@ type UserData = {
 }
 
 export default async function updateUserFirstName(userId: string, firstName: string){
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try{
         const db = mongoClient.db('hitmygift');
         await db.collection<UserData>('users').updateOne({_id: new ObjectId(userId)}, {
             $set: {firstName: firstName},
         });
-    
+        
+         
         return {
             message: 'Update successful',
             status: 200,
@@ -30,5 +32,7 @@ export default async function updateUserFirstName(userId: string, firstName: str
             message: 'Server failed to update user first name',
             status: 500,
         }
+    }finally{
+        mongoClient.close();
     }
 }

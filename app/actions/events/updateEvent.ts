@@ -1,9 +1,8 @@
 'use server';
 
-import { mongoClient } from "@/lib/mongodb";
 import { EventData, ServerResponseForEvents } from "@/lib/types/event";
 import getFriendsByIds from "../user/getFriendsByIds";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { Friend } from "@/lib/types/friend";
 
 interface UpdateEventPayload {
@@ -15,6 +14,8 @@ interface UpdateEventPayload {
 }
 
 export async function updateEvent(payload: UpdateEventPayload) {
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
         const { id, userId, ...updateData } = payload;
@@ -31,6 +32,7 @@ export async function updateEvent(payload: UpdateEventPayload) {
 
         if (result.matchedCount === 0) {
             console.log("update event: Event not found");
+             ;
             return { message: "Event not found", status: 404 };
         }
 
@@ -51,9 +53,13 @@ export async function updateEvent(payload: UpdateEventPayload) {
         };
 
         console.log("update event: SUCCESS");
+         
         return { message: "Event Update Success", data: transformedData, status: 200 };
     } catch (e) {
         console.log(e);
+         
         return { message: "Event Update Failed", status: 500 };
+    }finally{
+        mongoClient.close();
     }
 }

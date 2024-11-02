@@ -1,14 +1,14 @@
 'use server';
 
-import { mongoClient } from "@/lib/mongodb";
 import { FriendRequestMongoType, FriendRequestServerResponse } from "@/lib/types/friendrequest";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { getProfilePicture } from "../s3/getProfilePicture";
 import getUserInfo from "./getUserInfo";
 
-
 // returns all the user's sent friend request.
 export default async function getSentRequests(userId: string) {
+  const uri = process.env.MONGODB_URI || '';
+  const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -19,6 +19,7 @@ export default async function getSentRequests(userId: string) {
 
         if (!response.length) {
             console.log('No friend requests found');
+             
             return {
                 status: 404,
                 message: 'No friend requests found',
@@ -34,7 +35,8 @@ export default async function getSentRequests(userId: string) {
               getUserInfo(friendRequest.receiverId),
               getProfilePicture(friendRequest.receiverId)
             ]);
-          
+            
+             
             return {
               id: friendRequest._id.toString(),
               sender: {
@@ -52,7 +54,8 @@ export default async function getSentRequests(userId: string) {
             };
           }));
           
-
+        
+         
         return {
             status: 200,
             message: 'Friend requests retrieved successfully',
@@ -60,10 +63,13 @@ export default async function getSentRequests(userId: string) {
         };
     } catch (e) {
         console.log(e);
+         
         return {
             status: 500,
             message: 'Internal server error',
             data: []
         };
-    }
+    }finally{
+      mongoClient.close();
+  }
 }

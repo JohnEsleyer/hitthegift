@@ -1,7 +1,6 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 // Used by the client to create ObjectId in string format.
 export async function createObjectId(){
@@ -11,9 +10,13 @@ export async function createObjectId(){
 }
 
 export async function deleteAllUsers(){
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try{
         mongoClient.db('hitmygift').collection('users').deleteMany({});
     }catch(e){
         console.log(e);
+    }finally{
+        mongoClient.close();
     }
 }

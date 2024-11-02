@@ -1,10 +1,13 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { UserData } from "@/lib/types/user";
+import { MongoClient } from "mongodb";
 
 
 export default async function verifyResetToken(token: string, email: string){
+    const uri = process.env.MONGODB_URI || '';
+
+    const mongoClient = new MongoClient(uri);
     try{
         const db = mongoClient.db('hitmygift');
         
@@ -16,6 +19,7 @@ export default async function verifyResetToken(token: string, email: string){
 
         // Check if user exists and token is valid
         if (!user){
+             
             return {
                 status: 400,
                 message: 'Password Reset token has expired'
@@ -23,6 +27,7 @@ export default async function verifyResetToken(token: string, email: string){
         }
 
         console.log(`Password Reset Token verified`);
+         
         return {
             status: 200,
             message: 'Password Reset token is verified',
@@ -31,9 +36,12 @@ export default async function verifyResetToken(token: string, email: string){
 
     }catch(e){
         console.log(`Server Error: ${e}`);
+         
         return {
             status: 500,
             message: `Server error: ${e}`,
         }
+    }finally{
+        mongoClient.close();
     }
 }

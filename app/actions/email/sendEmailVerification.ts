@@ -13,8 +13,6 @@ export default async function sendEmailVerification(
     lastName: string,
     token: string,
 ){
-
-
     try{    
         const transporter = nodemailer.createTransport({
             host: "smtp.zoho.com",

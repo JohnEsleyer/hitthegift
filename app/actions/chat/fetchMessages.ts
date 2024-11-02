@@ -1,11 +1,14 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { Conversation } from "@/lib/types/conversation";
 import { Message } from "@/lib/types/message";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 export default async function fetchMessages(conversationId: string){
+    const uri = process.env.MONGODB_URI || '';
+
+    const mongoClient = new MongoClient(uri);
+    
     try{
         const db = mongoClient.db('hitmygift');
         
@@ -25,7 +28,6 @@ export default async function fetchMessages(conversationId: string){
         ));
 
         if (messages.length > 0){
-            
             console.log('200');
             return {
                 status: 200,
@@ -33,14 +35,18 @@ export default async function fetchMessages(conversationId: string){
             }
         }
         console.log('400');
+    
         return {
             status: 400,
         }
 
     }catch(e){
         console.log(e);
+         
         return {
             status: 500,
         }
+    }finally{
+        mongoClient.close();
     }    
 }

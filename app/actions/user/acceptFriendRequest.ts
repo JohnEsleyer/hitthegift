@@ -1,11 +1,12 @@
 'use server';
 
-import { mongoClient } from "@/lib/mongodb";
 import { FriendRequestMongoType } from "@/lib/types/friendrequest";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 // Update user and friend's friendslist and remove FriendRequest
 export default async function acceptFriendRequest(userId: string, friendRequestId: string) {
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -16,6 +17,7 @@ export default async function acceptFriendRequest(userId: string, friendRequestI
 
         if (!friendRequest) {
             console.log('Friend request not found');
+             
             return {
                 status: 400,
                 message: 'Friend request not found'
@@ -43,11 +45,13 @@ export default async function acceptFriendRequest(userId: string, friendRequestI
 
         if (userUpdateRes.modifiedCount > 0 && senderUpdateRes.modifiedCount > 0 && deleteRes.deletedCount > 0) {
             console.log('Friend request accepted and both users updated successfully');
+             
             return {
                 status: 200,
                 message: 'Friend request accepted successfully'
             };
         } else {
+             
             return {
                 status: 500,
                 message: 'Failed to accept friend request'
@@ -55,9 +59,12 @@ export default async function acceptFriendRequest(userId: string, friendRequestI
         }
     } catch (e) {
         console.log(e);
+         
         return {
             status: 500,
             message: 'Internal server error'
         };
+    }finally{
+        mongoClient.close();
     }
 }

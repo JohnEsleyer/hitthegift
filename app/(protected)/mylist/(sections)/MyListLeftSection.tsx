@@ -20,18 +20,14 @@ import UserProfileImage from "@/components/UserProfileImage";
 import Link from "next/link";
 import { House, Users } from "lucide-react";
 import { Spicy_Rice } from 'next/font/google';
-import { Rubik } from "next/font/google";
-
 
 const spicyrice = Spicy_Rice({
   weight: "400",
   subsets: ['latin']
 });
 
-
 export default function MyListLeftSection() {
 
-  
   const userId = useSelector((state: RootState) => state.userData.id);
   // const [events, setEvents] = useState<ServerResponseForEvents[]>([]);
   const events = useSelector((state: RootState) => state.mylist.events);
@@ -92,18 +88,7 @@ export default function MyListLeftSection() {
   }, [selectedDate, events ]);
 
   return (
-    <div className=" h-screen flex flex-col ">
-        <div className="flex-1 flex justify-center ">
-        <p style={{
-        fontSize: 30,
-        }} className={`${spicyrice.className} font-bold text-black`}>HitMyGift</p>
-
-        </div>
-        <div className="flex justify-center gap-4 p-2">
-          <span className="flex text-blue-600 "><House/> My List</span>
-          <Link href="/friendslist" className="flex"> <Users/> Friends List</Link>
-        </div>
-      <div style={{}} className="flex-5 ml-2 overflow-auto hide-scrollbar border rounded-2xl">
+    <HomeLeftTemplate highlight="mylist">
       <EditableHobbyArea />
       <button
         className="ml-2 pl-2 pr-2 text-white rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
@@ -147,7 +132,7 @@ export default function MyListLeftSection() {
                         dispatch(updateCurrentPopup("editEvent"));
                       }}
                       key={event.id}
-                      style={{width: 280}}
+                      style={{width: 270}}
                       className="hover:bg-gray-300 flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2"
                     >
                       <div
@@ -205,7 +190,6 @@ export default function MyListLeftSection() {
           onClick={(date) => setSelectedDate(date)}
         />
       </div>
-      </div>
-    </div>
+      </HomeLeftTemplate>
   );
 }

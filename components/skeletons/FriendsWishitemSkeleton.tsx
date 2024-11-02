@@ -7,7 +7,7 @@ export default function FriendsWishItemSkeleton(){
         <a href="#">
   <div
     style={{ width: 200 }}
-    className="p-4 rounded-xl border border-slate-300"
+    className="p-4 rounded-xl border border-slate-300 bg-white"
   >
     {/* Skeleton for the image section */}
     <div style={{ height: 150 }} className="bg-gray-300 animate-pulse flex justify-center items-center">

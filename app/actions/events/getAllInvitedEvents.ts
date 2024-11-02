@@ -1,8 +1,8 @@
 'use server';
 
-import { mongoClient } from "@/lib/mongodb";
 import { EventData, InvitedEventsResponse } from "@/lib/types/event";
 import getUserInfo from "../user/getUserInfo";
+import { MongoClient } from "mongodb";
 
 /**
  * 
@@ -18,7 +18,8 @@ export async function getAllInvitedEvents(
   data: InvitedEventsResponse[];
   status: number;
 }> {
-  console.log("getAllInvitedEvents");
+  const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
   try {
     const db = mongoClient.db('hitmygift');
 
@@ -38,6 +39,7 @@ export async function getAllInvitedEvents(
           // Fetch the event owner's info
           const ownerInfo = await getUserInfo(event.userId);
 
+           
           return {
             id: event._id.toString(),
             userId: event.userId,
@@ -50,12 +52,14 @@ export async function getAllInvitedEvents(
       );
 
       console.log(`array: ${responseData}`);
+       
       return {
         message: "Successfully fetched all events for invited friends",
         data: responseData,
         status: 200,
       };
     } else {
+       
       return {
         message: "No events found for the given user as an invited friend",
         data: [],
@@ -64,10 +68,13 @@ export async function getAllInvitedEvents(
     }
   } catch (e) {
     console.error(e);
+     
     return {
       message: "Failed to fetch events",
       data: [],
       status: 500,
     };
-  }
+  }finally{
+    mongoClient.close();
+}
 }

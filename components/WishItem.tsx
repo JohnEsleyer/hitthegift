@@ -48,25 +48,44 @@ export default function WishItem({
     return (<div>{children}</div>)
   }
 
+
+  function EnableEdit({enable, children}: {enable: boolean; children: ReactNode}){
+    if (enable) {
+      return (
+        <button
+          onClick={() => {
+            dispatch(updateCurrentPopup('editProduct'));
+            dispatch(
+              updateEditProductAll({
+                id: id,
+                userId: '',
+                price: price,
+                currency: currency,
+                title: title,
+                productUrl: productUrl,
+                imageUrl: imageUrl,
+                description: description,
+              })
+            );
+          }}
+        >
+          {children}
+        </button>
+      );
+    }
+  
+    return <>{children}</>;
+
+
+  }
+
+
   return (
     <div className="relative">
-      <button onClick={() =>{
-        console.log("Clicked");
-        dispatch(updateCurrentPopup('editProduct'));
-        dispatch(updateEditProductAll({
-          id: id,
-          userId: '',
-          price: price,
-          currency: currency,
-          title: title,
-          productUrl: productUrl,
-          imageUrl: imageUrl,
-          description: description,
-        }));
-      }}>
+     <EnableEdit enable={owner || false}>
     <div
       style={{ width: 200 }}
-      className={` p-4 rounded-xl border bg-white ${!isSidebarOpen && 'hover:scale-105'} border-slate-300`}
+      className={` p-4 rounded-xl border bg-white ${!isSidebarOpen && 'hover:scale-100'} border-slate-300`}
     >
       <div className="relative">
       {imageUrl == '' ? <EmptyItem width={165} height={150}/> : <div style={{height: 150}} className="flex justify-center border rounded-2xl"><img src={imageUrl} alt={imageUrl}/></div>}
@@ -89,7 +108,7 @@ export default function WishItem({
       </div>
       </EnableAnchor>
       }
-      </button>
+      </EnableEdit>
     </div>
   );
 }

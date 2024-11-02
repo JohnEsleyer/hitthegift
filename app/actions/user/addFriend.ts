@@ -1,11 +1,12 @@
 'use server';
 
-import { mongoClient } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 
 // Add friend directly (skipping the friend request)
 export default async function addFriend(userId: string, friendEmail: string) {
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -16,6 +17,8 @@ export default async function addFriend(userId: string, friendEmail: string) {
 
         if (!friend) {
             console.log('Friend not found');
+
+             
             return {
                 status: 400,
                 message: 'Friend not found'
@@ -38,11 +41,13 @@ export default async function addFriend(userId: string, friendEmail: string) {
 
         if (userUpdateRes.modifiedCount > 0 && friendUpdateRes.modifiedCount > 0) {
             console.log('Friend added successfully to both users');
+             
             return {
                 status: 200,
                 message: 'Friend added successfully to both users'
             };
         } else {
+             
             return {
                 status: 500,
                 message: 'Failed to add friend'
@@ -50,9 +55,12 @@ export default async function addFriend(userId: string, friendEmail: string) {
         }
     } catch (e) {
         console.log(e);
+         
         return {
             status: 500,
             message: 'Internal server error'
         };
+    }finally{
+        mongoClient.close();
     }
 }

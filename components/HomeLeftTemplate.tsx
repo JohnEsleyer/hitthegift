@@ -1,31 +1,52 @@
-"use client"
+"use client";
 
 import { ReactNode } from "react";
+import { Spicy_Rice } from 'next/font/google';
+import { House, Users } from "lucide-react";
+import Link from "next/link";
 
-interface HomeLeftTemplateProps{
-    children: ReactNode;
-    highlight: string; // mylist or friendslist
+
+const spicyrice = Spicy_Rice({
+  weight: "400",
+  subsets: ['latin']
+});
+
+interface HomeLeftTemplateProps {
+  children: ReactNode;
+  highlight: string; // mylist or friendslist
 }
 
-export function HomeLeftTemplate({children, highlight} : HomeLeftTemplateProps){
-    return (
-        <div className="h-screen bg-red-300">
-        <div
-          style={{ width: 291, marginTop:20 }}
-          className={` border-gray-400 flex justify-center ml-4  gap-8`}
+export function HomeLeftTemplate({
+  children,
+  highlight,
+}: HomeLeftTemplateProps) {
+  return (
+    <div className="h-screen w-full flex flex-col ">
+      <div style={{height: 40}}className="flex justify-center ">
+        <p
+          style={{
+            fontSize: 30,
+          }}
+          className={`${spicyrice.className} font-bold text-black`}
         >
-          <a href={"/mylist"}
-           className={`${highlight == "mylist" && "text-blue-500 border-b border-blue-400"}`}
-          >My List</a>
-          <a
-            className={`${highlight == "friendslist" && "text-blue-500 border-b border-blue-400"}`}
-            href={"/friendslist"}
-          >
-            Friends List
-          </a>
-        </div>
-        {children}
-       
+          HitMyGift
+        </p>
       </div>
-    )
+      <div style={{height: 35}} className="flex justify-center gap-4 p-2">
+        {highlight == "mylist" ? <span className="flex text-blue-600 ">
+          <House /> My List
+        </span> :  <Link href="/mylist" className="flex">
+          <House /> My List
+        </Link>}
+        {highlight == "friendslist" ? <span className="flex text-blue-600 ">
+          <Users /> Friends List
+        </span> : <Link href="/friendslist" className="flex">
+          <Users /> Friends List
+        </Link>}
+      </div>
+      <div className="ml-2 overflow-auto hide-scrollbar border rounded-2xl">
+       {children}
+      </div>
+    </div>
+  );
 }

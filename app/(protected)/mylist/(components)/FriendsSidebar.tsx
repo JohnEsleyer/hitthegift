@@ -145,7 +145,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
               {friendRequests.map((friendRequest) => (
                 <div
                   key={friendRequest.id}
-                  className="flex border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2 flex justify-between"
+                  className="flex bg-white border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2 flex justify-between"
                 >
                   <div className="flex items-center">
                     {friendRequest.sender.imageUrl == "" ? (
@@ -216,7 +216,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
               {searchResults.map((friend) => (
                 <div
                   key={friend.id}
-                  className="border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2  flex justify-between "
+                  className="bg-white border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2  flex justify-between "
                 >
                   <div className="flex items-center gap-2 ">
                     <div className="flex justify-center items-center w-12 h-12 bg-blue-400 rounded-full">

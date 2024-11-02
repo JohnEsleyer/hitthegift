@@ -1,9 +1,8 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { ServerResponseForEvents } from "@/lib/types/event";
 import { ProductType } from "@/lib/types/products";
-import { ObjectId } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 
 type RequestPayload = {
@@ -18,7 +17,8 @@ type RequestPayload = {
 }
 
 export async function createProduct(data: RequestPayload) {
-    console.log('Creating product');
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
    
@@ -45,9 +45,13 @@ export async function createProduct(data: RequestPayload) {
         }
 
         console.log("create product: SUCCESS");
+         
         return { message: "Product Creation Success",data: responseData, status: 200 };
     } catch (e) {
         console.log(e);
+         
         return { message: "Product Creation Failed", status: 500 };
+    }finally{
+        mongoClient.close();
     }
 }

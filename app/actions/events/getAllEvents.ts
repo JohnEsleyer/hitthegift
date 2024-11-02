@@ -1,10 +1,12 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { EventData } from "@/lib/types/event";
 import getFriendsByIds from "../user/getFriendsByIds";
+import { MongoClient } from "mongodb";
 
 export async function getAllEvents(userId: string) {
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -33,12 +35,14 @@ export async function getAllEvents(userId: string) {
             
 
             console.log(`array: ${responseData}`);
+             
             return {
                 message: "Successfully fetched all events",
                 data: responseData,
                 status: 200,
             };
         } else {
+             
             return {
                 message: "No events found for the given user",
                 data: [],
@@ -47,9 +51,12 @@ export async function getAllEvents(userId: string) {
         }
     } catch (e) {
         console.error(e);
+         
         return {
             message: "Failed to fetch events",
             status: 500,
         };
+    }finally{
+        mongoClient.close();
     }
 }

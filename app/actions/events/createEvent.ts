@@ -1,8 +1,8 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { EventData, ServerResponseForEvents } from "@/lib/types/event";
 import getFriendsByIds from "../user/getFriendsByIds";
+import { MongoClient } from "mongodb";
 
 
 interface RequestPayload{
@@ -11,6 +11,8 @@ interface RequestPayload{
 }
 
 export async function createEvent(payload: RequestPayload) {
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -31,10 +33,13 @@ export async function createEvent(payload: RequestPayload) {
             eventTitle: payload.data.eventTitle,
             invitedFriends: friendsData.friends,
         }
-
+         
         return { message: "Event Inserted Successfully", data: transformedData, status: 200 };
     } catch (e) {
         console.log(e);
+         
         return { message: "insert Event Failed", status: 500 };
+    }finally{
+        mongoClient.close();
     }
 }

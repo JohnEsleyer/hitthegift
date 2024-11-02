@@ -1,12 +1,11 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { UserData } from "@/lib/types/user";
-import { ObjectId } from "mongodb";
-import verifyVerificationToken from "../email/verifyVerificationToken";
+import { MongoClient, ObjectId } from "mongodb";
 
-export default async function getUserInfo(userId: string){
-    
+export default async function getUserInfo(userId: string){  
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try{
         const db = mongoClient.db('hitmygift');
         const user = await db.collection<UserData>('users').findOne({
@@ -27,14 +26,18 @@ export default async function getUserInfo(userId: string){
             }
         }
 
+         
         return {
             message: 'User not found',
             status: 400,
         }
     }catch(e){
+         
         return {
             message: 'Server failed to access user info',
             status: 500,
         }
+    }finally{
+        mongoClient.close();
     }
 }

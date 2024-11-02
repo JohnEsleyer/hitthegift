@@ -8,6 +8,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
 
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
+import { useWindowSize } from "@/utils/hooks/useWindowSize";
 
 
 export default function InsideFriendRightSection() {
@@ -17,7 +18,7 @@ export default function InsideFriendRightSection() {
     (state: RootState) => state.insideFriend.friendId
   );
   const friendName = useSelector((state: RootState) => state.insideFriend.friendName);
-
+  const {width, height} = useWindowSize();
 
   useEffect(() => {
     startProductsTransition(async () => {
@@ -31,9 +32,9 @@ export default function InsideFriendRightSection() {
 
   return (
     <div className="w-full">
-      <div style={{ marginLeft: 30 }} className="pt-12 h-screen">
+      <div style={{ marginLeft: 30,marginTop: 70, height: height-70, width: width-400}}  className="h-screen bg-gray-200 p-2 rounded-2xl border hide-scrollbar">
         {isProductsPending ? (
-          <div className="flex flex-wrap gap-8 h-full">
+          <div className=" pl-2 pt-2 overflow-auto flex flex-wrap gap-8 ">
           <WishItemSkeleton />
           <WishItemSkeleton />
           <WishItemSkeleton />
@@ -42,9 +43,8 @@ export default function InsideFriendRightSection() {
           <WishItemSkeleton />
         </div>
         ) : (
-          <div>
-
-          {products.length > 0 ? <div className="pt-4 flex flex-wrap gap-2">
+          <div  className="overflow-auto">
+          {products.length > 0 ? <div className="pl-2 pt-2 flex flex-wrap gap-2">
             {products.map((product) => (
               <WishItem
                 key={product.id}

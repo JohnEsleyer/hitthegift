@@ -1,14 +1,15 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { EventData } from "@/lib/types/event";
 
 import getFriendsByIds from "../user/getFriendsByIds";
+import { MongoClient } from "mongodb";
 
 
 // Get all my events by the specified month.
 export async function getAllEventsByMonth(userId: string, month: number) {
-    console.log('Executing getAllEventsByMonth');
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -38,6 +39,7 @@ export async function getAllEventsByMonth(userId: string, month: number) {
 
                     const friendsData = await getFriendsByIds(event.invitedFriends);
 
+                     
                     return {
                         id: event._id.toString(),
                         userId: userId,
@@ -49,12 +51,14 @@ export async function getAllEventsByMonth(userId: string, month: number) {
             );
 
             console.log(`array: ${responseData}`);
+             
             return {
                 message: `Successfully fetched all events for month ${month}`,
                 data: responseData,
                 status: 200,
             };
         } else {
+             
             return {
                 message: `No events found for the given user in month ${month}`,
                 data: [],
@@ -63,9 +67,12 @@ export async function getAllEventsByMonth(userId: string, month: number) {
         }
     } catch (e) {
         console.error(e);
+         
         return {
             message: "Failed to fetch events",
             status: 500,
         };
+    }finally{
+        mongoClient.close();
     }
 }

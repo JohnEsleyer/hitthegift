@@ -1,10 +1,11 @@
 'use server';
 
-import { mongoClient } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { MongoClient } from "mongodb";
 import sendInviteByEmail from "../email/sendInviteByEmail";
 
 export async function sendFriendRequest(senderId: string, receiverEmail: string) {
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -17,7 +18,7 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
             console.log('Receiver not found');
             // Send invitation email to the given email address
             await sendInviteByEmail(senderId, receiverEmail);
-
+             
             return {
                 status: 200,
                 message: 'Receiver not found. An invitation email is sent to the given email address'
@@ -34,6 +35,7 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
 
         if (existingRequest) {
             console.log('Friend request already exists');
+             
             return {
                 status: 400,
                 message: 'Friend request already exists'
@@ -50,11 +52,13 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
 
         if (result.insertedId) {
             console.log('Friend request sent successfully');
+             
             return {
                 status: 200,
                 message: 'Friend request sent successfully'
             };
         } else {
+             
             return {
                 status: 500,
                 message: 'Failed to send friend request'
@@ -62,10 +66,13 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
         }
     } catch (e) {
         console.log(e);
+         
         return {
             status: 500,
             message: 'Internal server error'
         };
+    }finally{
+        mongoClient.close();
     }
 }
 

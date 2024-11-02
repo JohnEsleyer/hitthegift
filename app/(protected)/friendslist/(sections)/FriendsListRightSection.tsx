@@ -7,7 +7,7 @@ import { useTransition, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import FriendsWishItem from "../_components/FriendsWishItem";
 import FriendsWishItemSkeleton from "@/components/skeletons/FriendsWishitemSkeleton";
-
+import { useWindowSize } from "@/utils/hooks/useWindowSize";
 
 interface FriendsProducts {
     friendId: string;
@@ -16,11 +16,17 @@ interface FriendsProducts {
     products: ProductType[];
 }
 
-
 export default function FriendsListRightSection(){
     const [isPending, startTransition] = useTransition();
     const userId = useSelector((state: RootState) => state.userData.id);
-    const [products, setProducts] = useState<FriendsProducts[]>([]);
+    const [friendsProducts, setFriendsProducts] = useState<FriendsProducts[]>([]);
+    const {width, height} = useWindowSize();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState<FriendsProducts[]>([]);
+
+    useEffect(() => {
+        setFilteredProducts((prev) => friendsProducts.filter((friend) => friend.friendFirstName.toLocaleLowerCase().includes(searchTerm.toLowerCase())))
+    }, [searchTerm]);
 
     useEffect(() => {
         startTransition(async () => {
@@ -28,7 +34,8 @@ export default function FriendsListRightSection(){
             const results = await getFriendsProducts(userId);
             console.log(`status: ${results}`);
             if (results){
-                setProducts(results.data || []);
+                setFriendsProducts(results.data || []);
+                setFilteredProducts(results.data || []);
             }            
         });
     }, []);
@@ -37,12 +44,17 @@ export default function FriendsListRightSection(){
         <div className="ml-8 h-screen">
             {/**Search bar */}
                 <input
-                    className="mt-12 p-4 rounded-full bg-slate-200 w-64" 
-                    placeholder={`Friend's name`}/>
-            <div className="pt-4 flex flex-wrap gap-2">
+                    style={{height: 40, marginTop: 20, marginBottom: 15}} className="p-4 rounded-full border w-64" 
+                    placeholder={`Friend's name`}
+                    value={searchTerm}
+                    onChange={(e)=>{
+                        setSearchTerm(e.target.value);
+                    }}
+                    />
+            <div style={{height: height-75, width: width-400}} className="hide-scrollbar pt-4 flex flex-wrap gap-2 overflow-auto bg-gray-200 rounded-2xl border p-2">
                     {
                         isPending ? 
-                        (<div className="flex flex-wrap gap-2 ">
+                        (<div className="pl-2 flex flex-wrap gap-2 ">
                             <FriendsWishItemSkeleton/>
                             <FriendsWishItemSkeleton/>
                             <FriendsWishItemSkeleton/>
@@ -50,16 +62,15 @@ export default function FriendsListRightSection(){
                             <FriendsWishItemSkeleton/>
                             <FriendsWishItemSkeleton/>
                             <FriendsWishItemSkeleton/>
-                            
                         </div>) 
-                        : <div className=" w-full h-full">
-                            {products.length > 0 ? <div className="flex flex-wrap gap-2 justify-start">
+                        : <div className="pl-2  w-full h-full">
+                            {filteredProducts.length > 0 ? <div className="flex flex-wrap gap-2 justify-start">
                             {
-                                products.map((product, friendIndex) => (
+                                filteredProducts.map((product, friendIndex) => (
                                     <FriendsWishItem key={product.friendId} friendProduct={product}/>
                                 ))
                             }
-                        </div> : <div className="h-full text-gray-400 flex justify-center items-center ">
+                        </div> : <div style={{width: width - 300, height: height-400}} className="text-gray-400 flex justify-center items-center ">
                             No friends to show
                             </div>}
                         </div>

@@ -1,12 +1,13 @@
 'use server';
 
-import { mongoClient } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
 import getUserInfo from "./getUserInfo";
 import { getProfilePicture } from "../s3/getProfilePicture";
 import { FriendRequestMongoType, FriendRequestServerResponse } from "@/lib/types/friendrequest";
+import { MongoClient } from "mongodb";
 
 export default async function getFriendRequests(userId: string) {
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -52,7 +53,7 @@ export default async function getFriendRequests(userId: string) {
           }));
           
 
-
+         
         return {
             status: 200,
             message: 'Friend requests retrieved successfully',
@@ -60,10 +61,13 @@ export default async function getFriendRequests(userId: string) {
         };
     } catch (e) {
         console.log(e);
+         
         return {
             status: 500,
             message: 'Internal server error',
             data: []
         };
-    }
+    }finally{
+      mongoClient.close();
+  }
 }

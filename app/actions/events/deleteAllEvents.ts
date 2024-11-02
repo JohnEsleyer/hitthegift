@@ -1,7 +1,7 @@
 'use server';
 
-import { mongoClient } from "@/lib/mongodb";
 import { EventData } from "@/lib/types/event";
+import { MongoClient } from "mongodb";
 
 /**
  * The deleteAllEvents function removes all events from the 'events' collection in the database.
@@ -13,6 +13,8 @@ export async function deleteAllEvents(): Promise<{
     message: string;
     status: number;
 }> {
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const db = mongoClient.db('hitmygift');
 
@@ -21,11 +23,13 @@ export async function deleteAllEvents(): Promise<{
 
         if (result.deletedCount > 0) {
             console.log(`Deleted ${result.deletedCount} event(s)`);
+             
             return {
                 message: `Successfully deleted ${result.deletedCount} event(s)`,
                 status: 200,
             };
         } else {
+             
             return {
                 message: "No events found to delete",
                 status: 404,
@@ -33,9 +37,12 @@ export async function deleteAllEvents(): Promise<{
         }
     } catch (e) {
         console.error(e);
+         
         return {
             message: "Failed to delete events",
             status: 500,
         };
+    }finally{
+        mongoClient.close();
     }
 }

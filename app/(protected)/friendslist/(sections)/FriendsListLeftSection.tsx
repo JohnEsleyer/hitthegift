@@ -58,10 +58,10 @@ export default function FriendsListLeftSection() {
 
   return (
     <HomeLeftTemplate highlight="friendslist">
-      <div className="h-screen ml-2">
+      <div className="w-full">
         <div
           style={{ height: 600 }}
-          className="p-2 flex flex-col gap-4 border rounded-2xl "
+          className="p-2 flex flex-col gap-4"
         >
           {/**Calendar Section */}
           <div className="flex items-center justify-center mt-2 w-full border rounded-2xl border-gray-100 pr-4 pb-2">

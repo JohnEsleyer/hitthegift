@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { format, getDaysInMonth, startOfMonth, addDays, isSameDay } from "date-fns";
+import { ChevronLast, ChevronLeft, ChevronRight } from "lucide-react";
 
 
 interface CalendarProps {
@@ -44,9 +45,9 @@ export default function EventsCalendar({ highlightedDates, onClick } : CalendarP
     return (
       <div className="calendar-container">
         <header className="calendar-header">
-          <button onClick={goToPreviousMonth}>Previous</button>
+          <button onClick={goToPreviousMonth}><ChevronLeft/></button>
           <h2>{format(currentDate, "MMMM yyyy")}</h2>
-          <button onClick={goToNextMonth}>Next</button>
+          <button onClick={goToNextMonth}><ChevronRight/></button>
         </header>
         <div className="calendar-grid">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, index) => (

@@ -1,12 +1,18 @@
 'use server'
 
 import nodemailer from 'nodemailer';
-import { mongoClient } from "@/lib/mongodb";
+
 import { UserData } from "@/lib/types/user";
 import crypto from 'crypto';
 import passwordResetEmail from './emails/passwordResetEmail';
+import { MongoClient } from 'mongodb';
 
 export default async function sendPasswordResetEmail(targetEmail: string){
+    
+    const uri = process.env.MONGODB_URI || '';
+
+    const mongoClient = new MongoClient(uri);
+    
     try{
         const db = mongoClient.db('hitmygift');
         // Find the user by email
@@ -17,6 +23,7 @@ export default async function sendPasswordResetEmail(targetEmail: string){
         // If no user is found based on the email, return 400
         if (!user){
             console.log('No user found with that email address');
+             ;
             return {
                 status: 400,
                 message: 'No user found with that email address',
@@ -59,6 +66,7 @@ export default async function sendPasswordResetEmail(targetEmail: string){
             console.log('Email sent: ' + info.response);
           });
 
+         
         return {
             status: 200,
             message: 'Password reset request sent',
@@ -66,10 +74,13 @@ export default async function sendPasswordResetEmail(targetEmail: string){
 
     }catch(e){
         console.log('Failed to send password reset request');
+         
         return {
             status: 500,
             message: 'Failed to send password reset request',
         }
 
+    }finally{
+        mongoClient.close();
     }
 }

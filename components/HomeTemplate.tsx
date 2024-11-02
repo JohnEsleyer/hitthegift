@@ -53,14 +53,14 @@ export default function HomeTemplate({
       <AuthMiddleware>
           <EmailVerifier>
           <Popups>
-            <div className="flex w-full h-full ">
+            <div className="flex h-full ">
 
               {/**Layout */}
-              <div className="grid grid-cols-4">
-                <div className="col-span-1">
+              <div className="flex">
+                <div style={{width: 320}}>
                   {leftSide}
                 </div>
-                <div className="col-span-3">
+                <div className="flex-1">
                   {rightSide}
                 </div>
               </div>

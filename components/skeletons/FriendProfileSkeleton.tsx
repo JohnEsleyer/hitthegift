@@ -2,7 +2,7 @@
 
 export default function FriendProfileSkeleton(){
     return (
-        <div className="mt-2 p-2 border border-gray-200 rounded-2xl animate-pulse">
+        <div className="mt-2 p-2 ">
         {/** Friend's profile */}
         <div className="flex p-2">
             <div className="flex items-center">

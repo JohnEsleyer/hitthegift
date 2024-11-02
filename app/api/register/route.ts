@@ -1,15 +1,15 @@
 
 import sendEmailVerification from "@/app/actions/email/sendEmailVerification";
-import { comparePassword, hashPassword } from "@/lib/hashPassword";
-import { mongoClient } from "@/lib/mongodb";
-import { LoginData } from "@/lib/types/authTypes";
+import { hashPassword } from "@/lib/hashPassword";
 import { UserData } from "@/lib/types/user";
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import crypto from 'crypto';
+import { MongoClient } from "mongodb";
 
 export async function POST(req: Request) {
-
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try {
         const data: UserData = await req.json();
         const db = mongoClient.db('hitmygift');
@@ -37,12 +37,7 @@ export async function POST(req: Request) {
         const payload = {userId: res.insertedId.toString()};
         const token = jwt.sign(payload, process.env.JWT_SECRET || '', {expiresIn: '3h'});
 
-        // Send a verification email
-        console.log(`Route: InsertedID ${ res.insertedId.toString()}`);
-        console.log(`Route: Email: ${data.email}`);
-        console.log(`Route: FirstName: ${data.firstName}`);
-        console.log(`Route: Last Name: ${data.lastName}`);
-        console.log(`Route: VerificationToken: ${ verificationToken}`);
+
         await sendEmailVerification(
             res.insertedId.toString(),
             data.email, 
@@ -51,7 +46,8 @@ export async function POST(req: Request) {
             verificationToken );
 
         cookies().set('token', token);
-                
+            
+         
         return new Response(JSON.stringify({
             message: "Registration Success", 
             status: 200, 
@@ -62,11 +58,14 @@ export async function POST(req: Request) {
 
     } catch (e) {
         console.log(e);
+         
         return new Response(JSON.stringify({
             message: "Registration Failed", 
             status: 500, 
             userId: '' 
         }));
+    }finally{
+        mongoClient.close();
     }
 }
 

@@ -1,14 +1,14 @@
 'use server'
 
-import { mongoClient } from "@/lib/mongodb";
 import { UserData } from "@/lib/types/user";
+import { MongoClient } from "mongodb";
 
 
 // Verifies the verification token sent to the user's email.
 // Sets the verified property to true and sets the verificationToken to 'none'
-
 export default async function verifyVerificationToken(token: string, userEmail: string){
-
+    const uri = process.env.MONGODB_URI || '';
+    const mongoClient = new MongoClient(uri);
     try{
         const db = mongoClient.db('hitmygift');
         console.log(`VerificationToken: ${token}`);
@@ -20,6 +20,7 @@ export default async function verifyVerificationToken(token: string, userEmail: 
 
         // Check if user exists and token is valid
         if (!user){
+             
             return {
                 status: 400,
                 message: 'Verification token has expired'
@@ -34,6 +35,7 @@ export default async function verifyVerificationToken(token: string, userEmail: 
         })
 
         console.log(`Email verified for ${userEmail}`);
+         
         return {
             status: 200,
             message: 'Email verified successfully',
@@ -41,9 +43,12 @@ export default async function verifyVerificationToken(token: string, userEmail: 
 
     }catch(e){
         console.log(`Failed to verify email for ${userEmail}`);
+         
         return {
             status: 500,
             message: 'Server error. Please try again later'
         }
+    }finally{
+        mongoClient.close();
     }
 }   
