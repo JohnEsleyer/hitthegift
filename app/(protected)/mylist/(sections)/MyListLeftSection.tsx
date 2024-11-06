@@ -89,6 +89,7 @@ export default function MyListLeftSection() {
 
   return (
     <HomeLeftTemplate highlight="mylist">
+      <div className="">
       <EditableHobbyArea />
       <button
         className="ml-2 pl-2 pr-2 text-white rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
@@ -98,7 +99,7 @@ export default function MyListLeftSection() {
       >
         Add event
       </button>
-      <div>
+      <div className="bg-white rounded-2xl border m-2 ">
         {isEventsPending ? (
           <div
             style={{ height: 130 }}
@@ -111,7 +112,7 @@ export default function MyListLeftSection() {
         ) : (
           <div
             style={{ height: 130 }}
-            className="overflow-auto w-full flex flex-col items-center"
+            className="overflow-auto flex flex-col items-center"
           >
             {isClientMounted && (
               <div style={{width:280}} className="h-full">
@@ -184,11 +185,12 @@ export default function MyListLeftSection() {
         )}
       </div>
       {/**Calendar Section */}
-      <div className="transformCalendar flex pr-4 items-center justify-center w-full">
+      <div className="transformCalendar flex pr-4 items-center justify-center w-full bg-white rounded-2xl border-gray-200 border ">
         <EventsCalendar
           highlightedDates={highlightedDates}
           onClick={(date) => setSelectedDate(date)}
         />
+      </div>
       </div>
       </HomeLeftTemplate>
   );

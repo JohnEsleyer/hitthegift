@@ -286,8 +286,6 @@ button:focus {
   animation: skeleton-loading 1.5s infinite; /* Loading animation */
 }
 
-
-
 /*Friend Event skeleton */
 .skeleton-event-item {
   display: flex; /* Flexbox for layout */
@@ -350,7 +348,6 @@ button:focus {
 
 
 /*Others*/ 
-
 .transformLeftSection{
   transform: scale(0.9) translate(1px, -40px); 
 
@@ -380,7 +377,6 @@ button:focus {
 }
 
 .hide-scrollbar {
-
   width:100%;
   overflow-y: scroll; /* Add the ability to scroll the y axis */
 }

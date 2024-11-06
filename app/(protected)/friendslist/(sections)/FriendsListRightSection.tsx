@@ -51,7 +51,7 @@ export default function FriendsListRightSection(){
                         setSearchTerm(e.target.value);
                     }}
                     />
-            <div style={{height: height-75, width: width-400}} className="hide-scrollbar pt-4 flex flex-wrap gap-2 overflow-auto bg-gray-200 rounded-2xl border p-2">
+            <div style={{height: height-75, width: width-400}} className="hide-scrollbar pt-4 flex flex-wrap gap-2 overflow-auto bg-white rounded-2xl border p-2">
                     {
                         isPending ? 
                         (<div className="pl-2 flex flex-wrap gap-2 ">
@@ -70,7 +70,7 @@ export default function FriendsListRightSection(){
                                     <FriendsWishItem key={product.friendId} friendProduct={product}/>
                                 ))
                             }
-                        </div> : <div style={{width: width - 300, height: height-400}} className="text-gray-400 flex justify-center items-center ">
+                        </div> : <div style={{height: 400}} className="text-gray-400 flex justify-center items-center ">
                             No friends to show
                             </div>}
                         </div>

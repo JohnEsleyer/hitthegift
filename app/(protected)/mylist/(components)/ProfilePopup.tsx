@@ -124,6 +124,7 @@ export default function AddEventPopup() {
                 setIsSaving(true);
               }}
               width={200}
+              height={30}
               isCenter={true}
             />
           </div>
@@ -137,6 +138,7 @@ export default function AddEventPopup() {
               setIsSaving(true);
             }}
             width={300}
+            height={10}
             isCenter={true}
           />
 

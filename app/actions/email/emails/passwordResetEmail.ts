@@ -15,14 +15,13 @@ export default function passwordResetEmail(firstName: string, lastName: string, 
         <p>Hi ${firstName} ${lastName},</p>
         <p>We received a request to reset your password for your <strong>HitMyGift</strong> account. If you didn't make this request, you can safely ignore this email.</p>
         <p style="text-align: center; margin: 20px 0;">
-            <a href="https://${process.env.WEBSITE_DOMAIN}/forgot-password?token=${token}&email=${email}" style="background-color: #4CAF50; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Your Password</a>
+            <a href="https://${process.env.WEBSITE_DOMAIN}/forgot-password?token=${token}&email=${email}" style="background-color: #0052cc; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Your Password</a>
         </p>
         <p>If you’re having trouble clicking the "Reset Your Password" button, copy and paste the URL below into your web browser:</p>
-        <p style="word-break: break-all;"><a href="https://${process.env.WEBSITE_DOMAIN}/forgot-password?token=${token}&email=${email}" style="color: #4CAF50;">https://${process.env.WEBSITE_DOMAIN}/forgot-password?token=${token}&email=${email}</a></p>
+        <p style="word-break: break-all;"><a href="https://${process.env.WEBSITE_DOMAIN}/forgot-password?token=${token}&email=${email}" style="color: #0d6eff;">https://${process.env.WEBSITE_DOMAIN}/forgot-password?token=${token}&email=${email}</a></p>
         <p>Thank you,<br>The HitMyGift Team</p>
     </div>
 </body>
 </html>
-
     `;
 }

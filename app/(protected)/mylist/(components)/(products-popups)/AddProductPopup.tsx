@@ -3,7 +3,7 @@
 import { createProduct } from "@/app/actions/products/createProduct";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { currencies } from "./constants";
 import Image from "next/image";
@@ -15,61 +15,61 @@ import { handleBase64ToFormData } from "@/utils/base64ToFormData";
 import uploadProductImage from "@/app/actions/s3/uploadProductImage";
 import { createObjectId } from "@/app/actions/mongoActions";
 import CountryFlag from "./CountryFlag";
+import { extractASIN } from "./functions";
+import getProductDetails from "@/app/actions/amazon/getProductDetails";
+import { updateAmazonImageUrl, updateBase64Image } from "@/lib/features/productImageUpload";
 
 
-type ResponseData = {
-  message: string;
-  status: number;
-};
 
 export default function AddProductPopup() {
   const dispatch = useDispatch();
-  const [productName, setProductName] = useState("");
+  const [productTitle, setProductTitle] = useState("");
   const [productUrl, setProductUrl] = useState("");
   // const [autoFill, setAutoFill] = useState("");
   const [price, setPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
-  const [response, setResponse] = useState<ResponseData>({
-    message: "",
-    status: 0,
-  });
+
   const [isLoading, setIsLoading] = useState(false);
   const userId = useSelector((state: RootState) => state.userData.id);
   const selectedImage = useSelector(
     (state: RootState) => state.productImageUpload.base64Image
   );
+ 
+  // States about product auto fill
+  const [autoFill, setAutoFill] = useState(false);
+  const [isAutoFillPending, startAutoFillTransition] = useTransition();
+  const [productImageUrl, setProductImageUrl] = useState('');
 
   const clickAddProduct = async () => {
     setIsLoading(true);
     try {
       const productId = await createObjectId();
-    
       // Function to create a product
       const createNewProduct = async (imageUrl: string) => {
         console.log("Creating product...");
         const responseData = await createProduct({
           _id: productId.toString(),
-          userId,
-          title: productName,
+          userId: userId,
+          title: productTitle,
           currency: currency || '',
           price: price || '',
           productUrl: productUrl || '',
-          imageUrl,
+          imageUrl: productImageUrl !== '' ?  productImageUrl : imageUrl, // if image was not auto filled then use the image url of the uploaded image 
           description: productDescription || '',
         });
     
         if (responseData.data) {
           console.log(responseData.message);
-          setResponse(responseData);
           dispatch(insertMyListProduct(responseData.data));
         } else {
           console.error('Failed to create product', responseData);
         }
       };
     
-      // Check if user has selected an image
+      // Check if user has uploaded an image
+      // Only upload if image was not filled by auto fill.
       if (selectedImage.length > 0) {
         // Convert base64 file string to FormData
         const formData = handleBase64ToFormData(
@@ -97,6 +97,45 @@ export default function AddProductPopup() {
     }, 3000);
   };
 
+  useEffect(() => {
+    dispatch(updateAmazonImageUrl(''));
+  }, []);
+
+
+  useEffect(() => {
+    if (autoFill){
+      console.log(`productUrl: ${productUrl}`);
+      const ASIN = extractASIN(productUrl);
+
+      startAutoFillTransition(async ()=> {
+        console.log('pending Auto fill')
+        console.log(`asin: ${ASIN}`);
+        if (ASIN){
+          console.log(`asin: true`);
+          try{
+            const res = await getProductDetails(ASIN);
+            if (res){
+              console.log('success');
+              setProductTitle(res.title);
+              setProductDescription(res.description);
+              setPrice(res.price);
+              setProductImageUrl(res.imageUrl);
+              dispatch(updateAmazonImageUrl(res.imageUrl));
+            }
+            console.log('success');
+            
+            // Reset Image Upload state
+            dispatch(updateBase64Image(''));
+          }catch(e){
+            console.log('failed');
+            console.log(e);
+          }
+        }
+      });
+    }
+  },[autoFill, productUrl]);
+
+
   return (
     <div
       style={{ width: 500, height: 630, marginTop: 50 }}
@@ -111,6 +150,9 @@ export default function AddProductPopup() {
             productId={(() => {
               return uuidv4();
             })()}
+            onUpload={() => {
+              setProductImageUrl('');
+            }}
           />
         </div>
 
@@ -122,9 +164,9 @@ export default function AddProductPopup() {
               <input
                 className="rounded-full p-2 pl-4"
                 placeholder={"Product name"}
-                value={productName}
+                value={productTitle}
                 onChange={(e) => {
-                  setProductName(e.target.value);
+                  setProductTitle(e.target.value);
                 }}
               />
             </div>
@@ -135,6 +177,7 @@ export default function AddProductPopup() {
                   style={{ width: 100 }}
                   className="border rounded-l-full pl-2 "
                   placeholder="1.00"
+                  value={price}
                   onChange={(e) => {
                     setPrice(e.target.value);
                   }}
@@ -146,7 +189,7 @@ export default function AddProductPopup() {
                       setShowCurrencyOptions((prev) => !prev);
                     }}
                   >
-                    USD
+                    {currency}
                   </button>
                   {showCurrencyOptions && (
                     <ul
@@ -172,44 +215,44 @@ export default function AddProductPopup() {
             </div>
           </div>
         </div>
-        {/*Link input */}
+        {/*Product URL input */}
         <div className="mt-4 flex justify-center ">
           <div>
             <p>Product URL</p>
             <input
               style={{ width: 430 }}
-              className="rounded-full p-2 pl-4"
+              className={`${autoFill && 'border-green-400 border-2'} rounded-full p-2 pl-4`}
               placeholder={"Product URL"}
               value={productUrl}
               onChange={(e) => {
+                console.log(e.target.value.length);
                 setProductUrl(e.target.value);
               }}
             />
           </div>
         </div>
-
-        {/** Auto picture and description */}
+          
+        {/** Auto fill image and description */}
         <div className="mt-4 flex justify-center">
           <div className="flex justify-between">
             <div className="flex flex-col">
-              <p>Picture and description auto</p>
-              <p className="text-gray-500">
-                Fill description and image automatically
+              <p>Auto Fill Product Details</p>
+              <p style={{width: 350}} className="text-gray-500 ">
+                Fill product title, description, and image when product URL is given.
               </p>
             </div>
             <label className="switch">
-              <input
+            <input
                 type="checkbox"
                 onChange={(e) => {
-                  e.target.value;
+                 setAutoFill((prevValue) => prevValue == false ? true : false);
                 }}
               />
-
+              
               <span className="slider round"></span>
             </label>
           </div>
         </div>
-
         {/* Description  */}
         <div className="mt-4 m-4 pb-8 flex justify-center gap-2">
           <div style={{ width: 400 }}>

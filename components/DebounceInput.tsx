@@ -8,8 +8,10 @@ interface DebounceInputProps{
     fontSize: number;
     delay: number;
     width: number;
+    height: number;
     isCenter: boolean;
     value: string;
+    rounded?: boolean;
   }
   
 export function DebouncedInput({
@@ -20,7 +22,9 @@ export function DebouncedInput({
     fontSize,
     delay,
     width,
+    height,
     isCenter,
+    rounded,
     value,
 }: DebounceInputProps){  
       const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -43,8 +47,6 @@ export function DebouncedInput({
             onUserStopTyping(value);
           }, delay)
         );
-        
-  
       };
   
       return (
@@ -57,8 +59,8 @@ export function DebouncedInput({
             handleChange(event);
           }}
           placeholder={placeholder}
-          style={{width: width, fontSize: fontSize}}
-          className={`flex ${isCenter && 'text-center'} `}
+          style={{width: width, height: height, fontSize: fontSize}}
+          className={`flex ${isCenter && 'text-center'} ${rounded && 'border rounded-xl '} p-2 m-2 bg-white w-full`}
         />
       )
   }

@@ -19,20 +19,18 @@ export default async function createMessage(userId: string, conversationId: stri
         });
 
         if (newMessage){
-             ;
             return {
                 status: 200,
             }
         }
 
-         ;
         return {
             status: 400,
         }
 
     }catch(e){
         console.log(e);
-         ;
+         
         return {
             status: 500,
         }

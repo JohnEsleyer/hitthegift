@@ -82,7 +82,6 @@ export default function EditableUserProfile({width, height}:EditableUserProfileP
         
       };
 
-
     return (
         <div className="relative">
             {isPending ? <div className="profile-skeleton" style={{ width: width, height: height }}></div>
@@ -91,7 +90,7 @@ export default function EditableUserProfile({width, height}:EditableUserProfileP
                 {imageUrl == "" ? <Avvvatars value={userName} size={width}/> : <img className="rounded-full" src={imageUrl} alt={imageUrl} width={width} height={height}/>}
             </div>}
           <div style={{zIndex: 99, bottom:10, right:10}} className="absolute">
-                <button onClick={()=>{setShowProfileOptions((prev) => !prev)}}><Pencil/></button>
+                <button className="bg-white rounded-full border p-2" onClick={()=>{setShowProfileOptions((prev) => !prev)}}><Pencil/></button>
                 {showProfileOptions && <div style={{zIndex: 100, width: 220}} className="p-2 absolute bg-white shadow-md">
                     <input type="file" onChange={handleFileChange} accept="image/*" style={{width: 210}} className="text-xs" />
                     <button onClick={handleUpload} className="mt-2 pl-2 pr-2 w-full border border-2xl border-black ">Upload</button>

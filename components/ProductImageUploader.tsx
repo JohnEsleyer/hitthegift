@@ -1,6 +1,6 @@
 'use client';
 
-import { updateBase64Image } from '@/lib/features/productImageUpload';
+import { updateAmazonImageUrl, updateBase64Image } from '@/lib/features/productImageUpload';
 import { RootState } from '@/lib/store';
 import {ImageUp } from 'lucide-react';
 import { useTransition, useState, useEffect } from 'react';
@@ -12,6 +12,7 @@ interface ProductImageUploaderProps {
   width: number;
   height: number;
   loadInitialImage?: boolean; // if true, component will try to fetch the image url from redux store and display it
+  onUpload?: () => void;
 }
 
 export default function ProductImageUploader({
@@ -19,18 +20,24 @@ export default function ProductImageUploader({
   width,
   height,
   loadInitialImage,
+  onUpload,
 }: ProductImageUploaderProps) {
-  const [isPending, startTransition] = useTransition();
-  const [isError, setIsError] = useState(false);
   const [showImageOptions, setShowImageOptions] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [imageUrl, setImageUrl] = useState('');
 
+  // Access image URL of Amazon product image set by the AddProductPopup component.
+  const amazonImageUrl = useSelector((state: RootState) => state.productImageUpload.amazonImageUrl);
+
   // imageUrl from the editProductPopup component. Used when loadInitialImage is true
   const reduxImageUrl = useSelector((state: RootState) => state.editProductPopup.imageUrl);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setImageUrl(amazonImageUrl);
+  }, [amazonImageUrl]);
 
   useEffect(() => {
     if (loadInitialImage) {
@@ -47,6 +54,11 @@ export default function ProductImageUploader({
 
   // Handle the upload of the selected image to the localStorage
   const handleUpload = () => {
+
+    // If onUpload callback is provided, call it.
+    if (onUpload){
+      onUpload();
+    }
     setShowImageOptions(false);
     if (!file || !productId) {
       setUploadStatus('Please select a file');
@@ -63,6 +75,7 @@ export default function ProductImageUploader({
         setUploadStatus('File stored successfully in localStorage.');
         setImageUrl(base64Image);
         dispatch(updateBase64Image(base64Image));
+        // dispatch(updateAmazonImageUrl('')); // Reset Amazon Image Url
       } catch (error) {
         setUploadStatus('Failed to store the file in localStorage.');
       }
@@ -83,7 +96,7 @@ export default function ProductImageUploader({
       ) : (
         <img
           className="rounded-md"
-          src={imageUrl}
+          src={imageUrl} // If image is autofilled by amazon then don't display the image uploaded at localStorage.
           width={width}
           height={height}
           style={{ objectFit: 'cover' }}
@@ -116,6 +129,7 @@ export default function ProductImageUploader({
           </div>
         )}
       </div>
+      <div className="w-24 overflow-auto">Image URL: {imageUrl}</div>
     </div>
   );
 }

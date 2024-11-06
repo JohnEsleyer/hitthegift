@@ -73,8 +73,7 @@ export default function InsideFriendLeftSection(){
 
     return (
         <HomeLeftTemplate highlight={'friendslist'}>
-            <div className="p-2 flex flex-col gap-4">
-                
+            <div className="p-2 flex flex-col gap-4 bg-white rounded-2xl mt-2">
                 {isPendingUserInfo ? <FriendProfileSkeleton/> : <div >
                     {/**Friend's profile */}
                     <div className="flex  p-2">

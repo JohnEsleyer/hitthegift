@@ -37,12 +37,11 @@ export default function HomeTemplate({
   const userId = useSelector((state: RootState) => state.userData.id);
   const userName = useSelector((state: RootState) => state.userData.firstName);
   const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
-  const userFirstname = useSelector((state: RootState) => state.userData.firstName);
   const dispatch = useDispatch();
   const router = useRouter();
 
   return (
-    <div className="w-screen h-screen flex overflow-auto overflow-x-hidden">
+    <div className="bg-slate-100 w-screen h-screen flex overflow-auto overflow-x-hidden">
       <RenderClientOnly
           loading={
             <div className="flex w-full justify-center items-center">
@@ -54,17 +53,15 @@ export default function HomeTemplate({
           <EmailVerifier>
           <Popups>
             <div className="flex h-full ">
-
               {/**Layout */}
               <div className="flex">
-                <div style={{width: 320}}>
+                <div style={{width: 320}} >
                   {leftSide}
                 </div>
                 <div className="flex-1">
                   {rightSide}
                 </div>
               </div>
-
 
               {/**Profile*/}
               <div

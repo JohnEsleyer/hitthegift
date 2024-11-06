@@ -62,7 +62,7 @@ export default function MyListRightSection() {
             Share list
           </button>
       </div>
-      <div className="w-full ml-8 pl-2 flex-1 overflow-auto rounded-2xl border bg-gray-200">
+      <div className="w-full ml-8 pl-2 flex-1 overflow-auto rounded-2xl border bg-white">
             {/**Body */}
       <div style={{ position: "relative", width: width - 420}} className="h-full hide-scrollbar">
         <div
@@ -98,8 +98,8 @@ export default function MyListRightSection() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-gray-400 flex justify-center items-center ">
-                      You have no products
+                    <div style={{height: 400}} className="text-gray-400 flex justify-center items-center ">
+                      You have no items
                     </div>
                   )}
                 </div>

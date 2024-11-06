@@ -33,7 +33,7 @@ export default function EmailVerifier({children}: EmailVerifierProps){
         return ( <div className="w-screen flex items-center justify-center bg-gray-300 p-4">
             <div className="max-w-lg w-full bg-white shadow-md rounded-lg p-6 text-center">
               <div className="flex justify-center">
-                <div className="bg-red-500 p-6 rounded-full">
+                <div className="bg-blue-500 p-6 rounded-full">
                 <MailCheck  size={32} color="white"/>
                 </div>
               </div>
@@ -60,13 +60,13 @@ export default function EmailVerifier({children}: EmailVerifierProps){
               <button
                 onClick={onResendVerification}
                 disabled={!enableResend}
-                className={`${enableResend ? 'bg-red-500 text-white ' : 'bg-gray-300'} font-semibold py-2 px-4 rounded-lg mb-4`}
+                className={`${enableResend ? 'bg-blue-500 text-white ' : 'bg-gray-300'} font-semibold py-2 px-4 rounded-lg mb-4`}
               >
                 {enableResend ? 'Resend Verification Email' : 'Email Sent!'}
               </button>
-              <p className="text-gray-700">
+              {/* <p className="text-gray-700">
                 If you're still having trouble verifying your email, please <a href="#" className="text-blue-500 underline">contact our support team</a> for assistance. We're here to help you get started!
-              </p>
+              </p> */}
               <p className="mt-6 text-gray-500 text-sm">
                 Thank you for your patience! We can't wait for you to explore everything our app has to offer once you're verified.
               </p>

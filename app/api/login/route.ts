@@ -20,7 +20,7 @@ export async function POST(req: Request){
 
         // Validate user 
         if (!user){
-             ;
+             
             return new Response(JSON.stringify({
                 message: 'Invalid email or password',
                 status: 590,
@@ -38,7 +38,7 @@ export async function POST(req: Request){
         if (!isMatch){
             console.log("Passwords don't match");
 
-             ;
+             
             return new Response(JSON.stringify({
                 message: 'Invalid email or password',
                 status: 401,
@@ -63,7 +63,7 @@ export async function POST(req: Request){
 
         console.log(`isVerified: ${user.verified}`);
 
-         ;
+         
         return new Response(JSON.stringify({
             message: 'Login successful',
             userId: user._id,
@@ -80,7 +80,7 @@ export async function POST(req: Request){
         console.log("Failed");
         console.log(e);
 
-         ;
+         
         return new Response(JSON.stringify({
             message: 'Login Failed',
             status: 500,

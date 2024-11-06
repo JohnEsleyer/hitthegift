@@ -105,8 +105,9 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   };
 
   return (
-    <div className="h-full overflow-auto">
-      <div className="flex items-center rounded-xl p-2 bg-white w-fulls">
+    <div className="h-full overflow-auto hide-scrollbar">
+      <div className="flex items-center ">
+
         <DebouncedInput 
           onUserStopTyping={handleSearch}
           onWait={handleSearchWait}
@@ -114,14 +115,15 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
           fontSize={16}
           delay={20000}
           width={300}
+          height={50}
           isCenter={false}
           value=""
+          rounded={true}
           onChange={(event) => {
             setSearchInput(event.target.value);
           }}
 
         />
-        <Search style={{ width: 26, height: 20, strokeWidth: 3 }} />
       </div>
 
       {/**Friends Request */}

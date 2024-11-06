@@ -32,7 +32,6 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
         setHobbiesInfo(value);
     };
 
-
     useEffect(() => {
       if (onPending){
         onPending(isTextareaPending);
@@ -77,14 +76,12 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
                 setHobbiesInfo(hobbyData.hobbiesInfo as string);
                 console.log(hobbyData.message);
             }
-        })
-  
-    
+        })  
       }, []);
     
     return (
-        <div className="flex flex-col p-2  flex items-center">
-        <p className="w-64">My hobbies and interest</p>
+        <div className="flex flex-col p-2 m-2 flex items-center border rounded-2xl  bg-white">
+        <p className="w-64 font-bold">My hobbies and interest</p>
         {isTextareaPending ? <TextareaSkeleton/> : <Textarea
           key={"hobbiesInfo"}
           style={{height: 150, width: 280}}
