@@ -25,7 +25,6 @@ export default function AddProductPopup() {
   const dispatch = useDispatch();
   const [productTitle, setProductTitle] = useState("");
   const [productUrl, setProductUrl] = useState("");
-  // const [autoFill, setAutoFill] = useState("");
   const [price, setPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [currency, setCurrency] = useState("USD");
@@ -38,7 +37,7 @@ export default function AddProductPopup() {
   );
  
   // States about product auto fill
-  const [autoFill, setAutoFill] = useState(false);
+  const [autoFill, setAutoFill] = useState(true);
   const [isAutoFillPending, startAutoFillTransition] = useTransition();
   const [productImageUrl, setProductImageUrl] = useState('');
 
@@ -97,11 +96,16 @@ export default function AddProductPopup() {
     }, 3000);
   };
 
+
+
+  // Initialization
   useEffect(() => {
     dispatch(updateAmazonImageUrl(''));
   }, []);
 
 
+
+  // This useEffect triggers when product URL is updated and auto fill is enabled.
   useEffect(() => {
     if (autoFill){
       console.log(`productUrl: ${productUrl}`);
@@ -123,7 +127,6 @@ export default function AddProductPopup() {
               dispatch(updateAmazonImageUrl(res.imageUrl));
             }
             console.log('success');
-            
             // Reset Image Upload state
             dispatch(updateBase64Image(''));
           }catch(e){
@@ -139,9 +142,9 @@ export default function AddProductPopup() {
   return (
     <div
       style={{ width: 500, height: 630, marginTop: 50 }}
-      className="pt-4 pr-1 bg-gray-100 rounded-2xl border-2 border-gray"
+      className="pt-4 pr-1 overflow-auto hide-scrollbar bg-white rounded-2xl border-2 border-black"
     >
-      <div className="h-full overflow-auto ">
+      <div className="h-full">
         {/*Image of the Product */}
         <div className="flex justify-center ">
           <ProductImageUploader
@@ -162,7 +165,7 @@ export default function AddProductPopup() {
             <div>
               <p>Title</p>
               <input
-                className="rounded-full p-2 pl-4"
+                className="rounded-full p-2 pl-4 border border-black"
                 placeholder={"Product name"}
                 value={productTitle}
                 onChange={(e) => {
@@ -172,10 +175,10 @@ export default function AddProductPopup() {
             </div>
             <div className="flex flex-col">
               <label>Price</label>
-              <div className="flex rounded-full bg-white ">
+              <div className="flex rounded-full bg-white border border-black">
                 <input
                   style={{ width: 100 }}
-                  className="border rounded-l-full pl-2 "
+                  className="border border-black rounded-l-full pl-2 "
                   placeholder="1.00"
                   value={price}
                   onChange={(e) => {
@@ -221,7 +224,7 @@ export default function AddProductPopup() {
             <p>Product URL</p>
             <input
               style={{ width: 430 }}
-              className={`${autoFill && 'border-green-400 border-2'} rounded-full p-2 pl-4`}
+              className={` border border-black rounded-full p-2 pl-4`}
               placeholder={"Product URL"}
               value={productUrl}
               onChange={(e) => {
@@ -232,7 +235,7 @@ export default function AddProductPopup() {
           </div>
         </div>
           
-        {/** Auto fill image and description */}
+        {/** Auto fill product details */}
         <div className="mt-4 flex justify-center">
           <div className="flex justify-between">
             <div className="flex flex-col">
@@ -244,8 +247,9 @@ export default function AddProductPopup() {
             <label className="switch">
             <input
                 type="checkbox"
+                checked={autoFill}
                 onChange={(e) => {
-                 setAutoFill((prevValue) => prevValue == false ? true : false);
+                  setAutoFill(e.target.checked);
                 }}
               />
               
@@ -258,7 +262,7 @@ export default function AddProductPopup() {
           <div style={{ width: 400 }}>
             <label>Description</label>
             <textarea
-              className="w-full h-full rounded-2xl p-2 pl-4"
+              className="w-full h-full rounded-2xl p-2 pl-4 border border-black"
               value={productDescription}
               onChange={(e) => {
                 setProductDescription(e.target.value);

@@ -26,7 +26,7 @@ export function HomeLeftTemplate({
           style={{
             fontSize: 30,
           }}
-          className={`${spicyrice.className} font-bold text-blue-700`}
+          className={`${spicyrice.className} font-bold text-black`}
         >
           HitMyGift
         </p>
@@ -50,7 +50,7 @@ export function HomeLeftTemplate({
         </Link>}
         </div>
       </div>
-      <div className=" ml-2 overflow-auto hide-scrollbar border-t ">
+      <div className="flex-1 mb-2 ml-2 overflow-auto hide-scrollbar border-2 rounded-2xl  bg-[#dbe4e7] border-black ">
        {children}
       </div>
     </div>

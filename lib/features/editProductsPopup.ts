@@ -72,6 +72,12 @@ const editProductPopupSlice = createSlice({
                 id: action.payload,
             }
         },
+        updateEditProductImageUrl: (state,action: PayloadAction<string> ) => {
+            return {
+                ...state,
+                imageUrl: action.payload,
+            }
+        }
 
     }
 });
@@ -84,6 +90,6 @@ export const {
     updateEditProductProductUrl,
     updateEditProductDescription,
     updateEditProductId,
-
+    updateEditProductImageUrl,
 } = editProductPopupSlice.actions;
 export default editProductPopupSlice.reducer; // Ensure this exports the reducer

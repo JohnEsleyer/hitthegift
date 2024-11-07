@@ -2,7 +2,7 @@
 
 export default function EventSkeleton(){
     return (
-      <div className="flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2 animate-pulse">
+      <div className="border border-black rounded-2xl flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-1 animate-pulse">
       {/* Skeleton for the date circle */}
       <div
           className="skeleton-circle bg-gray-300"

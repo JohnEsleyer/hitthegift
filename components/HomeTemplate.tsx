@@ -41,7 +41,7 @@ export default function HomeTemplate({
   const router = useRouter();
 
   return (
-    <div className="bg-slate-100 w-screen h-screen flex overflow-auto overflow-x-hidden">
+    <div className="bg-white w-screen h-screen flex overflow-auto overflow-x-hidden">
       <RenderClientOnly
           loading={
             <div className="flex w-full justify-center items-center">

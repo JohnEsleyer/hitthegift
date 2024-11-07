@@ -89,21 +89,22 @@ export default function MyListLeftSection() {
 
   return (
     <HomeLeftTemplate highlight="mylist">
-      <div className="">
+      <div className="flex flex-col justify-center ">
       <EditableHobbyArea />
       <button
-        className="ml-2 pl-2 pr-2 text-white rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
+      style={{width: 100}}
+        className="ml-2 pl-2 pr-2 text-white rounded-full border border-black bg-black text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
         onClick={() => {
           dispatch(updateCurrentPopup("addEvent"));
         }}
       >
         Add event
       </button>
-      <div className="bg-white rounded-2xl border m-2 ">
+      <div style={{width: 300}} className="hide-scrollbar overflow-auto bg-white rounded-2xl border-black border border-b-4 m-2 pb-2">
         {isEventsPending ? (
           <div
             style={{ height: 130 }}
-            className="overflow-auto flex flex-col items-between "
+            className="flex flex-col items-between "
           >
             <EventSkeleton />
             <EventSkeleton />
@@ -112,7 +113,7 @@ export default function MyListLeftSection() {
         ) : (
           <div
             style={{ height: 130 }}
-            className="overflow-auto flex flex-col items-center"
+            className=" flex flex-col items-center"
           >
             {isClientMounted && (
               <div style={{width:280}} className="h-full">
@@ -133,8 +134,8 @@ export default function MyListLeftSection() {
                         dispatch(updateCurrentPopup("editEvent"));
                       }}
                       key={event.id}
-                      style={{width: 270}}
-                      className="hover:bg-gray-300 flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2"
+                      style={{width: 280}}
+                      className="hover:bg-gray-300 flex gap-2 items-center justify-between p-2 bg-gray-100 border border-black rounded-2xl mt-1 mb-1"
                     >
                       <div
                         style={{ fontSize: 15, width: 30, height: 30 }}
@@ -185,7 +186,7 @@ export default function MyListLeftSection() {
         )}
       </div>
       {/**Calendar Section */}
-      <div className="transformCalendar flex pr-4 items-center justify-center w-full bg-white rounded-2xl border-gray-200 border ">
+      <div style={{width: 332}} className=" transformCalendar flex pr-4 items-center justify-center bg-white rounded-2xl border-black border-b-4 mt-2 border ">
         <EventsCalendar
           highlightedDates={highlightedDates}
           onClick={(date) => setSelectedDate(date)}

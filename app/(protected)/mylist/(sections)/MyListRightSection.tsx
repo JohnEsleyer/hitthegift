@@ -44,7 +44,7 @@ export default function MyListRightSection() {
       <div style={{height:75}} className="ml-8 flex items-end pb-4 gap-2 ">
         {/**Buttons*/}
         <button
-            className="text-white p-2 rounded-full flex bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
+            className="text-white p-2 rounded-full flex bg-black text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
             onClick={() => {
               dispatch(updateCurrentPopup("addProduct"));
             }}
@@ -53,7 +53,7 @@ export default function MyListRightSection() {
             Add Product
           </button>
           <button
-            className="text-white p-2 rounded-full flex bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
+            className="text-white p-2 rounded-full flex  bg-black text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
             onClick={() => {
               dispatch(updateCurrentPopup('shareWishlist'));
             }}
@@ -62,7 +62,7 @@ export default function MyListRightSection() {
             Share list
           </button>
       </div>
-      <div className="w-full ml-8 pl-2 flex-1 overflow-auto rounded-2xl border bg-white">
+      <div className="w-full ml-8 mb-2 pl-2 flex-1 overflow-auto rounded-2xl border-2 border-black bg-[#dbe4e7]">
             {/**Body */}
       <div style={{ position: "relative", width: width - 420}} className="h-full hide-scrollbar">
         <div

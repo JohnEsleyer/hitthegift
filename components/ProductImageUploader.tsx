@@ -36,6 +36,7 @@ export default function ProductImageUploader({
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(`From ProductImageUploader: Executing useEffect`)
     setImageUrl(amazonImageUrl);
   }, [amazonImageUrl]);
 
@@ -105,7 +106,7 @@ export default function ProductImageUploader({
       )}
 
       <div style={{ zIndex: 99, bottom: -10, right: -10 }} className="absolute">
-        <button className="bg-white p-2 rounded-2xl" onClick={() => setShowImageOptions((prev) => !prev)}>
+        <button className="bg-white p-2 rounded-2xl shadow-md" onClick={() => setShowImageOptions((prev) => !prev)}>
           <ImageUp />
         </button>
         {showImageOptions && (
@@ -129,7 +130,6 @@ export default function ProductImageUploader({
           </div>
         )}
       </div>
-      <div className="w-24 overflow-auto">Image URL: {imageUrl}</div>
     </div>
   );
 }

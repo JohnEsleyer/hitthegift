@@ -18,7 +18,7 @@ export function EmptyItem({width, height}: EmptyItemProps){
           alignItems: 'center',
           justifyContent: 'center',
         }}
-        className="border rounded-xl bg-slate-100"
+        className="border rounded-xl border-[#808080] bg-white"
       >
         <Gift color="#7d7d7d" />
     </div>
