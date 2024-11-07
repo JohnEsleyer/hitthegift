@@ -135,7 +135,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='h-screen w-screen bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.png")] flex items-center justify-center'>
+    <div className='h-screen w-screen bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center flex items-center justify-center'>
+
       <div className="flex flex-col bg-white rounded-2xl p-8">
         <label>Email:</label>
         <input

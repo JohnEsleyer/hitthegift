@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
 
 interface WindowSize{
-    width: number;
-    height: number;
+    width: number ;
+    height: number ;
 }
 
 export const useWindowSize = (): WindowSize => {
     const [windowSize, setWindowSize] = useState<WindowSize>({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: 500,
+        height:500,
     });
 
 
     useEffect(() => {
+         // Only run on the client side
+    if (typeof window !== "undefined") {
         const handleResize = () => {
-            setWindowSize({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            })
+          setWindowSize({
+            width: window.innerWidth,
+            height: window.innerHeight,
+          });
         };
-
         window.addEventListener("resize", handleResize);
-
-        // Clean up event listener on component mount
+        handleResize();
         return () => window.removeEventListener("resize", handleResize);
+      }
     },[]);
     return windowSize;
 }

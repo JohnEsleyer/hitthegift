@@ -57,8 +57,6 @@ export default async function getProductDetails(asin: string) {
       }
       // Get the main image URL
       const imageUrl = $('#landingImage').attr('src') || '';
-
-    
       console.log(`price: ${price}`);
     return {
       title,

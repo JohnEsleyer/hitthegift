@@ -189,7 +189,7 @@ export default function RegisterPage() {
 
   return (
     <div
-      className={`bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.png")] h-screen w-screen overflow-auto`}
+      className={` bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
     >
       {/*Terms and conditions */}
       {showTermsNConditions && (

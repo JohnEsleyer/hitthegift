@@ -5,8 +5,7 @@ import sendPasswordResetRequest from "../actions/email/sendPasswordResetEmail";
 import { useRouter, useSearchParams } from "next/navigation";
 import verifyResetToken from "../actions/email/verifyResetToken";
 import ResetPasswordPage from "./ResetPasswordPage";
-import giftloading from "/public/giftloading.svg";
-import Image from 'next/image';
+
 
 // Example Query: domain.com/forgot-password?token=3423juhfwuie&emai=johndoe@gmail.com
 
