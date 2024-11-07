@@ -64,7 +64,7 @@ export default function FriendsListLeftSection() {
           className="p-2 flex flex-col gap-4"
         >
           {/**Calendar Section */}
-          <div className="bg-white flex items-center justify-center mt-2 w-full border rounded-2xl border-gray-100 pr-4 pb-2">
+          <div className="rounded-2xl border border-b-4 border-black bg-white flex items-center justify-center mt-2 w-full  pr-4 pb-2">
             <EventsCalendar
               highlightedDates={highlightedDates}
               onClick={(date) => setSelectedDate(date)}
@@ -74,7 +74,7 @@ export default function FriendsListLeftSection() {
             <span>
               Friends{"'"} events in {getMonthName(selectedDate)}
             </span>
-            <div style={{height: 250}}className="overflow-auto bg-white p-2 rounded-2xl border flex flex-col gap-4 items-between justify-between">
+            <div style={{height: 250}}className="hide-scrollbar overflow-auto bg-white p-2 rounded-2xl border border-black border-b-4 flex flex-col gap-4 items-between justify-between">
               {isEventsPending ? (
                 <div>
                   <FriendEventSkeleton />

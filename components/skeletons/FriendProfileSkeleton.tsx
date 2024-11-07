@@ -1,29 +1,39 @@
 'use client'
 
+import { Skeleton } from "three/src/objects/Skeleton.js";
+
 export default function FriendProfileSkeleton(){
     return (
-        <div className="mt-2 p-2 ">
-        {/** Friend's profile */}
-        <div className="flex p-2">
-            <div className="flex items-center">
-                <div className="rounded-full bg-gray-300 h-11 w-11"></div> {/* Avatar placeholder */}
-            </div>
-            <div className="p-2">
-                <div className="h-4 bg-gray-300 rounded w-32 mb-1"></div> {/* Name placeholder */}
-                <div className="h-3 bg-gray-300 rounded w-24"></div> {/* Email placeholder */}
-            </div>
-        </div>
-        <span className="text-xl font-bold bg-gray-300 rounded w-40 h-6 mb-2"></span> {/* Interests header placeholder */}
-        <div style={{ height: 120, width: 290 }} className="shadow-md border rounded-2xl p-2">
-            <div className="h-full bg-gray-300 rounded"></div> {/* Hobbies info placeholder */}
-        </div>
-        <div style={{ height: 100 }}></div>
-        <span className="bg-gray-300 rounded w-72 h-6 mb-2"></span> {/* Shared list header placeholder */}
-        <div className="flex space-x-2">
-            {Array.from({ length: 3 }).map((_, index) => (  // Adjust the length based on expected number of friends
-                <div key={index} className="rounded-full bg-gray-300 h-11 w-11"></div> // Friend avatar placeholders
-            ))}
-        </div>
+      <div className="p-2 flex flex-col gap-4 bg-white rounded-2xl m-2">
+    <div className="flex p-2">
+      <div className="flex items-center">
+        {/* Profile Image Placeholder */}
+        <div className="animate-pulse rounded-full bg-gray-200 h-12 w-12"></div>
+      </div>
+      <div className="p-2">
+        {/* Name and Email Placeholders */}
+        <div className="animate-pulse bg-gray-200 h-4 w-24 mb-2"></div>
+        <div className="animate-pulse bg-gray-200 h-4 w-20"></div>
+      </div>
     </div>
+    {/* "Interests and Hobbies" Header Placeholder */}
+    <div className="animate-pulse bg-gray-200 h-4 w-48"></div>
+    <div style={{ height: 120, width: 250 }} className="shadow-md overflow-auto rounded-2xl p-2">
+      {/* Hobbies Info Placeholders */}
+      <div className="animate-pulse bg-gray-200 h-4 w-36 mb-2"></div>
+      <div className="animate-pulse bg-gray-200 h-4 w-40 mb-2"></div>
+      <div className="animate-pulse bg-gray-200 h-4 w-28 mb-2"></div>
+      <div className="animate-pulse bg-gray-200 h-4 w-32"></div>
+    </div>
+    <div style={{ height: 100 }}></div>
+    {/* "Shared With" Header Placeholder */}
+    <div className="animate-pulse bg-gray-200 h-4 w-64"></div>
+    <div className="flex mt-2">
+      {/* Friends List Placeholders */}
+      <div className="animate-pulse rounded-full bg-gray-200 h-6 w-6 mr-2"></div>
+      <div className="animate-pulse rounded-full bg-gray-200 h-6 w-6 mr-2"></div>
+      <div className="animate-pulse rounded-full bg-gray-200 h-6 w-6"></div>
+    </div>
+  </div>
     );
 }

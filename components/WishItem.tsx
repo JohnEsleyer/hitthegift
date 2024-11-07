@@ -85,7 +85,7 @@ export default function WishItem({
      <EnableEdit enable={owner || false}>
     <div
       style={{ width: 200 }}
-      className={` p-4 rounded-xl border border-b-4  border-black bg-white ${!isSidebarOpen && 'hover:scale-100'}`}
+      className={` p-4 rounded-xl border border-b-4 border-black bg-white ${!isSidebarOpen && 'hover:scale-100'}`}
     >
       <div className="relative">
       {imageUrl == '' ? <EmptyItem width={165} height={150}/> : <div style={{height: 150}} className="flex justify-center border rounded-2xl"><img src={imageUrl} alt={imageUrl}/></div>}

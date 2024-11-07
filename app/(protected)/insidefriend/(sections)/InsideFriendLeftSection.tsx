@@ -73,7 +73,7 @@ export default function InsideFriendLeftSection(){
 
     return (
         <HomeLeftTemplate highlight={'friendslist'}>
-            <div className="p-2 flex flex-col gap-4 bg-white rounded-2xl mt-2">
+            <div className="p-2 flex flex-col gap-4 bg-white rounded-2xl border border-2 border-black border-b-4 m-2 ">
                 {isPendingUserInfo ? <FriendProfileSkeleton/> : <div >
                     {/**Friend's profile */}
                     <div className="flex  p-2">
@@ -88,7 +88,7 @@ export default function InsideFriendLeftSection(){
                        </div>
                     </div>
                     <span className="text-xl font-bold">Interests and hobbies</span>
-                    <div style={{height: 120, width: 290}} className="shadow-md border overflow-auto rounded-2xl  p-2">
+                    <div style={{height: 120, width: 280}} className="shadow-md border border-black overflow-auto rounded-2xl  p-2">
                         <p style={{fontSize: 13}} className="break-words">{hobbiesInfo}</p>
                     </div>
                     <div style={{height: 100}}></div>
