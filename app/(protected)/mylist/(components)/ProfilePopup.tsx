@@ -146,7 +146,7 @@ export default function AddEventPopup() {
           <div className="w-full mt-4">
             <p>Date of birth</p>
             <input
-              className="border-2 border-gray-300"
+              className="border-2 border-black"
               type="date"
               value={birthday}
               onChange={handleChangeDate}

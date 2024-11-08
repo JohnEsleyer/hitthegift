@@ -1,6 +1,6 @@
 'use client'
 
-import { Skeleton } from "three/src/objects/Skeleton.js";
+import '@/styles/skeletons.css';
 
 export default function FriendProfileSkeleton(){
     return (

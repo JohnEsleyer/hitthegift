@@ -1,4 +1,5 @@
 'use client'
+import '@/styles/skeletons.css';
 
 export default function EventSkeleton(){
     return (

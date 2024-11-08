@@ -51,7 +51,7 @@ export default function FriendsListRightSection(){
                         setSearchTerm(e.target.value);
                     }}
                     />
-            <div style={{height: height-75, width: width-400}} className="hide-scrollbar pt-4 flex flex-wrap gap-2 overflow-auto bg-[#dbe4e7] rounded-2xl border border-2 border-black  p-2">
+            <div style={{height: height-75, width: width-400}} className="hide-scrollbar pt-4 flex flex-wrap gap-2 overflow-auto bg-[#e3dfde] rounded-2xl border border-2 border-black  p-2">
                     {
                         isPending ? 
                         (<div className="pl-2 flex flex-wrap gap-2 ">

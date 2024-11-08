@@ -1,4 +1,5 @@
 import React from 'react';
+import '@/styles/skeletons.css';
 
 export function ChatBubbleSkeleton({ isSender }: { isSender: boolean }) {
   return (

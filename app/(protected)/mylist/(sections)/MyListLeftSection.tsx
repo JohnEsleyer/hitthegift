@@ -17,9 +17,11 @@ import EventSkeleton from "@/components/skeletons/EventSkeleton";
 import { updateMyListEvents } from "@/lib/features/mylist";
 import { updateEditEventAll } from "@/lib/features/editEventsPopup";
 import UserProfileImage from "@/components/UserProfileImage";
-import Link from "next/link";
-import { House, Users } from "lucide-react";
 import { Spicy_Rice } from 'next/font/google';
+import '@/styles/calendar.css';
+import '@/styles/skeletons.css';
+import '@/styles/switch.css';
+import '@/styles/utilities.css';
 
 const spicyrice = Spicy_Rice({
   weight: "400",

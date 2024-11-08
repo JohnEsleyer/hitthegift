@@ -10,6 +10,8 @@ import { updateEvents } from "@/lib/features/friendslistPage";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
 import FriendEventSkeleton from "@/components/skeletons/FriendEventSkeleton";
 import { getAllInvitedEvents } from "@/app/actions/events/getAllInvitedEvents";
+import '@/styles/calendar.css';
+import '@/styles/utilities.css';
 
 export default function FriendsListLeftSection() {
   const dispatch = useDispatch();

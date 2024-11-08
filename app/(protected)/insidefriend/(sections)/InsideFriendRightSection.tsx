@@ -32,7 +32,7 @@ export default function InsideFriendRightSection() {
 
   return (
     <div className="w-full">
-      <div style={{ marginLeft: 30,marginTop: 70, height: height-80, width: width-400}}  className="h-screen bg-[#dbe4e7] p-2 rounded-2xl border border-2 border-black hide-scrollbar mb-4 ">
+      <div style={{ marginLeft: 30,marginTop: 70, height: height-80, width: width-400}}  className="h-screen bg-[#e3dfde] p-2 rounded-2xl border border-2 border-black hide-scrollbar mb-4 ">
         {isProductsPending ? (
           <div className=" pl-2 pt-2 overflow-auto flex flex-wrap gap-8 ">
           <WishItemSkeleton />

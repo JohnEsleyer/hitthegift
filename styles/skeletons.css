@@ -1,0 +1,171 @@
+/* WishItemSkeleton */
+.skeleton-box {
+    background-color: #a3a2a2;
+    border-radius: 8px;
+    animation: skeleton-loading 1.5s infinite;
+  }
+  
+  .skeleton-line {
+    background-color: #a3a2a2;
+    border-radius: 4px;
+    animation: skeleton-loading 1.5s infinite;
+  }
+  
+  
+  /*EventSkeleton*/
+  .skeleton-circle {
+    background-color: #a3a2a2;
+    border-radius: 50%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+  
+  .skeleton-avatar {
+    background-color: #a3a2a2;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+  
+  .skeleton-line {
+    background-color: #a3a2a2;
+    height: 16px;
+    border-radius: 4px;
+    animation: skeleton-loading 1.5s infinite;
+  }
+  
+  
+  /*Textarea Skeleton*/
+  .skeleton-textarea-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .skeleton-textarea {
+    background-color: #ffffff;
+  
+    border-radius: 16px; /* Matching the Textarea's rounded-2xl style */
+    padding: 16px; /* Adding padding to give it a textarea feel */
+    height: 150px;
+    width: 280px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .skeleton-line {
+    background-color: #a3a2a2;
+    height: 12px; /* Height of each line */
+    border-radius: 4px; /* Rounded corners for lines */
+    margin-bottom: 10px; /* Space between lines */
+    animation: skeleton-loading 1.5s infinite; /* Adding animation */
+  }
+  
+  .skeleton-line.short {
+    width: 70%; /* Shorter line width */
+  }
+  
+  /*Friend Skeleton*/
+  /* SkeletonFriendItem.css */
+  .skeleton-friend-item {
+    border: 2px solid #ccc; /* Same border style */
+    border-radius: 12px; /* Rounded corners */
+    padding: 8px 16px; /* Padding to match original component */
+    margin-top: 8px; /* Space between items */
+    display: flex; /* Flexbox to align items */
+    justify-content: space-between;
+  
+  }
+  
+  
+  skeleton-avatar {
+    width: 48px; /* Width of the avatar */
+    height: 48px; /* Height of the avatar */
+    border-radius: 50%; /* Circular shape */
+    background-color: #a3a2a2; /* Avatar placeholder color */
+    animation: skeleton-loading 1.5s infinite; /* Loading animation */
+  }
+  
+  .skeleton-details {
+    flex-grow: 1; /* Allow this section to grow */
+    margin-left: 8px; /* Space between avatar and text */
+  }
+  
+  .skeleton-line {
+    height: 16px; /* Height of the line */
+    background-color: #a3a2a2; /* Line color */
+    border-radius: 4px; /* Rounded corners */
+    margin-bottom: 8px; /* Space between lines */
+    animation: skeleton-loading 1.5s infinite; /* Loading animation */
+  }
+  
+  .skeleton-line.name {
+    width: 70%; /* Width for the name line */
+  }
+  
+  .skeleton-button {
+    width: 20px; /* Width of the button */
+    height: 20px; /* Height of the button */
+    background-color: #a3a2a2; /* Button placeholder color */
+    border-radius: 4px; /* Rounded corners */
+    animation: skeleton-loading 1.5s infinite; /* Loading animation */
+  }
+  
+  /*Friend Event skeleton */
+  .skeleton-event-item {
+    display: flex; /* Flexbox for layout */
+    gap: 8px; /* Gap between items */
+    align-items: center; /* Center vertically */
+    padding: 8px; /* Padding */
+    background-color: #f0f0f0; /* Background color */
+    border-radius: 12px; /* Rounded corners */
+    margin: 8px; /* Margin */
+  }
+  
+  .skeleton-circle {
+    width: 30px; /* Width of the circle */
+    height: 30px; /* Height of the circle */
+    border-radius: 50%; /* Circular shape */
+    background-color: #a3a2a2; /* Circle placeholder color */
+    animation: skeleton-loading 1.5s infinite; /* Loading animation */
+    flex-shrink: 0; /* Prevent shrinking */
+  }
+  
+  .skeleton-text {
+    flex-grow: 1; /* Allow this section to grow */
+    height: 16px; /* Height of the text line */
+    background-color: #a3a2a2; /* Line color */
+    border-radius: 4px; /* Rounded corners */
+    animation: skeleton-loading 1.5s infinite; /* Loading animation */
+  }
+  
+  @keyframes skeleton-loading {
+    0% {
+      background-color: #a3a2a2;
+    }
+    50% {
+      background-color: #b5b4b4; /* Slightly lighter for the shimmer effect */
+    }
+    100% {
+      background-color: #a3a2a2;
+    }
+  }
+  
+  /*Profile Skeleton Loading*/
+  .profile-skeleton {
+    background-color: #a3a2a2;
+    border-radius: 50%; /* Makes it circular */
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+  
+  @keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+  }

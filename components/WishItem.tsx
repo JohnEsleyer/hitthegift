@@ -95,7 +95,7 @@ export default function WishItem({
       <p className="font-bold">{price} {currency}</p>
       <p className="line-clamp-6 text-xs mt-2 h-24 ">{description}</p>
       <div className="flex justify-center items-center">
-      {showBuyButton && <a href={productUrl} target={"_blank"} className="bg-blue-500 text-white p-2 pl-4 pr-4 rounded-2xl mt-2">
+      {showBuyButton && <a href={productUrl} target={"_blank"} className="bg-black text-white p-2 pl-6 pr-6 rounded-full mt-2">
         Buy
       </a>}
       </div>
@@ -104,7 +104,7 @@ export default function WishItem({
     {owner  && 
         <EnableAnchor enable={!isSidebarOpen}>
     <div style={{top:130, right: 10, }} className="absolute flex">
-        <div className="hover:bg-slate-200 bg-amber-500 rounded-2xl p-2 shadow-md"><ShoppingCart size={20}/></div>
+        <div className="bg-amber-500 rounded-2xl p-2 shadow-md"><ShoppingCart size={20}/></div>
       </div>
       </EnableAnchor>
       }

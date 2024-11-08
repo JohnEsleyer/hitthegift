@@ -8,10 +8,9 @@ import { RootState } from "@/lib/store";
 import { getUserProducts } from "@/app/actions/products/getUserProducts";
 import WishItem from "../../../../components/WishItem";
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
-import { CircleX, Gift, Send, UserPlus } from "lucide-react";
-import addFriend from "@/app/actions/user/addFriend";
+import { Gift, UserPlus } from "lucide-react";
+
 import { updateMyListProducts } from "@/lib/features/mylist";
-import { sendFriendRequest } from "@/app/actions/user/sendFriendRequest";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
 
 
@@ -62,7 +61,7 @@ export default function MyListRightSection() {
             Share list
           </button>
       </div>
-      <div className="w-full ml-8 mb-2 pl-2 flex-1 overflow-auto rounded-2xl border-2 border-black bg-[#dbe4e7]">
+      <div className="w-full ml-8 mb-2 pl-2 flex-1 overflow-auto rounded-2xl border-2 border-black bg-[#e3dfde]">
             {/**Body */}
       <div style={{ position: "relative", width: width - 420}} className="h-full hide-scrollbar">
         <div
