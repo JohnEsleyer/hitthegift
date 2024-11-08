@@ -105,7 +105,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   };
 
   return (
-    <div className="h-full overflow-auto hide-scrollbar">
+    <div className="h-full overflow-auto hide-scrollbar ">
       <div className="flex items-center ">
 
         <DebouncedInput 

@@ -164,6 +164,7 @@ export default function AddProductPopup() {
           <div className="flex gap-2">
             <div>
               <p>Title</p>
+              <div  style={{width: 270, height: 40}} className={`${isAutoFillPending && 'glowing-border'}`}>
               <input
                 className="rounded-full p-2 pl-4 border border-black"
                 placeholder={"Product name"}
@@ -172,13 +173,14 @@ export default function AddProductPopup() {
                   setProductTitle(e.target.value);
                 }}
               />
+              </div>
             </div>
             <div className="flex flex-col">
               <label>Price</label>
-              <div className="flex rounded-full bg-white border border-black">
+              <div className={`flex rounded-full bg-white border border-black ${isAutoFillPending && 'glowing-border'}`}>
                 <input
                   style={{ width: 100 }}
-                  className="border border-black rounded-l-full pl-2 "
+                  className="border-black border-r rounded-l-full pl-2 "
                   placeholder="1.00"
                   value={price}
                   onChange={(e) => {
@@ -261,6 +263,7 @@ export default function AddProductPopup() {
         <div className="mt-4 m-4 pb-8 flex justify-center gap-2">
           <div style={{ width: 400 }}>
             <label>Description</label>
+            <div style={{height: 100}} className={`${isAutoFillPending && 'glowing-border'}`}>
             <textarea
               className="w-full h-full rounded-2xl p-2 pl-4 border border-black"
               value={productDescription}
@@ -268,6 +271,7 @@ export default function AddProductPopup() {
                 setProductDescription(e.target.value);
               }}
             />
+            </div>
           </div>
         </div>
 

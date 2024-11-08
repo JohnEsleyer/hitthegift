@@ -48,7 +48,7 @@ export function Popups({ children }: PopupPageProps) {
       </div>
       {currentPopup == "friends" && (
         <div
-          className="rounded-2xl p-2 bg-slate-100 border border-gray-300 border-2 rounded"
+          className="rounded-2xl p-2 bg-slate-100 border border-black border-2 rounded"
           style={{
             position: "absolute",
             top: 60,

@@ -125,12 +125,12 @@ export default function HomeTemplate({
                 }
                   dispatch(updateIsOpenChatbox(true));
                   startConversation();
-                }} className="bg-blue-500 shadow-md  rounded-full p-4">
+                }} className="bg-blue-500 shadow-md rounded-full p-4">
                   <MessageSquareText color={"#ffffff"} />
                 </button>}
               </div>}
 
-              {/**Friends */}
+              {/**Friends sidebar*/}
               {showFriends && <div style={{zIndex: 99, right: 0, top:225 }} className="absolute text-white flex justify-end">
             <button
               className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg "

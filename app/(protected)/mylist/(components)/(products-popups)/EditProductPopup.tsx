@@ -11,13 +11,11 @@ import ProductImageUploader from "@/components/ProductImageUploader";
 import { v4 as uuidv4 } from "uuid";
 import {
   deleteMyListProductById,
-  insertMyListProduct,
   updateProductStore,
 } from "@/lib/features/mylist";
 import {
   updateEditProductCurrency,
   updateEditProductDescription,
-  updateEditProductImageUrl,
   updateEditProductPrice,
   updateEditProductProductUrl,
   updateEditProductTitle,
@@ -35,6 +33,7 @@ import { deleteProduct } from "@/app/actions/products/deleteProduct";
 import CountryFlag from "./CountryFlag";
 import { extractASIN } from "./functions";
 import getProductDetails from "@/app/actions/amazon/getProductDetails";
+import '@/styles/GlowingBorder.css';
 
 type ResponseData = {
   message: string;
@@ -308,8 +307,9 @@ export default function EditProductPopup() {
           <div className="flex gap-2">
             <div>
               <p>Title</p>
+              <div  style={{width: 270, height: 40}} className={`${isAutoFillPending && 'glowing-border'}`}>
               <input
-                className="rounded-full p-2 pl-4 border border-black"
+                className={`rounded-full p-2 pl-4 border border-black `}
                 placeholder={"Product name"}
                 value={title}
                 onChange={(e) => {
@@ -317,13 +317,14 @@ export default function EditProductPopup() {
                   dispatch(updateEditProductTitle(e.target.value));
                 }}
               />
+              </div>
             </div>
             <div className="flex flex-col">
               <label>Price</label>
-              <div className="border border-black flex rounded-full bg-white ">
+              <div className={`border border-black flex rounded-full bg-white ${isAutoFillPending && 'glowing-border'}`}>
                 <input
                   style={{ width: 100 }}
-                  className=" border border-r border-black rounded-l-full pl-2 p-2"
+                  className="border-r border-black rounded-l-full pl-2 p-2 "
                   value={price}
                   placeholder="1.00"
                   onChange={(e) => {
@@ -411,14 +412,16 @@ export default function EditProductPopup() {
         <div className="mt-4 m-4 pb-8 flex justify-center gap-2">
           <div style={{ width: 400 }}>
             <label>Description</label>
+            <div style={{height: 100}} className={`${isAutoFillPending && 'glowing-border'}`}>
             <textarea
-              className="w-full h-full rounded-2xl p-2 pl-4 border border-black"
+              className="hide-scrollbar w-full h-full rounded-2xl p-2 pl-4 border border-black"
               value={description}
               onChange={(e) => {
                 // setDescriptionInput(e.target.value);
                 dispatch(updateEditProductDescription(e.target.value));
               }}
             />
+            </div>
           </div>
         </div>
 
