@@ -50,7 +50,7 @@ export function HomeLeftTemplate({
         </Link>}
         </div>
       </div>
-      <div className="flex-1 mb-2 ml-2 overflow-auto hide-scrollbar border-2 rounded-2xl  bg-[#e3dfde] border-black ">
+      <div className="flex-1 mb-2 ml-2 overflow-auto hide-scrollbar border-t-2 border-slate-400 ">
        {children}
       </div>
     </div>

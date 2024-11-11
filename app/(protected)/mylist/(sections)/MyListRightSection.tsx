@@ -61,7 +61,7 @@ export default function MyListRightSection() {
             Share list
           </button>
       </div>
-      <div className="w-full ml-8 mb-2 pl-2 flex-1 overflow-auto rounded-2xl border-2 border-black bg-[#e3dfde]">
+      <div className="w-full ml-8 mb-2 pl-2 flex-1 overflow-auto border-t-2 border-slate-400">
             {/**Body */}
       <div style={{ position: "relative", width: width - 420}} className="h-full hide-scrollbar">
         <div

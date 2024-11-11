@@ -22,7 +22,7 @@ function extractPrice(text: string): string {
   const fractionalPart = parts[parts.length - 1].substring(0, 2); // Take first 2 digits
 
   // Construct the final price string
-  return `$${wholePart}.${fractionalPart}`; 
+  return `${wholePart}.${fractionalPart}`; 
 }
 
 

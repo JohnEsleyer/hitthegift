@@ -244,7 +244,7 @@ export default function AddEventPopup() {
           Accept
         </button>
         <button
-          className="bg-black rounded-2xl pl-12 pr-12  text-white"
+          className="bg-slate-400 rounded-2xl pl-12 pr-12  text-white"
           onClick={() => {
             dispatch(updateCurrentPopup("none"));
           }}

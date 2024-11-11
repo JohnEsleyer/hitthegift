@@ -19,8 +19,6 @@ import { extractASIN } from "./functions";
 import getProductDetails from "@/app/actions/amazon/getProductDetails";
 import { updateAmazonImageUrl, updateBase64Image } from "@/lib/features/productImageUpload";
 
-
-
 export default function AddProductPopup() {
   const dispatch = useDispatch();
   const [productTitle, setProductTitle] = useState("");
@@ -40,8 +38,38 @@ export default function AddProductPopup() {
   const [autoFill, setAutoFill] = useState(true);
   const [isAutoFillPending, startAutoFillTransition] = useTransition();
   const [productImageUrl, setProductImageUrl] = useState('');
+  const [didInitialize, setDidInitialize] = useState(false);
+
+  // States about checking for empty inputs 
+  const [emptyInputs, setEmptyInputs] = useState<string[]>([]);
 
   const clickAddProduct = async () => {
+    let emptyCounter = 0;
+    let emptyInput = ''; // title, price, description
+    setEmptyInputs([]);
+
+
+    // Check if product title, price, and description are empty
+    if (productTitle == ''){
+      setEmptyInputs((prev) => [...prev, 'title']);
+      emptyInput = 'title';
+      emptyCounter++;
+    }
+    if (price == ''){
+      setEmptyInputs((prev) => [...prev, 'price']);
+      emptyInput = 'price';
+      emptyCounter++;
+    }
+    if (productDescription == ''){
+      setEmptyInputs((prev) => [...prev, 'description']);
+      emptyInput = 'description'
+      emptyCounter++;
+    }
+
+    if (emptyCounter >= 1){
+      return;
+    }
+    
     setIsLoading(true);
     try {
       const productId = await createObjectId();
@@ -97,20 +125,19 @@ export default function AddProductPopup() {
   };
 
 
-
   // Initialization
   useEffect(() => {
     dispatch(updateAmazonImageUrl(''));
+
+    setDidInitialize(true);
   }, []);
-
-
 
   // This useEffect triggers when product URL is updated and auto fill is enabled.
   useEffect(() => {
-    if (autoFill){
+    setEmptyInputs([]);
+    if (autoFill && didInitialize){
       console.log(`productUrl: ${productUrl}`);
       const ASIN = extractASIN(productUrl);
-
       startAutoFillTransition(async ()=> {
         console.log('pending Auto fill')
         console.log(`asin: ${ASIN}`);
@@ -122,6 +149,7 @@ export default function AddProductPopup() {
               console.log('success');
               setProductTitle(res.title);
               setProductDescription(res.description);
+              console.log(`setPrice: ${res.price}`);
               setPrice(res.price);
               setProductImageUrl(res.imageUrl);
               dispatch(updateAmazonImageUrl(res.imageUrl));
@@ -138,11 +166,10 @@ export default function AddProductPopup() {
     }
   },[autoFill, productUrl]);
 
-
   return (
     <div
       style={{ width: 500, height: 630, marginTop: 50 }}
-      className="pt-4 pr-1 overflow-auto hide-scrollbar bg-white rounded-2xl border-2 border-black"
+      className="pt-4 pr-1 overflow-auto hide-scrollbar bg-white rounded-2xl border-2 border-slate-400"
     >
       <div className="h-full">
         {/*Image of the Product */}
@@ -166,7 +193,7 @@ export default function AddProductPopup() {
               <p>Title</p>
               <div  style={{width: 270, height: 40}} className={`${isAutoFillPending && 'glowing-border'}`}>
               <input
-                className="rounded-full p-2 pl-4 border border-black"
+                className={`rounded-full p-2 pl-4 border ${emptyInputs.includes('title') ? 'border-red-500' : 'border-slate-400' } `}
                 placeholder={"Product name"}
                 value={productTitle}
                 onChange={(e) => {
@@ -177,16 +204,18 @@ export default function AddProductPopup() {
             </div>
             <div className="flex flex-col">
               <label>Price</label>
-              <div className={`flex rounded-full bg-white border border-black ${isAutoFillPending && 'glowing-border'}`}>
+              <div className={`flex rounded-full bg-white border ${emptyInputs.includes('price') ? 'border-red-500' : 'border-slate-400' } ${isAutoFillPending && 'glowing-border'}`}>
                 <input
                   style={{ width: 100 }}
-                  className="border-black border-r rounded-l-full pl-2 "
+                  className="border-slate-400 border-r rounded-l-full pl-2 "
                   placeholder="1.00"
+                  type="number"
                   value={price}
                   onChange={(e) => {
                     setPrice(e.target.value);
                   }}
                 />
+
                 <div className="relative p-2 flex items-center ">
                   <button
                     className=" "
@@ -226,7 +255,7 @@ export default function AddProductPopup() {
             <p>Product URL</p>
             <input
               style={{ width: 430 }}
-              className={` border border-black rounded-full p-2 pl-4`}
+              className={` border border-slate-400 rounded-full p-2 pl-4`}
               placeholder={"Product URL"}
               value={productUrl}
               onChange={(e) => {
@@ -265,7 +294,7 @@ export default function AddProductPopup() {
             <label>Description</label>
             <div style={{height: 100}} className={`${isAutoFillPending && 'glowing-border'}`}>
             <textarea
-              className="w-full h-full rounded-2xl p-2 pl-4 border border-black"
+              className={`w-full h-full rounded-2xl p-2 pl-4 border ${emptyInputs.includes('description') ? 'border-red-500' : 'border-slate-400' }`}
               value={productDescription}
               onChange={(e) => {
                 setProductDescription(e.target.value);
@@ -278,13 +307,13 @@ export default function AddProductPopup() {
         {/*Buttons */}
         <div className="mt-4  flex justify-center gap-8">
           <button
-            className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white"
+            className="bg-blue-500 rounded-2xl pl-8 pr-8 p-2  text-white"
             onClick={clickAddProduct}
           >
             Add product
           </button>
           <button
-            className="bg-black rounded-2xl pl-12 pr-12  text-white"
+            className="bg-black rounded-2xl pl-12 pr-12  p-2 text-white"
             onClick={() => {
               dispatch(updateCurrentPopup("none"));
             }}

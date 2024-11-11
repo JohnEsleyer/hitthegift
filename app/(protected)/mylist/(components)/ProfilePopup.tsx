@@ -96,7 +96,7 @@ export default function AddEventPopup() {
   return (
     <div
       style={{ width: 500, height: 500 }}
-      className="p-4 bg-white flex flex-col items-center justify-start rounded-2xl border border-black border-2"
+      className="p-4 bg-white flex flex-col items-center justify-start rounded-2xl border border-slate-300 border-2"
     >
       {isPending ? (
         <ProfileSkeleton />

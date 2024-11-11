@@ -32,9 +32,9 @@ export default function InsideFriendRightSection() {
 
   return (
     <div className="w-full">
-      <div style={{ marginLeft: 30,marginTop: 70, height: height-80, width: width-400}}  className="h-screen bg-[#e3dfde] p-2 rounded-2xl border border-2 border-black hide-scrollbar mb-4 ">
+      <div style={{ marginLeft: 30,marginTop: 74, height: height-80}}  className="overflow-auto hide-scrollbar p-2 mb-4 border-t-2 border-black ">
         {isProductsPending ? (
-          <div className=" pl-2 pt-2 overflow-auto flex flex-wrap gap-8 ">
+          <div className=" pl-2 pt-2 flex flex-wrap gap-8 ">
           <WishItemSkeleton />
           <WishItemSkeleton />
           <WishItemSkeleton />
@@ -43,7 +43,7 @@ export default function InsideFriendRightSection() {
           <WishItemSkeleton />
         </div>
         ) : (
-          <div  className="overflow-auto">
+          <div>
           {products.length > 0 ? <div className="pl-2 pt-2 flex flex-wrap gap-2">
             {products.map((product) => (
               <WishItem

@@ -41,7 +41,7 @@ export default function HomeTemplate({
   const router = useRouter();
 
   return (
-    <div className="bg-white w-screen h-screen flex overflow-auto overflow-x-hidden">
+    <div className="bg-[#e4e7f7] w-screen h-screen flex overflow-auto overflow-x-hidden">
       <RenderClientOnly
           loading={
             <div className="flex w-full justify-center items-center">
@@ -133,7 +133,7 @@ export default function HomeTemplate({
               {/**Friends sidebar*/}
               {showFriends && <div style={{zIndex: 99, right: 0, top:225 }} className="absolute text-white flex justify-end">
             <button
-              className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg "
+              className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg"
               onClick={() => {
                 dispatch(updateCurrentPopup("friends"));
               }}

@@ -38,13 +38,13 @@ export default function SendWishlistPopup() {
   return (
     <div
       style={{ height: 230 }}
-      className="flex flex-col gap-2 justify-center border border-gray items-center rounded-2xl p-16 bg-white"
+      className="flex flex-col gap-2 justify-center border-2 border-black  items-center rounded-2xl p-16 bg-white"
     >
       <p>Enter your friend's email</p>
       <input
         type="text"
         style={{ width: 400 }}
-        className="border rounded-2xl p-2"
+        className="border border-black rounded-2xl p-2"
         placeholder="friendname@email.com"
         value={friendEmail}
         onChange={(e) => {
@@ -64,7 +64,7 @@ export default function SendWishlistPopup() {
           ) : (
             <button
               onClick={handleShareList}
-              className="bg-blue-600 text-white rounded-full pl-12 pr-12"
+              className="bg-blue-600 text-white rounded-full p-2 pl-12 pr-12"
             >
               OK
             </button>
@@ -72,7 +72,7 @@ export default function SendWishlistPopup() {
         </div>
         <button
           onClick={closePopup}
-          className="bg-black text-white pl-12 pr-12 rounded-full"
+          className="bg-black text-white p-2 pl-12 pr-12 rounded-full"
         >
           Cancel
         </button>

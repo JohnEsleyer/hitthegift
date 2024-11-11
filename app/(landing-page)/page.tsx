@@ -21,7 +21,7 @@ export default function LandingPage() {
 
   return (
     <RenderClientOnly loading={<div></div>}>
-    <div className="overflow-auto h-screen w-screen hide-scrollbar bg-white">
+    <div className="overflow-auto h-screen w-screen hide-scrollbar overflow-x-hidden">
       <div className="relative h-screen w-screen flex flex-col bg-gradient-to-b from-[#030c42] to-blue-500 text-white py-2 px-4 ">
         <div className="flex justify-center">
           <p

@@ -18,7 +18,6 @@ import { updateEditEventDate, updateEditEventInvitedFriends, updateEditEventTitl
 import { convertTo12HourFormat, getMeridiem } from "@/utils/convertTo12Hour";
 import { updateEvent } from "@/app/actions/events/updateEvent";
 import UserProfileImage from "@/components/UserProfileImage";
-import giftloading from '/public/giftloading.svg';
 import { CircleSkeleton } from "@/components/skeletons/CircleSkeleton";
 import { Trash2 } from "lucide-react";
 import { deleteEvent } from "@/app/actions/events/deleteEvent";
@@ -185,7 +184,7 @@ export default function EditEventPopup() {
           onClick={() => {
             setShowConfirmDelete(false);
           }}
-          className="text-white bg-black rounded-2xl p-2 pl-4 pr-4"
+          className="text-white bg-slate-400 rounded-2xl p-2 pl-4 pr-4"
         >
           No
         </button>
@@ -346,7 +345,7 @@ export default function EditEventPopup() {
           Save
         </button>
         <button
-          className="bg-black rounded-2xl pl-12 pr-12  text-white"
+          className="bg-slate-400 rounded-2xl pl-12 pr-12  text-white"
           onClick={() => {
             dispatch(updateCurrentPopup("none"));
           }}

@@ -80,7 +80,7 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
       }, []);
     
     return (
-        <div className="flex flex-col p-2 m-2 flex items-center border border-b-4 rounded-2xl border-black bg-white ">
+        <div className="flex flex-col p-2 m-2 flex items-center rounded-2xl shadow-xl border-black bg-white ">
         <p className="w-64 font-bold">My hobbies and interest</p>
         {isTextareaPending ? <TextareaSkeleton/> : <Textarea
           key={"hobbiesInfo"}

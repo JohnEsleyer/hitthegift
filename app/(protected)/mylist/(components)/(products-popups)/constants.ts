@@ -9,4 +9,3 @@ export const currencies: string[] = [
     "CHF", // Swiss Franc
     "CNY", // Chinese Renminbi
 ]
-

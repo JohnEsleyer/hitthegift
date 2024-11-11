@@ -88,7 +88,7 @@ export default function InsideFriendLeftSection(){
                        </div>
                     </div>
                     <span className="text-xl font-bold">Interests and hobbies</span>
-                    <div style={{height: 120, width: 280}} className="shadow-md border border-black overflow-auto rounded-2xl  p-2">
+                    <div style={{height: 120, width: 275}} className="shadow-md border border-black overflow-auto rounded-2xl p-2 pr-4">
                         <p style={{fontSize: 13}} className="break-words">{hobbiesInfo}</p>
                     </div>
                     <div style={{height: 100}}></div>

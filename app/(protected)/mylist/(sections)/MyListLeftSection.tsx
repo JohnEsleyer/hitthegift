@@ -102,10 +102,10 @@ export default function MyListLeftSection() {
       >
         Add event
       </button>
-      <div style={{width: 300}} className="hide-scrollbar overflow-auto bg-white rounded-2xl border-black border border-b-4 m-2 pb-2">
+      <div style={{width: 300, height: 200}} className="hide-scrollbar overflow-auto bg-white rounded-2xl shadow-xl m-2 pb-2">
         {isEventsPending ? (
           <div
-            style={{ height: 130 }}
+            style={{ height: 150 }}
             className="flex flex-col items-between "
           >
             <EventSkeleton />
@@ -114,7 +114,7 @@ export default function MyListLeftSection() {
           </div>
         ) : (
           <div
-            style={{ height: 130 }}
+            style={{ height: 150 }}
             className=" flex flex-col items-center"
           >
             {isClientMounted && (
@@ -137,7 +137,7 @@ export default function MyListLeftSection() {
                       }}
                       key={event.id}
                       style={{width: 280}}
-                      className="hover:bg-gray-300 flex gap-2 items-center justify-between p-2 bg-gray-100 border border-black rounded-2xl mt-1 mb-1"
+                      className="hover:bg-gray-300 flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl mt-1 mb-1"
                     >
                       <div
                         style={{ fontSize: 15, width: 30, height: 30 }}
@@ -188,7 +188,7 @@ export default function MyListLeftSection() {
         )}
       </div>
       {/**Calendar Section */}
-      <div style={{width: 332}} className=" transformCalendar flex pr-4 items-center justify-center bg-white rounded-2xl border-black border-b-4 mt-2 border ">
+      <div style={{width: 332}} className=" transformCalendar flex pr-4 items-center justify-center bg-white rounded-2xl mt-2 shadow-xl">
         <EventsCalendar
           highlightedDates={highlightedDates}
           onClick={(date) => setSelectedDate(date)}

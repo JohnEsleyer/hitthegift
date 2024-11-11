@@ -189,7 +189,7 @@ export default function RegisterPage() {
 
   return (
     <div
-      className={` bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
+      className={` bg-[#31241e] bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
     >
       {/*Terms and conditions */}
       {showTermsNConditions && (
@@ -396,7 +396,7 @@ export default function RegisterPage() {
           <div className="flex gap-4 justify-center">
             <button
               onClick={handleSubmit}
-              className="bg-blue-500 p-2 pl-16 pr-16 rounded-full text-white"
+              className="bg-blue-600 p-2 pl-16 pr-16 rounded-full text-white"
             >
               Create
             </button>

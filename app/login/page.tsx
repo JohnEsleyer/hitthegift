@@ -135,7 +135,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='h-screen w-screen bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center flex items-center justify-center'>
+    <div className='bg-[#31241e] h-screen w-screen bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center flex items-center justify-center'>
 
       <div className="flex flex-col bg-white rounded-2xl p-8">
         <label>Email:</label>
@@ -198,7 +198,7 @@ export default function LoginPage() {
           <button
             style={{ fontSize: 13 }}
             onClick={handleSubmit}
-            className=" p-2 pl-8 pr-8 bg-blue-500 text-white rounded border-black rounded-2xl"
+            className=" p-2 pl-8 pr-8 bg-blue-600 text-white rounded border-black rounded-2xl"
           >
             Log In
           </button>
