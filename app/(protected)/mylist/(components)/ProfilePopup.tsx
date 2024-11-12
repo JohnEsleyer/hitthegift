@@ -30,9 +30,7 @@ export default function AddEventPopup() {
 
   useEffect(() => {
     startTransition(async () => {
-      console.log(`id sent to server: ${userId}`);
       const results = await getUserInfo(userId);
-      console.log(`status: ${results?.status}`);
       if (results) {
         setFirstName(results.firstName || "");
         setLastName(results.lastName || "");
@@ -47,11 +45,7 @@ export default function AddEventPopup() {
     setIsSaving(true);
     try {
       const res = await updateUserBirthday(userId, value);
-      if (res) {
-        console.log(res.message);
-      } else {
-        console.log("Failed to update birthday");
-      }
+ 
     } catch (e) {
       console.error(e);
     } finally {
@@ -66,13 +60,12 @@ export default function AddEventPopup() {
   };
 
   const updateFirstName = async (inputValue: string) => {
-    console.log('triggering updateFirstName');
 
     try{
       await updateUserFirstName(userId, inputValue);
       dispatch(updateUserFirstNameStore(inputValue));
     }catch(e: any){
-      console.log('from updateFirstName: ' + e);
+      console.log(e);
     }
 
     setIsSaving(false);
@@ -85,7 +78,7 @@ export default function AddEventPopup() {
       
       
     }catch(e: any){
-      console.log('from updateEmail: ' + e);
+      console.log(e);
     }
     
     
@@ -120,7 +113,6 @@ export default function AddEventPopup() {
               delay={2000} // wait 2 seconds before executing the callback function
               onUserStopTyping={updateFirstName}
               onWait={() => {
-                console.log('triggering onWait');
                 setIsSaving(true);
               }}
               width={200}

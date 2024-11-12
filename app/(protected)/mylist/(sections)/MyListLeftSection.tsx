@@ -47,18 +47,13 @@ export default function MyListLeftSection() {
     setIsClientMounted(true);
     const fetchHobbyData = async () => {
       const hobbyData = await getUserHobbies(userId);
-      if (hobbyData.status == 200) {
-        console.log(hobbyData.message);
-      }
+  
     };
 
     fetchHobbyData();
     startEventsTransition(async () => {
       const results = await getAllEvents(userId);
-      console.log(`status: ${results.message}`);
       if (results.data) {
-        // setEvents(results.data || []);
-        console.log("Payload before dispatch:", results.data);
 
         dispatch(updateMyListEvents(results.data || []));
         const dates: Date[] = Array.isArray(results.data)
@@ -66,7 +61,6 @@ export default function MyListLeftSection() {
               (event) => new Date(event.date)
             )
           : [];
-        console.log(`Dates: ${dates}`);
         setHighlightedDates(dates);
       }
     });

@@ -27,6 +27,7 @@ function extractPrice(text: string): string {
 
 
 export default async function getProductDetails(asin: string) {
+
   try {
       // Fetch the page HTML
       const { data } = await axios.get(`https://www.amazon.com/dp/${asin}`);
@@ -57,7 +58,6 @@ export default async function getProductDetails(asin: string) {
       }
       // Get the main image URL
       const imageUrl = $('#landingImage').attr('src') || '';
-      console.log(`price: ${price}`);
     return {
       title,
       price,

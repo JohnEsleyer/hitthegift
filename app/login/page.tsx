@@ -131,6 +131,7 @@ export default function LoginPage() {
       }
     };
 
+  
     loginUser();
   };
 
@@ -193,7 +194,6 @@ export default function LoginPage() {
           />
           <span className="pl-2">Remember me</span>
         </div>
-
         <div className="pt-4 flex gap-2 flex justify-center">
           <button
             style={{ fontSize: 13 }}
@@ -210,7 +210,6 @@ export default function LoginPage() {
             Create an Account
           </Link>
         </div>
-
         {/*Loading */}
         <div className="flex justify-center h-12">
           <Image
@@ -221,7 +220,6 @@ export default function LoginPage() {
             height={30}
           />
         </div>
-      
         <p
           className={`h-4 ${
             !errorMessage && "invisible"

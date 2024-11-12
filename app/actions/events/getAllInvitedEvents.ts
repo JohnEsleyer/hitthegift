@@ -28,10 +28,7 @@ export async function getAllInvitedEvents(
       invitedFriends: userId,
     }).toArray();
 
-    console.log(`Length: ${events.length}`);
-
     if (events.length > 0) {
-      console.log(`Events length: ${events.length}`);
 
       // Use Promise.all to handle async mapping with owner's name fetch
       const responseData = await Promise.all(
@@ -51,7 +48,6 @@ export async function getAllInvitedEvents(
         })
       );
 
-      console.log(`array: ${responseData}`);
        
       return {
         message: "Successfully fetched all events for invited friends",

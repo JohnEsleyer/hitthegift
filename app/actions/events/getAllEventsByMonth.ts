@@ -29,8 +29,6 @@ export async function getAllEventsByMonth(userId: string, month: number) {
             }
         }).toArray();
 
-        console.log(`Length: ${events.length}`);
-
         if (events.length > 0) {
             // Use Promise.all to handle async mapping
             const responseData = await Promise.all(
@@ -50,8 +48,6 @@ export async function getAllEventsByMonth(userId: string, month: number) {
                 })
             );
 
-            console.log(`array: ${responseData}`);
-             
             return {
                 message: `Successfully fetched all events for month ${month}`,
                 data: responseData,

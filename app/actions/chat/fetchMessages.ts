@@ -28,13 +28,11 @@ export default async function fetchMessages(conversationId: string){
         ));
 
         if (messages.length > 0){
-            console.log('200');
             return {
                 status: 200,
                 data: messagesSimplified,
             }
         }
-        console.log('400');
     
         return {
             status: 400,

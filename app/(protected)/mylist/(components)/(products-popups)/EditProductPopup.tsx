@@ -101,30 +101,26 @@ export default function EditProductPopup() {
   useEffect(() => {
     if (autoFill && didInitialize) {
       const ASIN = extractASIN(productUrl);
-
       startAutoFillTransition(async () => {
-        console.log("pending Auto fill");
-        console.log(`asin: ${ASIN}`);
         if (ASIN) {
-          console.log(`asin: true`);
+          console.log('has ASIN');
           try {
             const res = await getProductDetails(ASIN);
             if (res) {
-              console.log("success");
               dispatch(updateEditProductTitle(res.title));
               dispatch(updateEditProductDescription(res.description));
               dispatch(updateEditProductPrice(res.price));
-              console.log(`updateAmazonImageUrl: ${res.imageUrl}`);
               dispatch(updateAmazonImageUrl(res.imageUrl));
             }
-            console.log("success");
 
             // Reset Image Upload state
             dispatch(updateBase64Image(""));
           } catch (e) {
-            console.log("failed");
             console.log(e);
           }
+        }else{
+          console.log('No ASIN');
+          await new Promise(resolve => setTimeout(resolve, 2000));
         }
       });
     }
@@ -133,7 +129,6 @@ export default function EditProductPopup() {
   const clickSaveProduct = async () => {
     setIsLoading(true);
     try {
-      console.log(`productImageUrl: ${productImageUrl}`);
       if (productImageUrl == "") {
         // Upload selectedImage to S3
         // 1. Convert base64 file string to FormData
@@ -156,10 +151,8 @@ export default function EditProductPopup() {
               productImageUrl !== "" ? productImageUrl : result.url || "",
             description: description,
           });
-          console.log("product created");
 
           if (responseData.status == 200) {
-            console.log(responseData.message);
             setResponse(responseData);
 
             dispatch(
@@ -176,7 +169,7 @@ export default function EditProductPopup() {
             );
           }
         }
-      } else {
+      }else {
         const responseData = await updateProduct({
           productId: productId,
           userId: userId,
@@ -187,10 +180,8 @@ export default function EditProductPopup() {
           imageUrl: productImageUrl,
           description: description,
         });
-        console.log("product created");
 
         if (responseData.status == 200) {
-          console.log(responseData.message);
           setResponse(responseData);
 
           dispatch(
@@ -223,7 +214,6 @@ export default function EditProductPopup() {
       try {
         const res = await deleteProduct(productId);
         if (res) {
-          console.log(res.status);
           dispatch(deleteMyListProductById(productId));
           dispatch(updateCurrentPopup("none"));
         }
@@ -233,6 +223,7 @@ export default function EditProductPopup() {
       }
     });
   };
+
 
   // The following will be displayed if user clicks on the delete icon
   if (showConfirmDelete) {
@@ -289,7 +280,6 @@ export default function EditProductPopup() {
             <Trash2 className="hover:text-red-500" size={25} />
           </button>
         </div>
-
         {/*Image of the Product */}
         <div className="flex justify-center ">
           <ProductImageUploader
@@ -301,7 +291,6 @@ export default function EditProductPopup() {
             loadInitialImage={true}
           />
         </div>
-
         {/*Title input */}
         <div className="mt-4 flex justify-center ">
           <div className="flex gap-2">
@@ -325,6 +314,7 @@ export default function EditProductPopup() {
                 <input
                   style={{ width: 100 }}
                   className="border-r border-slate-400 rounded-l-full pl-2 p-2 "
+                  type="number"
                   value={price}
                   placeholder="1.00"
                   onChange={(e) => {

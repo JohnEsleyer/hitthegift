@@ -53,7 +53,6 @@ export default function Chatbox() {
     startSendingTransition(async () => {
       try {
         const res = await createMessage(userId, conversationId, messageContent);
-        console.log(res.status);
       
       } catch (e) {
         console.log(e);
@@ -86,7 +85,6 @@ export default function Chatbox() {
 
   const handleFetchMessages = ()=>{
     startChatTransition(async () => {
-      console.log(`id sent to server: ${userId}`);
       try{
         const results = await fetchMessages(conversationId);
         console.log(results.status);

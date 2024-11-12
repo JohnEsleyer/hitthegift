@@ -22,7 +22,6 @@ export async function deleteAllEvents(): Promise<{
         const result = await db.collection<EventData>('events').deleteMany({});
 
         if (result.deletedCount > 0) {
-            console.log(`Deleted ${result.deletedCount} event(s)`);
              
             return {
                 message: `Successfully deleted ${result.deletedCount} event(s)`,

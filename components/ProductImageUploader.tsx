@@ -36,13 +36,11 @@ export default function ProductImageUploader({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(`From ProductImageUploader: Executing useEffect`)
     setImageUrl(amazonImageUrl);
   }, [amazonImageUrl]);
 
   useEffect(() => {
     if (loadInitialImage) {
-      console.log('loadInitialImage');
       setImageUrl(reduxImageUrl);
     }
   }, [loadInitialImage, reduxImageUrl]);

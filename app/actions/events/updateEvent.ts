@@ -31,7 +31,6 @@ export async function updateEvent(payload: UpdateEventPayload) {
         );
 
         if (result.matchedCount === 0) {
-            console.log("update event: Event not found");
              
             return { message: "Event not found", status: 404 };
         }
@@ -51,8 +50,6 @@ export async function updateEvent(payload: UpdateEventPayload) {
             eventTitle: payload.eventTitle || '',
             invitedFriends: friendsData,
         };
-
-        console.log("update event: SUCCESS");
          
         return { message: "Event Update Success", data: transformedData, status: 200 };
     } catch (e) {

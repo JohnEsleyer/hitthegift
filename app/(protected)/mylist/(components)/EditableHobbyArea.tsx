@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import loading from '/public/loading.svg';
 import Image from 'next/image';
 
-
 interface EditableHobbyAreaProps{
   onPending?: (isPending: boolean) => void; // Callback for when user is still typing.
 }
@@ -27,7 +26,6 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
 
     const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = event.target.value;
-        console.log('Value to dispatch:' + value);
         dispatch(updateHobbyInfo(value));
         setHobbiesInfo(value);
     };
@@ -57,41 +55,38 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
           const updateHobbyInfoServer = async () => {
             try {
               // Send data to the server here
-              console.log('Sending to server:', debouncedValue);
               await updateUserHobbies(userId, hobbiesInfo);
             } catch (error) {
               console.error('Error updating hobby info:', error);
             }
           };
-    
           updateHobbyInfoServer();
         }
       }, [debouncedValue]); // Trigger this effect only when debouncedValue changes
     
-
       useEffect(() => {
         startTextareaTransition(async () => {
             const hobbyData = await getUserHobbies(userId);
             if (hobbyData.status == 200){
                 setHobbiesInfo(hobbyData.hobbiesInfo as string);
-                console.log(hobbyData.message);
             }
         })  
       }, []);
     
     return (
-        <div className="flex flex-col p-2 m-2 flex items-center rounded-2xl shadow-xl border-black bg-white ">
+        <div className="flex flex-col p-2 m-2 flex items-center rounded-2xl shadow-xl bg-white ">
         <p className="w-64 font-bold">My hobbies and interest</p>
         {isTextareaPending ? <TextareaSkeleton/> : <Textarea
           key={"hobbiesInfo"}
           style={{height: 150, width: 280}}
-          className="border border-black rounded-2xl"
+          className="border border-gray-300 rounded-2xl"
           maxLength={500}
           value={hobbiesInfo}
           onChange={(e)=>{
             handleInputChange(e);
           }}
         />}
+
         <div 
         style={{height: 16}}
           className=" w-full flex justify-between"
@@ -106,5 +101,3 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
       </div>
     )
 }
-
-

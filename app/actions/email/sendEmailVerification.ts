@@ -43,9 +43,8 @@ export default async function sendEmailVerification(
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-              return console.log('Error:', error);
+              return 
             }
-            console.log('Email sent: ' + info.response);
           });
           
           return {

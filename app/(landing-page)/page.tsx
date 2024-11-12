@@ -134,14 +134,8 @@ export default function LandingPage() {
             <div className="mb-8">
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
               <ul>
-                <li>
-                  <a href="#">Home</a>
-                </li>
-                <li>
-                  <a href="#">About</a>
-                </li>
-                <li>
-                  <a href="#">Contact</a>
+                <li className="underline">
+                  <a href="/about">About</a>
                 </li>
               </ul>
             </div>

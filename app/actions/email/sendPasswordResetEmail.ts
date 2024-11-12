@@ -23,7 +23,6 @@ export default async function sendPasswordResetEmail(targetEmail: string){
         // If no user is found based on the email, return 400
         if (!user){
             console.log('No user found with that email address');
-             ;
             return {
                 status: 400,
                 message: 'No user found with that email address',

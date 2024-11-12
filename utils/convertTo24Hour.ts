@@ -8,10 +8,3 @@ export function convertTo24HourFormat(hour: number, period: "AM" | "PM"): number
     }
     return hour; // Return the same hour for AM or 12 PM
   }
-  
-  // Example usage:
-  console.log(convertTo24HourFormat(1, "PM")); // Output: 13
-  console.log(convertTo24HourFormat(12, "PM")); // Output: 12
-  console.log(convertTo24HourFormat(12, "AM")); // Output: 0
-  console.log(convertTo24HourFormat(11, "AM")); // Output: 11
-  

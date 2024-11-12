@@ -61,7 +61,6 @@ export default function EditEventPopup() {
     // Knowing whether date hour is AM or PM
     setMeridiem(getMeridiem(new Date(dateSelected).getHours()))
 
-    console.log(`dateSelected: ${dateSelected}`);
     startFriendTransition(async () => {
       const results = await getAllFriends(userId);
       if (results) {

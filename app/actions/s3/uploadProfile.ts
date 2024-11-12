@@ -5,7 +5,6 @@ import sharp from "sharp"; // Import sharp for image processing
 
 // Function to handle profile upload with image cropping
 export default async function uploadProfile(formData: FormData, userId: string) {
-  console.log('Uploading profile...');
   try {
     // Extract file from formData
     const file = formData.get('file') as File;

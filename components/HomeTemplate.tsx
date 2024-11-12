@@ -13,7 +13,7 @@ import { RootState } from "@/lib/store";
 import { updateConversationId, updateIsOpenChatbox } from "@/lib/features/insideFriend";
 import Chatbox from "@/app/(protected)/insidefriend/_components/Chatbox";
 import { MessageSquareText } from "lucide-react";
-import { Popups } from "@/app/(protected)/mylist/(components)/Popups";
+import { Popups } from "@/components/Popups";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
 import Friends from '/public/friends.png';
 import UserProfileImage from "./UserProfileImage";

@@ -6,7 +6,8 @@ import sharp from "sharp"; // Import sharp for image processing
 // Function to handle profile upload with image cropping
 // Image file is named through a uuid generator, which is set in the file name at client side.
 // Image file can't be named as productId because the creation of image is done before the product record.
-export default async function uploadProfile(formData: FormData, productId: string) {
+
+export default async function uploadProductImage(formData: FormData, productId: string) {
   try {
     // Extract file from formData
     const file = formData.get('file') as File;
@@ -44,7 +45,7 @@ export default async function uploadProfile(formData: FormData, productId: strin
     return { success: true, url: data.Location };
 
   } catch (e: any) {
-    console.error('Error uploading profile:', e);
+    console.error('Error uploading product image:', e);
     return { success: false, error: e.message };
   }
 }

@@ -8,11 +8,9 @@ export async function POST(req: Request){
     const uri = process.env.MONGODB_URI || '';
     const mongoClient = new MongoClient(uri);
     try{
-        console.log(`processing request...`)
         const requestData: LoginData = await req.json();
 
         const {email, password} = requestData;
-        console.log(`Password received from server: ${password}`);
         const db = mongoClient.db('hitmygift');
         
         // Find the user by email

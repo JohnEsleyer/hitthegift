@@ -75,7 +75,6 @@ export default function AddProductPopup() {
       const productId = await createObjectId();
       // Function to create a product
       const createNewProduct = async (imageUrl: string) => {
-        console.log("Creating product...");
         const responseData = await createProduct({
           _id: productId.toString(),
           userId: userId,
@@ -88,7 +87,6 @@ export default function AddProductPopup() {
         });
     
         if (responseData.data) {
-          console.log(responseData.message);
           dispatch(insertMyListProduct(responseData.data));
         } else {
           console.error('Failed to create product', responseData);
@@ -106,7 +104,7 @@ export default function AddProductPopup() {
     
         // Upload the image to S3
         const result = await uploadProductImage(formData, productId.toString());
-    
+        
         // Create a product with the uploaded image URL
         await createNewProduct(result.url || '');
       } else {
@@ -136,31 +134,28 @@ export default function AddProductPopup() {
   useEffect(() => {
     setEmptyInputs([]);
     if (autoFill && didInitialize){
-      console.log(`productUrl: ${productUrl}`);
       const ASIN = extractASIN(productUrl);
-      startAutoFillTransition(async ()=> {
-        console.log('pending Auto fill')
-        console.log(`asin: ${ASIN}`);
+      startAutoFillTransition(async () => {
         if (ASIN){
-          console.log(`asin: true`);
+          console.log('has ASIN');
           try{
             const res = await getProductDetails(ASIN);
             if (res){
-              console.log('success');
               setProductTitle(res.title);
               setProductDescription(res.description);
-              console.log(`setPrice: ${res.price}`);
               setPrice(res.price);
               setProductImageUrl(res.imageUrl);
               dispatch(updateAmazonImageUrl(res.imageUrl));
             }
-            console.log('success');
             // Reset Image Upload state
             dispatch(updateBase64Image(''));
           }catch(e){
-            console.log('failed');
             console.log(e);
           }
+        }else{
+          console.log('No ASIN');
+          await new Promise(resolve => setTimeout(resolve, 2000)); // 3 sec
+
         }
       });
     }
@@ -202,6 +197,7 @@ export default function AddProductPopup() {
               />
               </div>
             </div>
+
             <div className="flex flex-col">
               <label>Price</label>
               <div className={`flex rounded-full bg-white border ${emptyInputs.includes('price') ? 'border-red-500' : 'border-slate-400' } ${isAutoFillPending && 'glowing-border'}`}>
@@ -249,6 +245,7 @@ export default function AddProductPopup() {
             </div>
           </div>
         </div>
+        
         {/*Product URL input */}
         <div className="mt-4 flex justify-center ">
           <div>
@@ -259,10 +256,10 @@ export default function AddProductPopup() {
               placeholder={"Product URL"}
               value={productUrl}
               onChange={(e) => {
-                console.log(e.target.value.length);
                 setProductUrl(e.target.value);
               }}
             />
+         <p className="text-gray-500 text-xs flex justify-center">If autofill doesn't work, please enter the information manually</p>
           </div>
         </div>
           

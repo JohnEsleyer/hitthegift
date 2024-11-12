@@ -23,7 +23,6 @@ export default function InsideFriendRightSection() {
   useEffect(() => {
     startProductsTransition(async () => {
       const results = await getUserProducts(friendId);
-      console.log(`status: ${results.message}`);
       if (results) {
         setProducts(results.data || []);
       }

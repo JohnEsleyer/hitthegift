@@ -7,7 +7,12 @@ import Image from "next/image";
 import { UserData } from "@/lib/types/user";
 import { useDispatch } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
-import { updateUserData, updateUserFirstNameStore, updateUserId } from "@/lib/features/userData";
+import {
+  updateUserData,
+  updateUserFirstNameStore,
+  updateUserId,
+} from "@/lib/features/userData";
+import TermsAndConditions from "./TermsAndConditions";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,10 +34,10 @@ export default function RegisterPage() {
     birthday: "",
     showInterest: true,
     verified: false,
-    verificationToken: '',
+    verificationToken: "",
     friendsList: [],
     conversations: [],
-    resetToken: '',
+    resetToken: "",
   });
 
   // States to display red border if error
@@ -50,7 +55,6 @@ export default function RegisterPage() {
     setIsError(false);
     setIsLoading(true);
 
-
     setErrorFirstName(false);
     setErrorLastName(false);
     setErrorEmail(false);
@@ -61,68 +65,67 @@ export default function RegisterPage() {
     setErrorTerms(false);
     
     let invalidInputs = 0; // count the number of invalid inputs
-    if (userData.firstName == ""){
+    if (userData.firstName == "") {
       setResponseMessage("Please provide your first name.");
       setErrorFirstName(true);
       invalidInputs++;
     }
 
-    if (userData.lastName == ""){
+    if (userData.lastName == "") {
       setResponseMessage("Please provide your last name.");
       setErrorLastName(true);
       invalidInputs++;
     }
 
-    if (userData.email == ""){
+    if (userData.email == "") {
       setResponseMessage("Please provide your email address.");
       setErrorEmail(true);
       invalidInputs++;
     }
 
-    if (userData.password == ""){
+    if (userData.password == "") {
       setResponseMessage("Password is empty.");
       setErrorPassword(true);
       invalidInputs++;
     }
 
-    if (confirmPassword == ""){
+    if (confirmPassword == "") {
       setResponseMessage("Please confirm your passsword.");
       setErrorConfirmPassword(true);
       invalidInputs++;
     }
 
-    if (userData.birthday == ""){
+    if (userData.birthday == "") {
       setResponseMessage("Please provide your date of birth.");
       setErrorDateOfBirth(true);
       invalidInputs++;
     }
 
-    if (userData.hobbyInfo == ""){
+    if (userData.hobbyInfo == "") {
       setResponseMessage("Please provide your hobbies and interest.");
       setErrorHobbiesInfo(true);
       invalidInputs++;
     }
 
-    if (!didReadTerms){
+    if (!didReadTerms) {
       setResponseMessage("Please read the terms and conditions.");
       setErrorTerms(true);
       invalidInputs++;
     }
 
-    if (confirmPassword !== userData.password){
+    if (confirmPassword !== userData.password) {
       setErrorPassword(true);
       setErrorConfirmPassword(true);
       setResponseMessage("Passwords do not match");
       invalidInputs++;
-
     }
 
     // Do not proceed if there are still errors
-    if (invalidInputs == 1){
+    if (invalidInputs == 1) {
       setIsError(true);
       setIsLoading(false);
       return;
-    }else if (invalidInputs > 1){
+    } else if (invalidInputs > 1) {
       setIsError(true);
       setIsLoading(false);
       setResponseMessage("Missing or invalid input");
@@ -138,45 +141,43 @@ export default function RegisterPage() {
           },
           body: JSON.stringify({
             firstName: userData?.firstName as string,
-          lastName: userData?.lastName as string,
-          email: userData?.email as string,
-          password: userData?.password as string,
-          hobbyInfo: userData?.hobbyInfo as string,
-          birthday: userData?.birthday as string,
-          showInterest: userData?.showInterest as boolean,
-          friendsList: [],
-          conversations:[],
-          })
+            lastName: userData?.lastName as string,
+            email: userData?.email as string,
+            password: userData?.password as string,
+            hobbyInfo: userData?.hobbyInfo as string,
+            birthday: userData?.birthday as string,
+            showInterest: userData?.showInterest as boolean,
+            friendsList: [],
+            conversations: [],
+          }),
         });
 
         const responseData = await response.json();
 
-        console.log(`registered user: ${responseData.userId}`);
         console.log(`Status: ${response.status}`);
         if (response.status == 200) {
           setResponseMessage(responseData.message);
           setTimeout(() => {
-         
             // dispatch(updateUserId(responseData.userId));
             // dispatch(updateUserFirstNameStore(userData.firstName));
-            dispatch(updateUserData({
-              id: responseData.userId,
-              firstName: userData.firstName,
-              lastName: userData.lastName,
-              verified: userData.verified,
-              verificationToken: responseData.verificationToken,
-              email: userData.email,
-              hobbyInfo: userData.hobbyInfo,
-              showInterest: false,
-            }));
-            
-            
+            dispatch(
+              updateUserData({
+                id: responseData.userId,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                verified: userData.verified,
+                verificationToken: responseData.verificationToken,
+                email: userData.email,
+                hobbyInfo: userData.hobbyInfo,
+                showInterest: false,
+              })
+            );
 
             setIsError(false);
-            dispatch(updateCurrentPopup('none'));
+            dispatch(updateCurrentPopup("none"));
             router.push("/mylist");
           }, 3000);
-        }else{
+        } else {
           setIsLoading(false);
         }
       } catch (e) {
@@ -188,25 +189,26 @@ export default function RegisterPage() {
   };
 
   return (
-    <div
-      className={` bg-[#31241e] bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
-    >
-      {/*Terms and conditions */}
-      {showTermsNConditions && (
+  <div>
+    {/*Terms and conditions */}
+    {showTermsNConditions && (
         <div
           style={{ zIndex: 100, position: "absolute" }}
-          className="flex justify-center items-center w-screen h-screen"
+          className={`flex justify-center items-center w-screen h-screen`}
         >
           <div
             style={{ width: 500, height: 600 }}
             className="p-4 bg-white rounded-2xl border-2 border-black"
           >
-            <p className="text-2xl font-bold">Terms and conditions</p>
             <div style={{ height: 500 }} className="overflow-auto ">
-              <p>{termsAndConditions}</p>
+              <div className="container mx-auto p-2">
+               <TermsAndConditions/>
+              </div>
+
               <div className="flex justify-center">
                 <button
                   onClick={() => {
+                    setDidReadTerms(true);
                     setShowTermsNConditions(false);
                   }}
                   className="flex justify-center bg-blue-600 p-2 text-white font-bold rounded mt-4"
@@ -218,9 +220,13 @@ export default function RegisterPage() {
           </div>
         </div>
       )}
+    <div
+    style={{ zIndex: 1, position: "relative" }}
+      className={`${showTermsNConditions && "blurcontent"}  bg-[#31241e] bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
+    >
+
       <div
-        style={{ zIndex: 1, top: 20, position: "relative" }}
-        className="overflow-auto flex flex-col items-center overflow-auto justify-center w-screen  "
+        className={`overflow-auto flex flex-col items-center overflow-auto justify-center w-screen  `}
       >
         <div className="text-xs gap-4 p-4 flex flex-col border bg-white rounded-2xl">
           <div className="flex gap-2">
@@ -228,7 +234,9 @@ export default function RegisterPage() {
             <div className="flex-1 flex flex-col">
               <label>First Name:</label>
               <input
-                className={`${errorFirstName ? "border-red-500": "border-gray-300"} border-2 p-2 rounded`}
+                className={`${
+                  errorFirstName ? "border-red-500" : "border-gray-300"
+                } border-2 p-2 rounded`}
                 type="text"
                 placeholder="First Name"
                 onChange={(e) => {
@@ -246,7 +254,9 @@ export default function RegisterPage() {
             <div className="flex-1 flex flex-col">
               <label>Last Name:</label>
               <input
-                className={`${errorLastName ? "border-red-500" : "border-gray-300"} border-2 p-2  rounded`}
+                className={`${
+                  errorLastName ? "border-red-500" : "border-gray-300"
+                } border-2 p-2  rounded`}
                 type="text"
                 placeholder="Last Name"
                 onChange={(e) => {
@@ -265,7 +275,9 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <label>Email:</label>
               <input
-                className={`${errorEmail ? 'border-red-500' : 'border-gray-300'} p-2 border-2 rounded`}
+                className={`${
+                  errorEmail ? "border-red-500" : "border-gray-300"
+                } p-2 border-2 rounded`}
                 type="text"
                 placeholder="firstname@email.com"
                 onChange={(e) => {
@@ -284,7 +296,9 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <label>Password:</label>
               <input
-                className={`${errorPassword ? 'border-red-500' : ' border-gray-300'} border-2 p-2 rounded`}
+                className={`${
+                  errorPassword ? "border-red-500" : " border-gray-300"
+                } border-2 p-2 rounded`}
                 type="password"
                 placeholder="*******"
                 onChange={(e) => {
@@ -304,7 +318,9 @@ export default function RegisterPage() {
               <label>Confirm Password:</label>
 
               <input
-                className={`${errorConfirmPassword ? 'border-red-500' : 'border-gray-300'} border-2 p-2 rounded`}
+                className={`${
+                  errorConfirmPassword ? "border-red-500" : "border-gray-300"
+                } border-2 p-2 rounded`}
                 type="password"
                 placeholder="*******"
                 onChange={(e) => {
@@ -315,12 +331,15 @@ export default function RegisterPage() {
               />
             </div>
           </div>
+
           {/**Date of Birth and Toggle On/Off */}
           <div className="flex gap-4 ">
             <div className="flex flex-col">
               <label>Date of Birth</label>
               <input
-                className={`${errorDateOfBirth ? 'border-red-500' : 'border-gray-300'} border-2`}
+                className={`${
+                  errorDateOfBirth ? "border-red-500" : "border-gray-300"
+                } border-2`}
                 type="date"
                 onChange={(e) => {
                   setErrorDateOfBirth(false);
@@ -357,9 +376,10 @@ export default function RegisterPage() {
             <div>
               <textarea
                 style={{ width: 550, height: 140 }}
-                className={`${errorHobbiesInfo ? 'border-red-500' : 'border-gray-300'} border p-2`}
+                className={`${
+                  errorHobbiesInfo ? "border-red-500" : "border-gray-300"
+                } border p-2`}
                 onChange={(e) => {
-                  
                   setUserData((prev) => ({
                     ...prev,
                     hobbyInfo: e.target.value,
@@ -371,14 +391,7 @@ export default function RegisterPage() {
           {/**Checkbox for Terms and Conditions */}
           <div>
             <div className="flex gap-1">
-              <input
-                type="checkbox"
-                checked={didReadTerms}
-                onChange={(e) => {
-                  setDidReadTerms(e.target.checked);
-                }}
-                required
-              />
+              <input type="checkbox" checked={didReadTerms} readOnly/>
               <p>
                 I have read and accept the terms and conditions for this page.
               </p>
@@ -406,10 +419,11 @@ export default function RegisterPage() {
           </div>
           <div className="flex flex-col items-center justify-center h-8">
             {isLoading && <Image src={Loading} height={30} width={30} alt="" />}
-            <p className={`${isError && 'text-red-500'}`}>{responseMessage}</p>
+            <p className={`${isError && "text-red-500"}`}>{responseMessage}</p>
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

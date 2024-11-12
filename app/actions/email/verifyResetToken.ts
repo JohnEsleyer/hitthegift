@@ -26,7 +26,6 @@ export default async function verifyResetToken(token: string, email: string){
             }
         }
 
-        console.log(`Password Reset Token verified`);
          
         return {
             status: 200,

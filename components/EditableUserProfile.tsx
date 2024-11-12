@@ -41,7 +41,6 @@ export default function EditableUserProfile({width, height}:EditableUserProfileP
 
 
     useEffect(()=> {
-      console.log(`Upload status: ${uploadStatus}`);
        fetchProfile();
     },[uploadStatus]);
 

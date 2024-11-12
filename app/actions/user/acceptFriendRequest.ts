@@ -16,7 +16,6 @@ export default async function acceptFriendRequest(userId: string, friendRequestI
         });
 
         if (!friendRequest) {
-            console.log('Friend request not found');
              
             return {
                 status: 400,
@@ -44,7 +43,6 @@ export default async function acceptFriendRequest(userId: string, friendRequestI
         });
 
         if (userUpdateRes.modifiedCount > 0 && senderUpdateRes.modifiedCount > 0 && deleteRes.deletedCount > 0) {
-            console.log('Friend request accepted and both users updated successfully');
              
             return {
                 status: 200,

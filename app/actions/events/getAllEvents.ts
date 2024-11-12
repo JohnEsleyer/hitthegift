@@ -13,7 +13,6 @@ export async function getAllEvents(userId: string) {
         // Find events with matching userId
         const events = await db.collection<EventData>('events').find({ userId: userId }).toArray();
 
-        console.log(`Length: ${events.length}`);
 
         if (events.length > 0) {
             // Use Promise.all to handle async mapping
@@ -34,7 +33,6 @@ export async function getAllEvents(userId: string) {
             );
             
 
-            console.log(`array: ${responseData}`);
              
             return {
                 message: "Successfully fetched all events",

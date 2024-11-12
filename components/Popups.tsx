@@ -4,20 +4,21 @@ import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { ReactNode, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import AddEventPopup from "./(events-popups)/AddEventPopup";
-import AddProductPopup from "./(products-popups)/AddProductPopup";
-import FriendsSidebar from "./FriendsSidebar";
-import ProfilePopup from "./ProfilePopup";
-import EditProductPopup from "./(products-popups)/EditProductPopup";
-import EditEventPopup from "./(events-popups)/EditEventPopUp";
-import DeleteFriendPopup from "./DeleteFriendPopup";
-import DeleteFriendRequestPopup from "./DeleteFriendRequest";
+import AddEventPopup from "../app/(protected)/mylist/(components)/(events-popups)/AddEventPopup";
+import AddProductPopup from "../app/(protected)/mylist/(components)/(products-popups)/AddProductPopup";
+import FriendsSidebar from "../app/(protected)/mylist/(components)/FriendsSidebar";
+import ProfilePopup from "../app/(protected)/mylist/(components)/ProfilePopup";
+import EditProductPopup from "../app/(protected)/mylist/(components)/(products-popups)/EditProductPopup";
+import EditEventPopup from "../app/(protected)/mylist/(components)/(events-popups)/EditEventPopUp";
+import DeleteFriendPopup from "../app/(protected)/mylist/(components)/DeleteFriendPopup";
+import DeleteFriendRequestPopup from "../app/(protected)/mylist/(components)/DeleteFriendRequest";
 import { updateIsSidebarOpen } from "@/lib/features/friendsSidebar";
-import ShareWishlistPopup from "./ShareWishlistPopup";
+import ShareWishlistPopup from "../app/(protected)/mylist/(components)/ShareWishlistPopup";
 
 interface PopupPageProps {
   children: ReactNode;
 }
+
 export function Popups({ children }: PopupPageProps) {
   const currentPopup = useSelector(
     (state: RootState) => state.popups.currentPopup
@@ -30,7 +31,6 @@ export function Popups({ children }: PopupPageProps) {
 
   const handleClosePopup = () => {
     if (currentPopup !== "none") {
-      console.log("Closing Popup");
       dispatch(updateCurrentPopup("none"));
       dispatch(updateIsSidebarOpen(false));
     }
@@ -132,7 +132,6 @@ export function Popups({ children }: PopupPageProps) {
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}
-
        {/**Delete Friend Popup*/}
        {currentPopup == "deleteFriend" && (
         <div
@@ -156,7 +155,7 @@ export function Popups({ children }: PopupPageProps) {
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}
-
+  
       {/**Send Wishlist and Add Friend Popup */}
       {currentPopup == "shareWishlist" && (
         <div
@@ -171,3 +170,4 @@ export function Popups({ children }: PopupPageProps) {
     </div>
   );
 }
+

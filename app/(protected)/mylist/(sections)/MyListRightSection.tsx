@@ -28,7 +28,6 @@ export default function MyListRightSection() {
     setIsClientMounted(true);
     startProductsTransition(async () => {
       const results = await getUserProducts(userId);
-      console.log(`status: ${results.message}`);
       if (results) {
         // setProducts(results.data || []);
         dispatch(updateMyListProducts(results.data || []));

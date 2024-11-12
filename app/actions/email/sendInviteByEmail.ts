@@ -8,7 +8,6 @@ export default async function sendInviteByEmail(
   userId: string,
   targetEmail: string
 ) {
-    console.log(`Sending invite to ${targetEmail}`);
   try {
     const userData = await getUserInfo(userId);
 

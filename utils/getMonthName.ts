@@ -8,6 +8,3 @@ export function getMonthName(date: Date): string {
     return monthNames[monthIndex];
 }
 
-// Example usage:
-const currentDate = new Date();
-console.log(getMonthName(currentDate));  // Output: "October" (if current month is October)

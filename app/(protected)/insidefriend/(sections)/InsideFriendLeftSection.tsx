@@ -35,13 +35,10 @@ export default function InsideFriendLeftSection(){
     useEffect(()=>{
         if (!friendId){
             setFriendNotFound(true);
-            console.log('Friend not found');
         }
 
         startUserInfoTransition(async() => {
-            console.log(`friendId: ${friendId}`);
             const result = await getUserInfo(friendId);
-            console.log(`status: ${result.status}`);
             if (result){
                 const fullName = `${result.firstName} ${result.lastName}`;
                 setName(fullName);
@@ -67,13 +64,12 @@ export default function InsideFriendLeftSection(){
         }
         
         fetchFriendProfilePicture();
-
-
     },[]);
+
 
     return (
         <HomeLeftTemplate highlight={'friendslist'}>
-            <div className="p-2 flex flex-col gap-4 bg-white rounded-2xl border border-2 border-black border-b-4 m-2 ">
+            <div className="p-2 flex flex-col gap-4 bg-white rounded-2xl shadow-xl m-2 ">
                 {isPendingUserInfo ? <FriendProfileSkeleton/> : <div >
                     {/**Friend's profile */}
                     <div className="flex  p-2">
@@ -88,7 +84,7 @@ export default function InsideFriendLeftSection(){
                        </div>
                     </div>
                     <span className="text-xl font-bold">Interests and hobbies</span>
-                    <div style={{height: 120, width: 275}} className="shadow-md border border-black overflow-auto rounded-2xl p-2 pr-4">
+                    <div style={{height: 120, width: 275}} className="shadow-md border border-gray-300 overflow-auto rounded-2xl p-2 pr-4">
                         <p style={{fontSize: 13}} className="break-words">{hobbiesInfo}</p>
                     </div>
                     <div style={{height: 100}}></div>

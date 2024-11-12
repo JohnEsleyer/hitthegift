@@ -23,11 +23,9 @@ export async function getProfilePicture(userId: string) {
     const fileUrl = `https://${bucketName}.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/${userId}.webp`;
 
     console.log(fileUrl);
-    console.log('fetchProfilePicture: Success');
     return { success: true, status: 200, data: fileUrl };
 
   } catch (error: any) {
-    console.log('fetchProfilePicture: Failed');
     if (error.code === 'NotFound') {
       console.error(`File not found: ${error.message}`);
       return { success: false, status: 404, error: 'File not found' }; // Return 404 status if file doesn't exist

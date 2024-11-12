@@ -126,7 +126,7 @@ export default function WishItem({
               <a
                 href={productUrl}
                 target={"_blank"}
-                className="bg-slate-400 text-white p-2 pl-6 pr-6 rounded-full mt-2"
+                className="bg-blue-600 text-white p-2 pl-6 pr-6 rounded-full mt-2"
               >
                 Buy
               </a>

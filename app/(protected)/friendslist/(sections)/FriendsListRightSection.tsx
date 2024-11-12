@@ -30,9 +30,7 @@ export default function FriendsListRightSection(){
 
     useEffect(() => {
         startTransition(async () => {
-            console.log('Start transition');
             const results = await getFriendsProducts(userId);
-            console.log(`status: ${results}`);
             if (results){
                 setFriendsProducts(results.data || []);
                 setFilteredProducts(results.data || []);
