@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
@@ -12,7 +12,6 @@ import { Gift, UserPlus } from "lucide-react";
 
 import { updateMyListProducts } from "@/lib/features/mylist";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
-
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
@@ -38,7 +37,6 @@ export default function MyListRightSection() {
  
   return (
     <div className="w-full h-screen flex flex-col">
-    
       <div style={{height:75}} className="ml-8 flex items-end pb-4 gap-2 ">
         {/**Buttons*/}
         <button
@@ -84,13 +82,7 @@ export default function MyListRightSection() {
                       {products.map((product) => (
                         <WishItem
                           key={product.id}
-                          id={product.id}
-                          title={product.title}
-                          imageUrl={product.imageUrl}
-                          description={product.description}
-                          price={product.price}
-                          currency={product.currency}
-                          productUrl={product.productUrl}
+                          product={product}
                           owner={true}
                         />
                       ))}
@@ -110,5 +102,3 @@ export default function MyListRightSection() {
     </div>
   );
 }
-
-

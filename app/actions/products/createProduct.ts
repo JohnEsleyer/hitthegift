@@ -4,7 +4,6 @@ import { ServerResponseForEvents } from "@/lib/types/event";
 import { ProductType } from "@/lib/types/products";
 import { MongoClient, ObjectId } from "mongodb";
 
-
 type RequestPayload = {
     _id: string;
     userId: string;

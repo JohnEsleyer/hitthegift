@@ -29,7 +29,6 @@ export default function AuthMiddleware({ children }: AuthMiddlewareProps) {
       }
 
       const token = Cookies.get("token"); // Get token from cookies
-      console.log(`Client-side token check: ${token}`);
 
       if (!token) {
         // If no token is found, redirect to login
@@ -45,7 +44,6 @@ export default function AuthMiddleware({ children }: AuthMiddlewareProps) {
             // Token is valid, allow access to the wrapped page
             setIsAuthenticated(true);
         }else{
-            console.log("Token Verification Failed:");
             // If verification fails, redirect to login
             router.push("/login");
         }

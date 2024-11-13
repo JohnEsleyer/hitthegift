@@ -5,11 +5,10 @@ import WishItem from "@/components/WishItem";
 import { RootState } from "@/lib/store";
 import { ProductType } from "@/lib/types/products";
 import { useEffect, useState, useTransition } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
+import { useSelector } from "react-redux";
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
-
+import '@/styles/utilities.css';
 
 export default function InsideFriendRightSection() {
   const [products, setProducts] = useState<ProductType[]>([]);
@@ -32,7 +31,7 @@ export default function InsideFriendRightSection() {
 
   return (
     <div className="w-full">
-      <div style={{ marginLeft: 30,marginTop: 74, height: height-80}}  className="overflow-auto hide-scrollbar p-2 mb-4 border-t-2 border-gray-400 ">
+      <div style={{ marginLeft: 30,marginTop: 74, height: height-80, width: width-400}}  className=" hide-scrollbar overflow-auto p-2 mb-4 border-t-2 border-gray-400 ">
         {isProductsPending ? (
           <div className=" pl-2 pt-2 flex flex-wrap gap-8 ">
           <WishItemSkeleton />
@@ -48,14 +47,9 @@ export default function InsideFriendRightSection() {
             {products.map((product) => (
               <WishItem
                 key={product.id}
-                id={product.userId}
-                currency={product.currency}
-                title={product.title}
-                description={product.description}
-                price={product.price}
-                productUrl={product.productUrl}
+                product={product}
                 showBuyButton={true}
-                imageUrl={product.imageUrl}
+                
               />
             ))}
           </div> : <div style={{height: 400}} className="w-full flex justify-center items-center text-gray-300">

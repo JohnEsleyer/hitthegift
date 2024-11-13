@@ -1,14 +1,13 @@
 "use client";
 
+import '@/styles/utilities.css';
+import { addFieldToProducts, deleteFieldFromProducts } from '../actions/mongoActions';
 
 export default function Sandbox() {
+
   return (
     <div>
-      <div style={{
-        width: 100
-        }} className='bg-blue-600'>
-      <p className="break-words">jfiowejgiorjegiorjgiorejgiorjegiojreiogjreiogjreoigjoriejgoiregioreg</p>
-      </div>
+    
     </div>
   );
 }

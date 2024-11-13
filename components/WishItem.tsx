@@ -3,34 +3,24 @@
 import { updateEditProductAll } from "@/lib/features/editProductsPopup";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
-import { Edit, Link, Pencil, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { EmptyItem } from "./EmptyItem";
 import { currencySymbolMap } from "@/utils/currencySymbols";
+import { ProductType } from "@/lib/types/products";
+import { extractASIN } from "@/app/(protected)/mylist/(components)/(products-popups)/functions";
 
 interface WishItemProps {
-  id: string;
-  title: string;
-  price: string;
-  description: string;
-  currency: string;
-  productUrl: string;
-  imageUrl: string;
-  showBuyButton?: boolean;
+  product: ProductType;
   owner?: boolean;
+  showBuyButton?: boolean;
 }
 
 export default function WishItem({
-  id,
-  title,
-  price,
-  description,
-  currency,
-  productUrl,
-  imageUrl,
-  showBuyButton,
+  product,
   owner,
+  showBuyButton,
 }: WishItemProps) {
   const dispatch = useDispatch();
   // Used to disable the click function of wish items when friends sidebar is showing
@@ -47,8 +37,14 @@ export default function WishItem({
     enable: boolean;
   }): ReactNode {
     if (enable) {
+      
+      // Extract the ASIN from the product URL
+      const asin = extractASIN(product.productUrl);
+
+      const affliateLink = `https://www.amazon.com/dp/${asin}/?tag=${process.env.NEXT_PUBLIC_AFFILIATE_ID}`;
+    
       return (
-        <a href={productUrl} target={"_blank"}>
+        <a href={affliateLink} target={"_blank"}>
           {children}
         </a>
       );
@@ -70,14 +66,14 @@ export default function WishItem({
             dispatch(updateCurrentPopup("editProduct"));
             dispatch(
               updateEditProductAll({
-                id: id,
+                id: product.id,
                 userId: "",
-                price: price,
-                currency: currency,
-                title: title,
-                productUrl: productUrl,
-                imageUrl: imageUrl,
-                description: description,
+                price: product.price,
+                currency: product.currency,
+                title: product.title,
+                productUrl: product.productUrl,
+                imageUrl: product.imageUrl,
+                description: product.description,
               })
             );
           }}
@@ -86,7 +82,6 @@ export default function WishItem({
         </button>
       );
     }
-
     return <>{children}</>;
   }
 
@@ -100,14 +95,14 @@ export default function WishItem({
           }`}
         >
           <div className="relative">
-            {imageUrl == "" ? (
+            {product.imageUrl == "" ? (
               <EmptyItem width={165} height={150} />
             ) : (
               <div
                 style={{ height: 150 }}
                 className="flex justify-center border rounded-2xl"
               >
-                <img src={imageUrl} alt={imageUrl} />
+                <img src={product.imageUrl} alt={product.imageUrl} />
               </div>
             )}
           </div>
@@ -115,16 +110,16 @@ export default function WishItem({
             style={{fontSize:14}}
             className="line-clamp-3 h-16 mt-2"
           >
-            {title}
+            {product.title}
           </p>
           <p className="font-bold">
-            {currencySymbolMap[currency]}{price} {currency}
+            {currencySymbolMap[product.currency]}{product.price} {product.currency}
           </p>
-          <p className="line-clamp-6 text-xs mt-2 h-24 ">{description}</p>
+          <p className="line-clamp-6 text-xs mt-2 h-24 ">{product.description}</p>
           <div className="flex justify-center items-center">
             {showBuyButton && (
               <a
-                href={productUrl}
+                href={product.productUrl}
                 target={"_blank"}
                 className="bg-blue-600 text-white p-2 pl-6 pr-6 rounded-full mt-2"
               >
@@ -133,7 +128,6 @@ export default function WishItem({
             )}
           </div>
         </div>
-
         {owner && (
           <EnableAnchor enable={!isSidebarOpen}>
             <div style={{ top: 130, right: 10 }} className="absolute flex">

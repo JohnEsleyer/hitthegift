@@ -37,7 +37,6 @@ function Search() {
         // Verify verification token
         const res = await verifyVerificationToken(verificationToken, email);
         if (res.status == 200) {
-          console.log("Success");
           setIsVerified(true);
           dispatch(updateUserVerified(true));
           dispatch(updateUserVerificationToken("none"));

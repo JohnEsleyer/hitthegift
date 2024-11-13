@@ -11,7 +11,6 @@ export default async function verifyVerificationToken(token: string, userEmail: 
     const mongoClient = new MongoClient(uri);
     try{
         const db = mongoClient.db('hitmygift');
-        console.log(`VerificationToken: ${token}`);
         // Find the user by email and token
         const user = await db.collection<UserData>('users').findOne({
             email: userEmail, 
@@ -34,7 +33,6 @@ export default async function verifyVerificationToken(token: string, userEmail: 
             $set: {verified: true, verificationToken: 'none'}
         })
 
-        console.log(`Email verified for ${userEmail}`);
          
         return {
             status: 200,
@@ -42,7 +40,6 @@ export default async function verifyVerificationToken(token: string, userEmail: 
         }
 
     }catch(e){
-        console.log(`Failed to verify email for ${userEmail}`);
          
         return {
             status: 500,
