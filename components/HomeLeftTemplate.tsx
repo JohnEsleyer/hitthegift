@@ -43,9 +43,9 @@ export function HomeLeftTemplate({
         </div>
           {/**Friends List */}
           <div className=" flex items-center ">
-        {highlight == "friendslist" ? <span className="flex text-blue-600 ">
+        {highlight == "friendslist" ? <Link href="/friendslist" className="flex text-blue-600 ">
           <Users /> Friends List
-        </span> : <Link href="/friendslist" className="flex">
+        </Link> : <Link href="/friendslist" className="flex">
           <Users /> Friends List
         </Link>}
         </div>

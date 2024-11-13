@@ -2,8 +2,7 @@
 
 
 import React, { useEffect, useState, useTransition } from "react";
-import Link from "next/link";
-import { Textarea } from "@/components/ui/textarea";
+
 import { RootState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import getUserInfo from "@/app/actions/user/getUserInfo";
@@ -64,8 +63,8 @@ export default function InsideFriendLeftSection(){
         }
         
         fetchFriendProfilePicture();
-    },[]);
 
+    },[]);
 
     return (
         <HomeLeftTemplate highlight={'friendslist'}>

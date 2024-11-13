@@ -2,18 +2,15 @@
 
 import { LoginData } from "@/lib/types/authTypes";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Loading from "/public/loading.svg";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import {
   updateUserData,
-  updateUserFirstNameStore,
-  updateUserId,
 } from "@/lib/features/userData";
 import { updateCurrentPopup } from "@/lib/features/popups";
-import updateUserFirstName from "../actions/user/updateUserFirstName";
 import getUserInfo from "../actions/user/getUserInfo";
 
 type ResponseData = {
@@ -38,17 +35,19 @@ export default function LoginPage() {
   });
   const [errorMessage, setErrorMessage] = useState("");
 
-  // States to display red border if error
+  // States to track input field errors (for styling).
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
 
+  // State to control password visibility.
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = () => {
+    // Reset error message and set loading state
     setErrorMessage('');
     setIsLoading(true);
-    setErrorMessage("");
 
+    // Reset input field error states
     setErrorEmail(false);
     setErrorPassword(false);
 
@@ -74,7 +73,7 @@ export default function LoginPage() {
       setIsLoading(false);
       return;
     }
-
+    
     const loginUser = async () => {
       try {
         const response = await fetch("/api/login", {
@@ -97,8 +96,7 @@ export default function LoginPage() {
           setTimeout(() => {
             console.log(`Response Status: ${response.status}`)
             if (data.status == 200 && userData) {
-              // dispatch(updateUserId(data.userId));
-              // dispatch(updateUserFirstNameStore(userData.firstName as string));
+  
               dispatch(updateUserData({
                 id: data.userId || '',
                 firstName: userData.firstName || '',
@@ -110,19 +108,16 @@ export default function LoginPage() {
                 showInterest: false,
               }));
 
-              // seterrorMessage(false);
               dispatch(updateCurrentPopup("none"));
               router.push("/mylist");
             } else {
               setErrorMessage(data.message);
-              // seterrorMessage(true);
               setIsLoading(false);
             }
           }, 3000);
         } else {
         }
       } catch (e) {
-        console.log(`Client Error: ${e}`);
         setResponseData({
           message: "Authentication failed. Please try again later",
           status: 500,
@@ -130,8 +125,6 @@ export default function LoginPage() {
         });
       }
     };
-
-  
     loginUser();
   };
 
@@ -186,10 +179,6 @@ export default function LoginPage() {
             type="checkbox"
             onChange={(e) => {
               console.log(e);
-              // setUserData((prev) => ({
-              //   ...prev,
-              //   showInterest: e.target.checked,
-              // }));
             }}
           />
           <span className="pl-2">Remember me</span>

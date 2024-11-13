@@ -42,7 +42,8 @@ export default function FriendsListRightSection(){
         <div className="ml-8 h-screen">
             {/**Search bar */}
                 <input
-                    style={{height: 40, marginTop: 20, marginBottom: 15}} className="p-4 rounded-full border border-black w-64" 
+                    style={{height: 40, marginTop: 20, marginBottom: 15}} 
+                    className="p-4 rounded-full shadow-md w-64" 
                     placeholder={`Friend's name`}
                     value={searchTerm}
                     onChange={(e)=>{

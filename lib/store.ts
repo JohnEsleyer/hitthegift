@@ -11,6 +11,7 @@ import productImageUpload from './features/productImageUpload';
 import editProductPopup from './features/editProductsPopup';
 import editEventPopup from './features/editEventsPopup';
 import friendsSidebar from './features/friendsSidebar';
+import chat from './features/chat';
 
 export const makeStore = () => {
     let persistedState;
@@ -30,6 +31,7 @@ export const makeStore = () => {
             editProductPopup: editProductPopup,
             editEventPopup: editEventPopup,
             friendsSidebar: friendsSidebar,
+            chat: chat,
         },
         preloadedState: persistedState,
     });

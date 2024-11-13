@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import UserProfileImage from "./UserProfileImage";
 
 interface ChatBubbleProps {
-  avatarUrl: string;
   timestamp: string;
   message: string;
   deliveryStatus: string;
@@ -14,7 +13,6 @@ interface ChatBubbleProps {
 }
 
 export function ChatBubble({
-    avatarUrl,
     timestamp,
     message,
     deliveryStatus,
@@ -28,6 +26,8 @@ export function ChatBubble({
 
     return (
       <div className={`flex items-start ${isSender ? 'justify-end' : 'justify-start'}`}>
+
+      {/**Friend's Profile Image */}      
       {!isSender && (
         <div className="pl-2 pt-2">
         <UserProfileImage userId={friendId} userName={friendName} alt="" width={30} height={30}/>
@@ -36,23 +36,27 @@ export function ChatBubble({
       <div>
       <div
   
-        className={`scaledownChatBubble flex flex-col w-full ${isSender ? 'p-4' : 'pl-4 pr-4 pb-4 pt-1'} max-w-[320px] leading-1.5  border border-gray-200 bg-gray-100 rounded-xl ${
+        className={`scaledownChatBubble mt-2 flex flex-col w-full ${isSender ? 'p-4' : 'pl-4 pr-4 pb-4 pt-1'} max-w-[320px] leading-1.5 bg-blue-500 border border-gray-200  rounded-xl ${
           isSender ? 'rounded-tr-none rounded-br-xl chatBubbleColorSender' : 'rounded-tl-none rounded-bl-xl'
         }`}
       >
         <div>
           {isSender ? null : (
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
+            <span className="text-sm font-semibold text-white">
               {friendName}
             </span>
           )}
         </div>
-        <p className={`text-sm font-normal py-2.5 text-gray-900 ${isSender ? "text-white" : "text-black"}`}>{message}</p>
+        <div className="text-wrap">
+        <p style={{ width: 210 }} className="text-sm font-normal py-2.5 text-white break-words">
+        {message}
+      </p>
+      </div>
       </div>
       <div style={{width: 250}} className={`flex ${isSender ? 'justify-start pl-4' : 'justify-end pr-4'} text-xs  text-sm font-normal text-gray-400 dark:text-gray-400`}>{deliveryStatus} {" "} {timestamp}</div>
 
       </div>
-      
+      {/**User's Profile Image */}      
       {isSender && (
         <div className="pr-2 pt-2">
         <UserProfileImage userId={userId} userName={userName} alt="" width={30} height={30}/>

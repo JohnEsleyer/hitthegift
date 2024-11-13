@@ -9,9 +9,7 @@ import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
 import { RootState } from "@/lib/store";
 import { ChatMessage, Message } from "@/lib/types/message";
 import { getLastElement } from "@/utils/getLastElement";
-import Avvvatars from "avvvatars-react";
 import { Minus, RotateCcw, Send } from "lucide-react";
-import { WithId } from "mongodb";
 import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -29,97 +27,107 @@ export default function Chatbox() {
     (state: RootState) => state.insideFriend.conversationId
   );
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isPending, startChatTransition] = useTransition();
+  const [isChatPending, startChatTransition] = useTransition();
   const [isSending, startSendingTransition] = useTransition();
+  const showLoading = useSelector((state: RootState) => state.chat.showLoading);
 
   const handleSend = () => {
-    
-    if (messageContent.length !== 0){
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        message: {
-          id: "",
-          sender: userId,
-          conversationId: conversationId,
-          content: messageContent,
-          timestamp: new Date(),
+    if (messageContent.length !== 0) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          message: {
+            id: "",
+            sender: userId,
+            conversationId: conversationId,
+            content: messageContent,
+            timestamp: new Date(),
+          },
+          status: "sending",
         },
-        status: "sending",
-      },
-    ]);
+      ]);
 
-    startSendingTransition(async () => {
-      try {
-        const res = await createMessage(userId, conversationId, messageContent);
-      
-      } catch (e) {
-        console.log(e);
-      }
-    })
-    setMessageContent('');
-  }
+      startSendingTransition(async () => {
+        try {
+          await createMessage(
+            userId,
+            conversationId,
+            messageContent
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      });
+      setMessageContent("");
+    }
   };
 
   useEffect(() => {
-    if (!isSending){
-       // Display sent on the latest message 
+    if (!isSending) {
+      // Display sent on the latest message
 
       //Delete the last message and replace it with the updated one
-       const temp: ChatMessage | undefined = getLastElement(messages);
-       if (temp){
-        setMessages((messages) => (messages.filter((message, index) => (index !== messages.length-1))));
+      const temp: ChatMessage | undefined = getLastElement(messages);
+      if (temp) {
+        setMessages((messages) =>
+          messages.filter((message, index) => index !== messages.length - 1)
+        );
 
-        setMessages((messages) => ([...messages, {
-         ...temp,
-         status: 'sent',
-       }]))
-       }else{
-        console.log('undefined last message');
-       }
-     
+        setMessages((messages) => [
+          ...messages,
+          {
+            ...temp,
+            status: "sent",
+          },
+        ]);
+      } else {
+        console.log("undefined last message");
+      }
     }
-  },[isSending])
+  }, [isSending]);
 
-
-  const handleFetchMessages = ()=>{
+  const handleFetchMessages = () => {
     startChatTransition(async () => {
-      try{
+      try {
         const results = await fetchMessages(conversationId);
         console.log(results.status);
-        if (results){
-          const messagesList: ChatMessage[] = (results.data as Message[]).map((message) => (
-            {
+        if (results) {
+          const messagesList: ChatMessage[] = (results.data as Message[]).map(
+            (message) => ({
               message: {
                 id: message.id,
                 sender: message.sender,
                 conversationId: message.conversationId,
                 content: message.content,
                 timestamp: message.timestamp,
-            },
-            status: "sent" as  "sent" | "sending" | "failed",
-          }
-          ));
+              },
+              status: "sent" as "sent" | "sending" | "failed",
+            })
+          );
 
           // Sort the messages from oldest to latest
           const sortedMessages = [...messagesList].sort((a, b) => {
-            return new Date(a.message.timestamp).getTime() - new Date(b.message.timestamp).getTime();
+            return (
+              new Date(a.message.timestamp).getTime() -
+              new Date(b.message.timestamp).getTime()
+            );
           });
           setMessages(sortedMessages);
         }
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
-    })
-  }
+    });
+  };
+
+  useEffect(() => {
+    handleFetchMessages();
+  }, [showLoading]);
+
 
   useEffect(() => {
     handleFetchMessages();
   }, []);
-
-  
-
 
   return (
     <div
@@ -138,9 +146,11 @@ export default function Chatbox() {
           <span>{friendName}</span>
         </div>
         <div className="flex items-center gap-1 p-2">
-          <button  onClick={() => {
-            handleFetchMessages();
-          }}>
+          <button
+            onClick={() => {
+              handleFetchMessages();
+            }}
+          >
             <RotateCcw size={20} />
           </button>
           <button
@@ -153,36 +163,48 @@ export default function Chatbox() {
         </div>
       </div>
       <div className="flex-1 overflow-auto overflow-x-hidden ">
-        {!isPending ? (
+        {!isChatPending && !showLoading ? (
           <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-            {messages.length > 0 ? <div>
-              {messages.map((chatMessage, index) => {
-              // const isUserMessage = chatMessage.message.sender === userId;
-
-              return (<ChatBubble
-                key={index}
-                avatarUrl={''}
-                timestamp={`${chatMessage.message.timestamp.getFullYear()}/${chatMessage.message.timestamp.getMonth()}/${chatMessage.message.timestamp.getDate()} `}
-                message={chatMessage.message.content}
-                deliveryStatus={chatMessage.status}
-                isSender={chatMessage.message.sender == userId}
-              />);
-            })}</div> : <div style={{height: 250}} className="w-full flex justify-center items-center text-gray-300">
+            {messages.length > 0 ? (
+              <div>
+                {messages.map((chatMessage, index) => {
+                  return (
+                    <ChatBubble
+                      key={index}
+                      timestamp={`${chatMessage.message.timestamp.getFullYear()}/${chatMessage.message.timestamp.getMonth()}/${chatMessage.message.timestamp.getDate()} `}
+                      message={chatMessage.message.content}
+                      deliveryStatus={chatMessage.status}
+                      isSender={chatMessage.message.sender == userId}
+                    />
+                  );
+                })}
+              </div>
+            ) : (
+              <div
+                style={{ height: 250 }}
+                className="w-full flex justify-center items-center text-gray-400"
+              >
                 No Messages
-              </div>}
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex-1 overflow-auto overflow-x-hidden">
-            <ChatboxSkeleton/>
+            <ChatboxSkeleton />
           </div>
         )}
       </div>
-      <div className="shadow-md border-t flex p-2 h-12">
+      <div className="shadow-md border-t border-gray-400 flex p-2 h-12">
         <input
-          className="border p-2 rounded-2xl"
+          className="border border-gray-400 p-2 rounded-2xl"
           value={messageContent}
           onChange={(e) => {
             setMessageContent(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSend();
+            }
           }}
         />
         <button onClick={handleSend}>

@@ -23,7 +23,6 @@ export default function DeleteFriendPopup() {
     startTransition(async () => {
       try {
         const res = await deleteFriend(userId, friendId);
-        console.log(res.status);
 
         dispatch(updateCurrentPopup("friends"));
       } catch (e) {

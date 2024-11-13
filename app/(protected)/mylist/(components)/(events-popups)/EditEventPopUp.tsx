@@ -3,13 +3,11 @@
 import { Calendar } from "@/components/ui/calendar";
 import { useEffect, useState, useTransition } from "react";
 import HourSelector from "../HourSelector";
-import Avvvatars from "avvvatars-react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
-import { createEvent } from "@/app/actions/events/createEvent";
 import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
 import Loading from '/public/loading.svg';
 import Image from 'next/image';
@@ -207,10 +205,6 @@ export default function EditEventPopup() {
     )
   }
 
-
-
-
-
   return (
     <div
       style={{ width: 500, height: 630 }}
@@ -344,7 +338,7 @@ export default function EditEventPopup() {
           Save
         </button>
         <button
-          className="bg-slate-400 rounded-2xl pl-12 pr-12  text-white"
+          className="bg-black rounded-2xl pl-12 pr-12  text-white"
           onClick={() => {
             dispatch(updateCurrentPopup("none"));
           }}

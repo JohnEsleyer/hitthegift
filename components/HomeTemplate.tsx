@@ -18,6 +18,7 @@ import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversatio
 import Friends from '/public/friends.png';
 import UserProfileImage from "./UserProfileImage";
 import EmailVerifier from "./EmailVerifier";
+import { updateShowLoading } from "@/lib/features/chat";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -117,19 +118,22 @@ export default function HomeTemplate({
                   async function startConversation(){
                     try{
                         const res = await findOrCreateConversation(userId, friendId);
+                        console.log(`friendId: ${friendId}`);
+                        console.log(`conversationId: ${res.data?.id as string}`);
                         console.log(res.status);
                         dispatch(updateConversationId(res.data?.id as string));
+                       dispatch(updateShowLoading(false));
                     }catch(e){
-                        console.log(e);
+                        console.log(`Failed to fetch conversation: ${e}`);
                     }
                 }
-                  dispatch(updateIsOpenChatbox(true));
+                dispatch(updateShowLoading(true));
+                dispatch(updateIsOpenChatbox(true));
                   startConversation();
                 }} className="bg-blue-500 shadow-md rounded-full p-4">
                   <MessageSquareText color={"#ffffff"} />
                 </button>}
               </div>}
-
               {/**Friends sidebar*/}
               {showFriends && <div style={{zIndex: 99, right: 0, top:225 }} className="absolute text-white flex justify-end">
             <button

@@ -164,7 +164,7 @@ export default function AddProductPopup() {
   return (
     <div
       style={{ width: 500, height: 630, marginTop: 50 }}
-      className="pt-4 pr-1 overflow-auto hide-scrollbar bg-white rounded-2xl border-2 border-slate-400"
+      className="pt-4 pr-1 overflow-auto hide-scrollbar bg-white rounded-2xl border-2 border-gray-300"
     >
       <div className="h-full">
         {/*Image of the Product */}

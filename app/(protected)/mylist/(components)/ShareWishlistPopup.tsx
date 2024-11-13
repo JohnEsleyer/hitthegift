@@ -38,7 +38,7 @@ export default function SendWishlistPopup() {
   return (
     <div
       style={{ height: 230 }}
-      className="flex flex-col gap-2 justify-center border-2 border-black  items-center rounded-2xl p-16 bg-white"
+      className="flex flex-col gap-2 justify-center border-2 border-gray-300  items-center rounded-2xl p-16 bg-white"
     >
       <p>Enter your friend's email</p>
       <input

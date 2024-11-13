@@ -5,7 +5,7 @@ import WishItem from "@/components/WishItem";
 import { RootState } from "@/lib/store";
 import { ProductType } from "@/lib/types/products";
 import { useEffect, useState, useTransition } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import WishItemSkeleton from "@/components/skeletons/WishItemSkeleton";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
@@ -26,12 +26,13 @@ export default function InsideFriendRightSection() {
       if (results) {
         setProducts(results.data || []);
       }
+
     });
   }, []);
 
   return (
     <div className="w-full">
-      <div style={{ marginLeft: 30,marginTop: 74, height: height-80}}  className="overflow-auto hide-scrollbar p-2 mb-4 border-t-2 border-black ">
+      <div style={{ marginLeft: 30,marginTop: 74, height: height-80}}  className="overflow-auto hide-scrollbar p-2 mb-4 border-t-2 border-gray-400 ">
         {isProductsPending ? (
           <div className=" pl-2 pt-2 flex flex-wrap gap-8 ">
           <WishItemSkeleton />
