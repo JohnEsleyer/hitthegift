@@ -65,7 +65,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
   };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-[#661009] to-red-700">
+    <div className="h-screen w-screen flex items-center justify-center bg-gray-300">
       {isSuccessful ? <div style={{height: 400}} className="flex flex-col justify-center bg-white p-8 rounded-xl shadow-lg w-96 max-s-sm">
         <p className="text-2xl font-bold text-center mb-4 text-[#15621F]">Password Reset is Successful</p>
         
@@ -78,7 +78,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
         </div>
               
               </div> : <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-center mb-4 text-[#15621F]">
+        <h1 className="text-2xl font-bold text-center mb-4 ">
           Reset Password
         </h1>
         <p className="text-gray-600 text-center mb-6">
@@ -143,7 +143,7 @@ export default function ResetPasswordPage({ email }: ResetPasswordPageProps) {
           </div>
           <button
             type="submit"
-            className="w-full bg-yellow-400 text-black font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
+            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
           >
             Reset Password
           </button>

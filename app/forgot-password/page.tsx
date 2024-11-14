@@ -6,11 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import verifyResetToken from "../actions/email/verifyResetToken";
 import ResetPasswordPage from "./ResetPasswordPage";
 
-
 // Example Query: domain.com/forgot-password?token=3423juhfwuie&emai=johndoe@gmail.com
-
 // If no query parameters are given, redirect to /mylist or /login
-
 function ForgotPassword(){
     const router = useRouter();
     const [email, setEmail] = useState('');
@@ -20,7 +17,6 @@ function ForgotPassword(){
     const searchParams = useSearchParams();
     const tokenQuery = searchParams.get('token');
     const emailQuery = searchParams.get('email');
-
 
     useEffect(()=> {
       const validateQueryParameters = async () => {
@@ -39,10 +35,8 @@ function ForgotPassword(){
       validateQueryParameters();
     }, []);
 
-
     const handleSendPasswordRequest = async () => {
         setIsSent(true);
-
         try{
             const res = await  sendPasswordResetRequest(email);
             if (res.status == 200){
@@ -54,11 +48,9 @@ function ForgotPassword(){
           console.log(e);
         }
     }
-
   return (
     <div>
-
-    {!isValidQuery ?  <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-r from-[#661009] to-red-700">
+    {!isValidQuery ?  <div className="h-screen w-screen flex items-center justify-center bg-gray-300">
   <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
     <h1 className="text-2xl font-bold text-center mb-4 text-black">Forgot Password</h1>
     <p className="text-gray-600 text-center mb-6">
@@ -85,7 +77,7 @@ function ForgotPassword(){
       <button
         type="submit"
         onClick={handleSendPasswordRequest}
-        className="w-full  text-black bg-yellow-500  border hover:from-[#15621F] hover:to-[#CC0D23] font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
+        className="w-full  text-white bg-blue-500  border hover:from-[#15621F] hover:to-[#CC0D23] font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
       >
         Send Reset Link
       </button>}

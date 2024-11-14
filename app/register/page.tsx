@@ -208,7 +208,6 @@ export default function RegisterPage() {
               <div className="flex justify-center">
                 <button
                   onClick={() => {
-                    setDidReadTerms(true);
                     setShowTermsNConditions(false);
                   }}
                   className="flex justify-center bg-blue-600 p-2 text-white font-bold rounded mt-4"
@@ -391,7 +390,9 @@ export default function RegisterPage() {
           {/**Checkbox for Terms and Conditions */}
           <div>
             <div className="flex gap-1">
-              <input type="checkbox" checked={didReadTerms} readOnly/>
+              <input type="checkbox" checked={didReadTerms} onChange={(e) => {
+                setDidReadTerms(e.target.checked);
+              }}/>
               <p>
                 I have read and accept the terms and conditions for this page.
               </p>
