@@ -16,7 +16,6 @@ import { updateUserFirstNameStore } from "@/lib/features/userData";
 import loading from '/public/loading.svg';
 import Image from 'next/image';
 
-
 export default function AddEventPopup() {
   const userId = useSelector((state: RootState) => state.userData.id);
   const [firstName, setFirstName] = useState("");
@@ -138,7 +137,7 @@ export default function AddEventPopup() {
           <div className="w-full mt-4">
             <p>Date of birth</p>
             <input
-              className="border-2 border-black"
+              className="border-2 border-gray-300"
               type="date"
               value={birthday}
               onChange={handleChangeDate}

@@ -25,23 +25,7 @@ export default function FriendsListLeftSection() {
   const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  useEffect(() => {
-    startEventsTransition(async () => {
-      const results = await getAllInvitedEvents(userId);
-      console.log(`status: ${results.message}`);
-      if (results) {
-        setEvents(results.data || []);
-        const dates: Date[] = (results.data as InvitedEventsResponse[]).map(
-          (event) => new Date(event.date)
-        );
-        console.log(`Dates: ${dates}`);
-        setHighlightedDates(dates);
-        dispatch(updateEvents(events));
-      }
-    });
-  }, []);
-
-  useEffect(() => {
+const filterEvents = async () => {
     // Filter events by the selected month
     const filteredEvents = events.filter((event) => {
       const tempDate = new Date(event.date);
@@ -56,7 +40,26 @@ export default function FriendsListLeftSection() {
     });
 
     setDisplayedEvents(sortedEvents);
-  }, [selectedDate]);
+}
+
+  useEffect(() => {
+    startEventsTransition(async () => {
+      const results = await getAllInvitedEvents(userId);
+      if (results) {
+        setEvents(results.data || []);
+        const dates: Date[] = (results.data as InvitedEventsResponse[]).map(
+          (event) => new Date(event.date)
+        );
+        setHighlightedDates(dates);
+        dispatch(updateEvents(events));
+      }
+    });
+
+  }, []);
+
+  useEffect(() => {
+    filterEvents();
+  }, [selectedDate, events]);
 
   return (
     <HomeLeftTemplate highlight="friendslist">
@@ -110,13 +113,13 @@ export default function FriendsListLeftSection() {
                           ))}
                         </div>
                       ) : (
-                        <div className="h-full flex justify-center items-center text-gray-400">
-                          No events for this month
-                        </div>
+                        <div style={{height: 100}} className=" flex justify-center items-center w-full text-gray-400">
+                        No events for this month
+                      </div>
                       )}
                     </div>
                   ) : (
-                    <div className="flex w-full h-full text-gray-400">
+                    <div style={{height: 100}} className=" flex justify-center items-center w-full text-gray-400">
                       No events to show
                     </div>
                   )}

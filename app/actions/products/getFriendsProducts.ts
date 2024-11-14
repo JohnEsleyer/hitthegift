@@ -43,7 +43,6 @@ export default async function getFriendsProducts(userId: string) {
                 )
             ).filter((friendProduct): friendProduct is FriendsProducts => friendProduct !== undefined); // Filter out undefined entries
 
-            console.log(`FriendsProduct Length: ${friendsProducts.length}`);
             
              
             return {

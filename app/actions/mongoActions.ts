@@ -43,6 +43,29 @@ export async function addFieldToProducts(newField: string, defaultValue: any) {
     }
 }
 
+// Adds a new field to the products collection
+export async function addFieldToUsers(newField: string, defaultValue: any) {
+  const uri = process.env.MONGODB_URI || '';
+  const mongoClient = new MongoClient(uri);
+  try {
+    const db = mongoClient.db('hitmygift');
+    const productsCollection = db.collection('users');
+
+    // Use updateMany to add the new field to all documents
+    const result = await productsCollection.updateMany(
+      {}, // Match all documents
+      { $set: { [newField]: defaultValue } } 
+    );
+    console.log(`Added field "${newField}" to ${result.modifiedCount} users`);
+    return { message: "Field addition successful", status: 200 };
+  } catch (e) {
+    console.error("Error adding field to products:", e);
+    return { message: "Field addition failed", status: 500 };
+  } finally {
+    mongoClient.close();
+  }
+}
+
 // Deletes a field from the products collection
 export async function deleteFieldFromProducts(fieldToDelete: string) {
     const uri = process.env.MONGODB_URI || '';
@@ -64,4 +87,27 @@ export async function deleteFieldFromProducts(fieldToDelete: string) {
     } finally {
       mongoClient.close();
     }
+}
+
+// Updates the value of a field for all documents in the products collection
+export async function updateFieldValueInProducts(fieldToUpdate: string, newValue: any) {
+  const uri = process.env.MONGODB_URI || '';
+  const mongoClient = new MongoClient(uri);
+  try {
+    const db = mongoClient.db('hitmygift');
+    const productsCollection = db.collection('products');
+
+    // Use updateMany to update the field in all documents
+    const result = await productsCollection.updateMany(
+      {}, // Match all documents
+      { $set: { [fieldToUpdate]: newValue } } 
+    );
+    console.log(`Updated field "${fieldToUpdate}" to "${newValue}" in ${result.modifiedCount} products`);
+    return { message: "Field update successful", status: 200 };
+  } catch (e) {
+    console.error("Error updating field value in products:", e);
+    return { message: "Field update failed", status: 500 };
+  } finally {
+    mongoClient.close();
+  }
 }

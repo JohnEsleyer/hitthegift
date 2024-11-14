@@ -7,7 +7,6 @@ interface EmptyItemProps{
     height: number;
 }
 
-
 export function EmptyItem({width, height}: EmptyItemProps){
     return (
         <div
@@ -18,7 +17,7 @@ export function EmptyItem({width, height}: EmptyItemProps){
           alignItems: 'center',
           justifyContent: 'center',
         }}
-        className="border rounded-xl border-[#808080] bg-white"
+        className="border rounded-xl border-gray-300 bg-white"
       >
         <Gift color="#7d7d7d" />
     </div>
