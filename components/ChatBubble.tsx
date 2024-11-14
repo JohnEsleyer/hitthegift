@@ -36,25 +36,24 @@ export function ChatBubble({
       <div>
       <div
   
-        className={`scaledownChatBubble mt-2 flex flex-col w-full ${isSender ? 'p-4' : 'pl-4 pr-4 pb-4 pt-1'} max-w-[320px] leading-1.5 bg-blue-500 border border-gray-200  rounded-xl ${
-          isSender ? 'rounded-tr-none rounded-br-xl chatBubbleColorSender' : 'rounded-tl-none rounded-bl-xl'
+        className={`scaledownChatBubble mt-2 flex flex-col w-full ${isSender ? 'p-4' : 'pl-4 pr-4 pb-4 pt-1'} max-w-[320px] leading-1.5  border border-gray-200  rounded-xl ${
+          isSender ? 'rounded-tr-none rounded-br-xl bg-blue-600 text-white' : 'bg-blue-200 text-black rounded-tl-none rounded-bl-xl'
         }`}
       >
         <div>
           {isSender ? null : (
-            <span className="text-sm font-semibold text-white">
+            <span className="text-sm font-semibold">
               {friendName}
             </span>
           )}
         </div>
         <div className="text-wrap">
-        <p style={{ width: 210 }} className="text-sm font-normal py-2.5 text-white break-words">
+        <p style={{ width: 210 }} className="text-sm font-normal py-2.5 break-words">
         {message}
       </p>
       </div>
       </div>
       <div style={{width: 250}} className={`flex ${isSender ? 'justify-start pl-4' : 'justify-end pr-4'} text-xs  text-sm font-normal text-gray-400 dark:text-gray-400`}>{deliveryStatus} {" "} {timestamp}</div>
-
       </div>
       {/**User's Profile Image */}      
       {isSender && (

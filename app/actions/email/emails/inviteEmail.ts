@@ -1,5 +1,3 @@
-import { UserData } from "@/lib/types/user";
-import { String } from "aws-sdk/clients/codebuild";
 
 export default function inviteEmail(
   userFirstName: string,

@@ -10,10 +10,6 @@
   transform: scale(0.9) translate(-10px, -15px);
 }
 
-.chatBubbleColorSender {
-  background-color: #00aeff;
-}
-
 .bg-gradient-radial {
   .bg-gradient-radial {
     background-image: radial-gradient(circle, #fefefe, #e7c279, #cc0d23);
