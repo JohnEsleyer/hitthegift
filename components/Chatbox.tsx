@@ -3,14 +3,15 @@
 import createMessage from "@/app/actions/chat/createMessage";
 import fetchMessages from "@/app/actions/chat/fetchMessages";
 import { ChatBubble } from "@/components/ChatBubble";
-import ChatboxSkeleton from "@/components/skeletons/ChatboxSkeleton";
+import ChatboxSkeleton from "@/components/skeletons/ChatBubbleSkeleton";
 import UserProfileImage from "@/components/UserProfileImage";
+import { updateShowLoading } from "@/lib/features/chat";
 import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
 import { RootState } from "@/lib/store";
 import { ChatMessage, Message } from "@/lib/types/message";
 import { getLastElement } from "@/utils/getLastElement";
 import { Minus, RotateCcw, Send } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Chatbox() {
@@ -31,8 +32,12 @@ export default function Chatbox() {
   const [isSending, startSendingTransition] = useTransition();
   const showLoading = useSelector((state: RootState) => state.chat.showLoading);
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const handleSend = () => {
     if (messageContent.length !== 0) {
+      console.log("Sending message:", messageContent); // Log the message being sent
+
       setMessages((prev) => [
         ...prev,
         {
@@ -42,6 +47,7 @@ export default function Chatbox() {
             conversationId: conversationId,
             content: messageContent,
             timestamp: new Date(),
+            isRead: false,
           },
           status: "sending",
         },
@@ -86,12 +92,22 @@ export default function Chatbox() {
     }
   }, [isSending]);
 
+  useEffect(() => {
+    if (messagesEndRef.current){
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   const handleFetchMessages = () => {
+    console.log("Fetching messages for conversationId:", conversationId); // Log the conversation ID
+
     startChatTransition(async () => {
       try {
         const results = await fetchMessages(conversationId);
-        console.log(results.status);
+        console.log("Fetch messages result status:", results.status); // Log the status of the fetchMessages result
         if (results) {
+          console.log("Fetched messages:", results.data); // Log the fetched messages
+
           const messagesList: ChatMessage[] = (results.data as Message[]).map(
             (message) => ({
               message: {
@@ -117,18 +133,21 @@ export default function Chatbox() {
       } catch (e) {
         console.log(e);
       }
+      dispatch(updateShowLoading(false));
     });
   };
 
   useEffect(() => {
+    console.log("useEffect triggered with showLoading:", showLoading, "and conversationId:", conversationId); // Log showLoading and conversationId
     handleFetchMessages();
-  }, [showLoading]);
+  }, [showLoading, conversationId]);
 
 
   useEffect(() => {
+    console.log("Initial useEffect triggered"); // Log initial useEffect
     handleFetchMessages();
   }, []);
-
+  
   return (
     <div
       style={{ height: 400, width: 300 }}
@@ -162,7 +181,7 @@ export default function Chatbox() {
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-auto overflow-x-hidden ">
+      <div ref={messagesEndRef} className="flex-1 overflow-auto overflow-x-hidden hide-scrollbar ">
         {!isChatPending && !showLoading ? (
           <div style={{ maxWidth: "400px", margin: "0 auto" }}>
             {messages.length > 0 ? (

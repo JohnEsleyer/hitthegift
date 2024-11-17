@@ -10,12 +10,11 @@ import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
 import { createEvent } from "@/app/actions/events/createEvent";
 import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
-import Loading from '/public/loading.svg';
-import Image from 'next/image';
+import Loading from "/public/loading.svg";
+import Image from "next/image";
 import { insertMyListEvent, updateMyListEvents } from "@/lib/features/mylist";
 import UserProfileImage from "@/components/UserProfileImage";
 import { CircleSkeleton } from "@/components/skeletons/CircleSkeleton";
-
 
 const getCurrentDate = () => {
   const today = new Date();
@@ -41,7 +40,7 @@ export default function AddEventPopup() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [handledAllError, setHandledAllError] = useState(false);
 
   const dispatch = useDispatch();
@@ -56,14 +55,13 @@ export default function AddEventPopup() {
   }, []);
 
   const handleSubmit = async () => {
-    
     // Check if no date is selected
-    if (!dateSelected){
+    if (!dateSelected) {
       setErrorMessage("No date selected, please select a date");
       setHandledAllError(false);
       return;
     }
-    if (eventTitle.length == 0){
+    if (eventTitle.length == 0) {
       setErrorMessage("Please provide an event title");
       setHandledAllError(false);
       return;
@@ -86,22 +84,21 @@ export default function AddEventPopup() {
         const responseData = await createEvent({
           userId: userId,
           data: {
-            id: '',
+            id: "",
             userId: userId,
             date: eventDate.toString(),
             eventTitle: eventTitle,
             invitedFriends: friendsId,
-          }
+          },
         });
         if (responseData.data) {
           dispatch(insertMyListEvent(responseData.data));
         } else {
-          console.error('No event data returned from the server.');
+          console.error("No event data returned from the server.");
           // You can also handle this error case here (e.g., show an error message to the user)
         }
-        
-        dispatch(updateCurrentPopup('none'));
 
+        dispatch(updateCurrentPopup("none"));
       }
     } catch (e) {
       console.log(e);
@@ -132,13 +129,12 @@ export default function AddEventPopup() {
           <span>{getCurrentDate().month}</span>
           <span>{getCurrentDate().year}</span>
         </div>
-       
       </div>
       {/**Calendar Section **/}
       <Calendar
         classNames={{
           day_selected: "bg-blue-500 rounded-xl text-white",
-          day: "p-1 pl-2 pr-2 hover:bg-blue-300 rounded-xl",
+          day: "p-1 pt-2 pb-2 pl-4 pr-4 hover:bg-gray-300 rounded-xl",
           months:
             "flex w-full flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 flex-1",
           month: "space-y-4 w-full flex flex-col",
@@ -201,38 +197,41 @@ export default function AddEventPopup() {
         <div className="flex gap-2 overflow-auto w-96 h-8 ">
           <div className="flex w-full">
             {selectedFriends.map((friend) => (
-              <div key={friend.id} onClick={() => handleRemoveSelectedFriend(friend)}>
-                  <UserProfileImage
-                      userId={friend.id}
-                      userName={friend.firstName}
-                      alt=""
-                      width={30}
-                      height={30}
-                      /> 
+              <div
+                key={friend.id}
+                onClick={() => handleRemoveSelectedFriend(friend)}
+              >
+                <UserProfileImage
+                  userId={friend.id}
+                  userName={friend.firstName}
+                  alt=""
+                  width={30}
+                  height={30}
+                />
               </div>
             ))}
           </div>
         </div>
-        <span className="text-xl pt-2 ">Select Friend</span>
+        <span className="text-xl pt-2 ">Select Friends</span>
         <div className="h-8">
           {isFriendPending ? (
             <div className="flex">
-            <CircleSkeleton height={30} width={30}/>
-            <CircleSkeleton height={30} width={30}/>
-            <CircleSkeleton height={30} width={30}/>
-            <CircleSkeleton height={30} width={30}/>
-          </div>
+              <CircleSkeleton height={30} width={30} />
+              <CircleSkeleton height={30} width={30} />
+              <CircleSkeleton height={30} width={30} />
+              <CircleSkeleton height={30} width={30} />
+            </div>
           ) : (
             <div className="flex w-full">
               {friends.map((friend) => (
                 <div key={friend.id} onClick={() => handleSelectFriend(friend)}>
-                   <UserProfileImage
-                      userId={friend.id}
-                      userName={friend.firstName}
-                      alt=""
-                      width={30}
-                      height={30}
-                      /> 
+                  <UserProfileImage
+                    userId={friend.id}
+                    userName={friend.firstName}
+                    alt=""
+                    width={30}
+                    height={30}
+                  />
                 </div>
               ))}
             </div>
@@ -240,7 +239,10 @@ export default function AddEventPopup() {
         </div>
       </div>
       <div className="flex justify-center gap-8 mt-6">
-        <button onClick={handleSubmit} className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white">
+        <button
+          onClick={handleSubmit}
+          className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white"
+        >
           Accept
         </button>
         <button
@@ -252,10 +254,11 @@ export default function AddEventPopup() {
           Cancel
         </button>
       </div>
-    
       <div className="flex justify-center items-center p-4">
-        {isLoading && <Image src={Loading} alt='' style={{width: 30}} />}
-        {errorMessage && !handledAllError && <p className="text-red-500">{errorMessage}</p>}
+        {isLoading && <Image src={Loading} alt="" style={{ width: 30 }} />}
+        {errorMessage && !handledAllError && (
+          <p className="text-red-500">{errorMessage}</p>
+        )}
       </div>
     </div>
   );

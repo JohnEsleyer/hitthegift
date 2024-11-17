@@ -3,27 +3,34 @@
 import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { useRouter } from "next/navigation";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Image from "next/image";
 import Loading from "/public/loading.svg";
 import AuthMiddleware from "@/components/AuthMiddleware";
 import { RootState } from "@/lib/store";
-import { updateConversationId, updateIsOpenChatbox } from "@/lib/features/insideFriend";
-import Chatbox from "@/app/(protected)/insidefriend/_components/Chatbox";
-import { MessageSquareText } from "lucide-react";
+import {
+  updateConversationId,
+  updateIsOpenChatbox,
+} from "@/lib/features/insideFriend";
+import Chatbox from "@/components/Chatbox";
+import { Mail, MessageSquareText } from "lucide-react";
 import { Popups } from "@/components/Popups";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
-import Friends from '/public/friends.png';
+import Friends from "/public/friends.png";
 import UserProfileImage from "./UserProfileImage";
 import EmailVerifier from "./EmailVerifier";
 import { updateShowLoading } from "@/lib/features/chat";
+import { useWindowSize } from "@/utils/hooks/useWindowSize";
+import Inbox from "./Inbox";
+import { getUnreadMessages } from "@/app/actions/chat/getUnreadMessages";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
   rightSide: ReactNode;
-  allowChat?: boolean;
+  allowChat?: boolean; // Allow chatbox popups
+  showChatButton?: boolean; // Show button for opening the chatbox
   showFriends?: boolean;
 }
 
@@ -32,123 +39,205 @@ export default function HomeTemplate({
   rightSide,
   allowChat,
   showFriends,
+  showChatButton,
 }: HomeTemplateProps) {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
-  const isOpenChatbox = useSelector((state: RootState) => state.insideFriend.isOpenChatbox);
+  const isOpenChatbox = useSelector(
+    (state: RootState) => state.insideFriend.isOpenChatbox
+  );
   const userId = useSelector((state: RootState) => state.userData.id);
   const userName = useSelector((state: RootState) => state.userData.firstName);
-  const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
+  const friendId = useSelector(
+    (state: RootState) => state.insideFriend.friendId
+  );
+  const [isInboxOpen, setIsInboxOpen] = useState(false);
+  const [totalUnread, setTotalUnread] = useState(0);
   const dispatch = useDispatch();
   const router = useRouter();
+  const { width, height } = useWindowSize();
+
+  const toggleInbox = () => {
+    setIsInboxOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    async function getUnread() {
+      try {
+        const res = await getUnreadMessages(userId);
+        if (res.unreadCount && res.status == 200){
+          setTotalUnread(res.unreadCount);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  
+    getUnread();
+  }, []);
 
   return (
     <div className="bg-[#e4e7f7] w-screen h-screen flex overflow-auto overflow-x-hidden">
       <RenderClientOnly
-          loading={
-            <div className="flex w-full justify-center items-center">
-              <Image src={Loading} alt="" className="w-8 h-8" />
-            </div>
-          }
-        >
-      <AuthMiddleware>
+        loading={
+          <div className="flex w-full justify-center items-center">
+            <Image src={Loading} alt="" className="w-8 h-8" />
+          </div>
+        }
+      >
+        <AuthMiddleware>
           <EmailVerifier>
-          <Popups>
-            <div className="flex h-full ">
-              {/**Layout */}
-              <div className="flex">
-                <div style={{width: 320}} >
-                  {leftSide}
+            <Popups>
+              <div className="flex h-full ">
+                {/**Layout */}
+                <div className="flex">
+                  <div style={{ width: 320 }}>{leftSide}</div>
+                  <div className="flex-1">{rightSide}</div>
                 </div>
-                <div className="flex-1">
-                  {rightSide}
-                </div>
-              </div>
 
-              {/**Profile*/}
-              <div
-                style={{ zIndex: 90, right: 30 }}
-                className="absolute p-2 pr-8  flex justify-between "
-              >
-                <button
-                  className="absolute"
-                  onClick={() => {
-                    setShowProfileOptions((prev) => !prev);
-                  }}
-                >
-               <UserProfileImage
-                userId={userId}
-                userName={userName}
-                width={30}
-                height={30}
-                alt={""}
-               />
-                </button>
-                {showProfileOptions && (
-                  <ul
-                    style={{ zIndex: 100, right: 20, top: 38, width: 100 }}
-                    className="flex flex-col gap-2 absolute bg-white shadow-md rounded-2xl "
+                {/**Profile and Inbox*/}
+                {width > 800 && (
+                  <div
+                    style={{ zIndex: 90, right: 30 }}
+                    className="absolute p-2 pr-8  flex justify-between "
+                  >
+                    {/**Inbox button*/}
+                    <div
+                      className="absolute flex justify-end"
+                      style={{ right: 50, top: 13 }}
+                    >
+                      <button
+                        className="flex justify-center items-center"
+                        onClick={toggleInbox}
+                      >
+                        <Mail />
+                        <span>Inbox</span>
+                        {totalUnread !== 0 && (
+                          <span
+                            style={{ fontSize: 16 }}
+                            className="pl-2 pr-2 bg-red-500 text-white rounded-full"
+                          >
+                            {totalUnread}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                    {/**Inbox */}
+                    <div
+                      style={{ width: 300, right: 40, top: 35 }}
+                      className="bg-white absolute shadow-md"
+                    >
+                      {isInboxOpen && (
+                        <div>
+                          <Inbox />
+                        </div>
+                      )}
+                    </div>
+
+                    {/**Profile */}
+                    <button
+                      className="absolute"
+                      onClick={() => {
+                        setShowProfileOptions((prev) => !prev);
+                      }}
+                    >
+                      <UserProfileImage
+                        userId={userId}
+                        userName={userName}
+                        width={30}
+                        height={30}
+                        alt={""}
+                      />
+                    </button>
+                    {showProfileOptions && (
+                      <ul
+                        style={{ zIndex: 100, right: 20, top: 38, width: 100 }}
+                        className="flex flex-col gap-2 absolute bg-white shadow-md rounded-2xl "
+                      >
+                        <button
+                          className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
+                          onClick={() => {
+                            setShowProfileOptions(false);
+                            dispatch(updateCurrentPopup("profile"));
+                          }}
+                        >
+                          My Profile
+                        </button>
+                        <button
+                          className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
+                          onClick={() => {
+                            document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                            router.push("/login");
+                          }}
+                        >
+                          Log out
+                        </button>
+                      </ul>
+                    )}
+                  </div>
+                )}
+                {/** Chat box */}
+                {allowChat && (
+                  <div
+                    style={{ zIndex: 99, bottom: 20, right: 20 }}
+                    className="absolute"
+                  >
+                    {isOpenChatbox ? (
+                      <Chatbox />
+                    ) : (
+                      <button
+                        onClick={() => {
+                          async function startConversation() {
+                            try {
+                              const res = await findOrCreateConversation(
+                                userId,
+                                friendId
+                              );
+                              console.log(`friendId: ${friendId}`);
+                              console.log(
+                                `conversationId: ${res.data?.id as string}`
+                              );
+                              console.log(res.status);
+                              dispatch(
+                                updateConversationId(res.data?.id as string)
+                              );
+                              dispatch(updateShowLoading(false));
+                            } catch (e) {
+                              console.log(`Failed to fetch conversation: ${e}`);
+                            }
+                          }
+                          dispatch(updateShowLoading(true));
+                          dispatch(updateIsOpenChatbox(true));
+                          startConversation();
+                        }}
+                        className={`bg-blue-500 shadow-md rounded-full p-4 ${
+                          !showChatButton && "invisible"
+                        }`}
+                      >
+                        <MessageSquareText color={"#ffffff"} />
+                      </button>
+                    )}
+                  </div>
+                )}
+                {/**Friends sidebar*/}
+                {showFriends && (
+                  <div
+                    style={{ zIndex: 98, right: 0, top: 225 }}
+                    className="absolute text-white flex justify-end"
                   >
                     <button
-                      className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
+                      className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg"
                       onClick={() => {
-                        setShowProfileOptions(false);
-                        dispatch(updateCurrentPopup("profile"));
+                        dispatch(updateCurrentPopup("friends"));
                       }}
                     >
-                      My Profile
+                      <Image alt="" width={30} src={Friends} />
                     </button>
-                    <button
-                      className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
-                      onClick={() => {
-                        document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                        router.push("/login");
-                      }}
-                    >
-                      Log out
-                    </button>
-                  </ul>
+                  </div>
                 )}
               </div>
-                {/** Chat box */}
-                {allowChat && <div
-                style={{ zIndex: 99, bottom: 20, right: 20 }}
-                className="absolute"
-              >
-                {isOpenChatbox ? <Chatbox/> : <button onClick={() => {
-                  async function startConversation(){
-                    try{
-                        const res = await findOrCreateConversation(userId, friendId);
-                        console.log(`friendId: ${friendId}`);
-                        console.log(`conversationId: ${res.data?.id as string}`);
-                        console.log(res.status);
-                        dispatch(updateConversationId(res.data?.id as string));
-                       dispatch(updateShowLoading(false));
-                    }catch(e){
-                        console.log(`Failed to fetch conversation: ${e}`);
-                    }
-                }
-                dispatch(updateShowLoading(true));
-                dispatch(updateIsOpenChatbox(true));
-                  startConversation();
-                }} className="bg-blue-500 shadow-md rounded-full p-4">
-                  <MessageSquareText color={"#ffffff"} />
-                </button>}
-              </div>}
-              {/**Friends sidebar*/}
-              {showFriends && <div style={{zIndex: 99, right: 0, top:225 }} className="absolute text-white flex justify-end">
-            <button
-              className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg"
-              onClick={() => {
-                dispatch(updateCurrentPopup("friends"));
-              }}
-            >
-              <Image alt="" width={30} src={Friends} />
-            </button>
-          </div>}
-            </div>
-          </Popups>
+            </Popups>
           </EmailVerifier>
-      </AuthMiddleware>
+        </AuthMiddleware>
       </RenderClientOnly>
     </div>
   );

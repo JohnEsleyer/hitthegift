@@ -10,7 +10,6 @@ interface CalendarProps {
     onClick?: (date: Date) => void; // onClick callback for when user clicks on Next or Previous buttons.
   }
 
-
 export default function EventsCalendar({ highlightedDates, onClick } : CalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [daysArray, setDaysArray] = useState<Date[]>([]);

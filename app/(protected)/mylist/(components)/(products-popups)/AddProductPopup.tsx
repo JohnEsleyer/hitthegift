@@ -280,11 +280,11 @@ export default function AddProductPopup() {
                   setAutoFill(e.target.checked);
                 }}
               />
-              
               <span className="slider round"></span>
             </label>
           </div>
         </div>
+        
         {/* Description  */}
         <div className="mt-4 m-4 pb-8 flex justify-center gap-2">
           <div style={{ width: 400 }}>
@@ -302,13 +302,15 @@ export default function AddProductPopup() {
         </div>
 
         {/*Buttons */}
-        <div className="mt-4  flex justify-center gap-8">
-          <button
+        <div style={{height: 70}} className="mt-4  flex items-start  justify-center gap-8">
+          {isLoading ? <div style={{height: 40}} className="flex justify-center items-center">
+            <Image alt="" width={30} height={30} src={Loading} />
+          </div> : <button
             className="bg-blue-500 rounded-2xl pl-8 pr-8 p-2  text-white"
             onClick={clickAddProduct}
           >
             Add product
-          </button>
+          </button>}
           <button
             className="bg-black rounded-2xl pl-12 pr-12  p-2 text-white"
             onClick={() => {
@@ -318,13 +320,7 @@ export default function AddProductPopup() {
             Cancel
           </button>
         </div>
-        <div
-          className={`${
-            !isLoading && "invisible"
-          } flex justify-center items-center h-12`}
-        >
-          <Image alt="" width={30} height={30} src={Loading} />
-        </div>
+    
       </div>
     </div>
   );

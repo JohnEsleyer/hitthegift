@@ -5,7 +5,7 @@ export function ChatBubbleSkeleton({ isSender }: { isSender: boolean }) {
   return (
     <div className={`flex items-start gap-2.5 ${isSender ? 'justify-end' : 'justify-start'} animate-pulse`}>
       {!isSender && (
-        <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+        <div className="w-8 h-8 p-4  bg-gray-300 rounded-full"></div>
       )}
       <div
         className={`flex flex-col w-full max-w-[320px] leading-1.5 p-4 border border-gray-200 bg-gray-100 rounded-xl ${
@@ -22,7 +22,7 @@ export function ChatBubbleSkeleton({ isSender }: { isSender: boolean }) {
         <div className="h-4 w-16 bg-gray-300 rounded-md"></div>
       </div>
       {isSender && (
-        <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+        <div className="w-8 h-8 p-4 bg-gray-300 rounded-full"></div>
       )}
     </div>
   );

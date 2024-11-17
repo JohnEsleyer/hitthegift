@@ -52,7 +52,7 @@ export default function InsideFriendRightSection() {
                 
               />
             ))}
-          </div> : <div style={{height: 400}} className="w-full flex justify-center items-center text-gray-300">
+          </div> : <div style={{height: 400}} className="w-full flex justify-center items-center text-gray-400">
               {friendName} has no wish items
             </div>}
           </div>

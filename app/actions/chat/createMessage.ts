@@ -2,13 +2,9 @@
 
 import { MongoClient } from "mongodb";
 
-
-export default async function createMessage(userId: string, conversationId: string, content: string){
-    
+export default async function createMessage(userId: string, conversationId: string, content: string){    
     const uri = process.env.MONGODB_URI || '';
-
     const mongoClient = new MongoClient(uri);
-    
     const db = mongoClient.db('hitmygift');
     try{
         const newMessage = await db.collection('messages').insertOne({
@@ -16,6 +12,7 @@ export default async function createMessage(userId: string, conversationId: stri
             conversationId: conversationId,
             content: content,
             timestamp: new Date(),
+            isRead: false,
         });
 
         if (newMessage){
@@ -23,7 +20,7 @@ export default async function createMessage(userId: string, conversationId: stri
                 status: 200,
             }
         }
-
+        
         return {
             status: 400,
         }
@@ -37,5 +34,4 @@ export default async function createMessage(userId: string, conversationId: stri
     }finally{
         mongoClient.close();
     }
-
 }

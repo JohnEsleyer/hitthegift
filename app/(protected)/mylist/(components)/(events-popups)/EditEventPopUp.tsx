@@ -226,7 +226,7 @@ export default function EditEventPopup() {
       <Calendar
         classNames={{
           day_selected: "bg-blue-500 rounded-xl text-white",
-          day: "p-1 pl-2 pr-2 hover:bg-blue-300 rounded-xl",
+          day: "p-1 pt-2 pb-2 pl-4 pr-4 hover:bg-gray-300 rounded-xl",
           months:
             "flex w-full flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 flex-1",
           month: "space-y-4 w-full flex flex-col",
@@ -307,7 +307,7 @@ export default function EditEventPopup() {
             ))}
           </div>
         </div>
-        <span className="text-xl pt-2 ">Select Friend</span>
+        <span className="text-xl pt-2 ">Select Friends</span>
         <div className="h-8 w-full">
           {isFriendPending ? (
             <div className="flex">

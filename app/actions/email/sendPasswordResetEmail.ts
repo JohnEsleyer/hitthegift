@@ -22,7 +22,6 @@ export default async function sendPasswordResetEmail(targetEmail: string){
 
         // If no user is found based on the email, return 400
         if (!user){
-            console.log('No user found with that email address');
             return {
                 status: 400,
                 message: 'No user found with that email address',
@@ -62,17 +61,13 @@ export default async function sendPasswordResetEmail(targetEmail: string){
             if (error) {
               return console.log('Error:', error);
             }
-            console.log('Email sent: ' + info.response);
           });
-
-         
         return {
             status: 200,
             message: 'Password reset request sent',
         }
 
     }catch(e){
-        console.log('Failed to send password reset request');
          
         return {
             status: 500,

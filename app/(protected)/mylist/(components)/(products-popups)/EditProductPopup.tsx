@@ -234,12 +234,19 @@ export default function EditProductPopup() {
       >
         <p className="mt-4">Are you sure you want to delete this product?</p>
         <div className="flex gap-4 mt-4">
+        {isDeletePending ? <div style={{height:25}} className="flex justify-center items-center"><Image
+            className={`mt-4`}
+            src={Loading}
+            alt=""
+            width={30}
+            height={30}
+          /> </div>: 
           <button
             onClick={handleDeleteProduct}
             className="text-white bg-blue-500 rounded-2xl p-2 pl-4 pr-4"
           >
             Yes
-          </button>
+          </button>}
           <button
             onClick={() => {
               setShowConfirmDelete(false);
@@ -253,13 +260,7 @@ export default function EditProductPopup() {
           style={{ height: 40 }}
           className="h-4 mt-2 w-full flex flex-col justify-center items-center"
         >
-          <Image
-            className={`${!isDeletePending && "invisible"} mt-4`}
-            src={Loading}
-            alt=""
-            width={30}
-            height={30}
-          />
+          
           {deleteFailed && (
             <p className={`text-red-600`}>Failed to delete product</p>
           )}
@@ -414,13 +415,15 @@ export default function EditProductPopup() {
         </div>
 
         {/*Buttons */}
-        <div className="mt-4  flex justify-center gap-8">
-          <button
+        <div style={{height: 70}} className="mt-4  flex items-start justify-center gap-8">
+          {isLoading ? <div style={{height: 40}} className="flex justify-center items-center">
+            <Image alt="" width={30} height={30} src={Loading} />
+            </div> : <button
             className="bg-blue-500 rounded-2xl pl-12 pr-12 p-2 text-white"
             onClick={clickSaveProduct}
           >
             Save
-          </button>
+          </button>}
           <button
             className="bg-black rounded-2xl pl-12 pr-12 p-2 text-white"
             onClick={() => {
@@ -429,13 +432,6 @@ export default function EditProductPopup() {
           >
             Cancel
           </button>
-        </div>
-        <div
-          className={`${
-            !isLoading && "invisible"
-          } flex justify-center items-center h-12`}
-        >
-          <Image alt="" width={30} height={30} src={Loading} />
         </div>
       </div>
     </div>

@@ -10,6 +10,8 @@ export default function MyListPage() {
       showFriends={true}
       leftSide={<MyListLeftSection/>}
       rightSide={<MyListRightSection/>}
+      allowChat={true}// Allow chat to pop up in this page
+      showChatButton={false} // Don't show button for opening chat boxes
     />
   );
 }

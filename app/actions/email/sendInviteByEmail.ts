@@ -32,7 +32,6 @@ export default async function sendInviteByEmail(
         if (error) {
           return console.log('Error:', error);
         }
-        console.log('Email sent: ' + info.response);
       });
       
 

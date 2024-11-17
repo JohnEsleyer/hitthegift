@@ -26,7 +26,7 @@ export default function InsideFriendPage() {
     <HomeTemplate
       leftSide={<InsideFriendLeftSection/>}
       rightSide={<InsideFriendRightSection/>}
-      
+      showChatButton={true}
       allowChat={true}
     />
     </AuthMiddleware>

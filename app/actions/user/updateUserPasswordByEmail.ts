@@ -7,6 +7,7 @@ import { MongoClient } from "mongodb";
 export default async function updateUserPasswordByEmail(email:string, newPass: string){
     const uri = process.env.MONGODB_URI || '';
     const mongoClient = new MongoClient(uri);
+    
     try{
         const db = mongoClient.db('hitmygift');
         // Find the user by email

@@ -6,7 +6,6 @@ import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "/public/loading.svg";
 import Image from "next/image";
-import deleteFriend from "@/app/actions/user/deleteFriend";
 import deleteFriendRequest from "@/app/actions/user/deleteFriendRequest";
 
 export default function DeleteFriendRequestPopup() {
@@ -23,7 +22,6 @@ export default function DeleteFriendRequestPopup() {
       try {
         const res = await deleteFriendRequest(friendRequestId);
         if (res){
-            console.log(res.status || '');
 
             dispatch(updateCurrentPopup("friends"));
         }
