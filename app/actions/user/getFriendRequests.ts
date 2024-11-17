@@ -25,7 +25,6 @@ export default async function getFriendRequests(userId: string) {
             };
         }
 
-        
         // Convert friendRequests to FriendRequestServerResponse type
         const friendRequests: FriendRequestServerResponse[] = await Promise.all(response.map(async (friendRequest) => {
             const [senderInfo, senderProfileImage, receiverInfo, receiverProfileImage] = await Promise.all([
@@ -51,9 +50,7 @@ export default async function getFriendRequests(userId: string) {
               }
             };
           }));
-          
-
-         
+                  
         return {
             status: 200,
             message: 'Friend requests retrieved successfully',

@@ -16,10 +16,10 @@ interface EditableHobbyAreaProps{
 }
 
 export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
-    const [hobbiesInfo, setHobbiesInfo] = useState('');
-    const [debouncedValue, setDebouncedValue] = useState(hobbiesInfo);
+    // const [hobbyInfo, sethobbyInfo] = useState('');
+    const hobbyInfo = useSelector((state: RootState) => state.userData.hobbyInfo);
+    const [debouncedValue, setDebouncedValue] = useState(hobbyInfo);
     const userId = useSelector((state: RootState) => state.userData.id);
-    const [isTextareaPending, startTextareaTransition] = useTransition();
     const [isTyping, setIsTyping] = useState(false);
 
     const dispatch = useDispatch();
@@ -27,35 +27,29 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
     const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = event.target.value;
         dispatch(updateHobbyInfo(value));
-        setHobbiesInfo(value);
+        dispatch(updateHobbyInfo(value))
     };
-
-    useEffect(() => {
-      if (onPending){
-        onPending(isTextareaPending);
-      }
-    }, [isTextareaPending]);
 
 
     // debounce mechanism
     useEffect(() => {
         setIsTyping(true);
         const handler = setTimeout(() => {
-          setDebouncedValue(hobbiesInfo); // Set the debounced value after user stops typing
+          setDebouncedValue(hobbyInfo); // Set the debounced value after user stops typing
           setIsTyping(false);
         }, 1000); // Delay duration (e.g., 500ms)
     
         return () => {
           clearTimeout(handler); // Clear timeout if user types before delay ends
         };
-      }, [hobbiesInfo]);
+      }, [hobbyInfo]);
 
       useEffect(() => {
         if (debouncedValue) {
           const updateHobbyInfoServer = async () => {
             try {
               // Send data to the server here
-              await updateUserHobbies(userId, hobbiesInfo);
+              await updateUserHobbies(userId, hobbyInfo);
             } catch (error) {
               console.error('Error updating hobby info:', error);
             }
@@ -64,28 +58,20 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
         }
       }, [debouncedValue]); // Trigger this effect only when debouncedValue changes
     
-      useEffect(() => {
-        startTextareaTransition(async () => {
-            const hobbyData = await getUserHobbies(userId);
-            if (hobbyData.status == 200){
-                setHobbiesInfo(hobbyData.hobbiesInfo as string);
-            }
-        })  
-      }, []);
     
     return (
         <div className="flex flex-col p-2 m-2 flex items-center rounded-2xl shadow-xl bg-white ">
-        <p className="w-64 font-bold">My hobbies and interest</p>
-        {isTextareaPending ? <TextareaSkeleton/> : <Textarea
-          key={"hobbiesInfo"}
+        <p className="w-64 font-bold">My hobbies and interests</p>
+      <Textarea
+          key={"hobbyInfo"}
           style={{height: 150, width: 280}}
           className="border border-gray-300 rounded-2xl"
           maxLength={500}
-          value={hobbiesInfo}
+          value={hobbyInfo}
           onChange={(e)=>{
             handleInputChange(e);
           }}
-        />}
+        />
 
         <div 
         style={{height: 16}}
@@ -95,7 +81,7 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
               {isTyping && <div className="flex"><Image src={loading} alt="" width={20} height={20}/> <p className="text-xs">Saving</p></div>}
             </div>
             <div className="text-gray-600 text-xs">
-          {(hobbiesInfo.length || 0) + "/500"}
+          {(hobbyInfo.length || 0) + "/500"}
             </div>
           </div>
       </div>

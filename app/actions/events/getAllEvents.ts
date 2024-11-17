@@ -31,8 +31,6 @@ export async function getAllEvents(userId: string) {
                     };
                 })
             );
-            
-
              
             return {
                 message: "Successfully fetched all events",

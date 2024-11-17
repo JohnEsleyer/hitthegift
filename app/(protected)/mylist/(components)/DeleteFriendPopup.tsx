@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "/public/loading.svg";
 import Image from "next/image";
 import deleteFriend from "@/app/actions/user/deleteFriend";
+import { updateFriends } from "@/lib/features/friendsSidebar";
 
 
 
@@ -18,13 +19,14 @@ export default function DeleteFriendPopup() {
   );
   const userId = useSelector((state: RootState) => state.userData.id);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const friends = useSelector((state: RootState) => state.friendsSidebar.friends); 
   const handleDeleteFriend = async () => {
     startTransition(async () => {
       try {
-        const res = await deleteFriend(userId, friendId);
+       await deleteFriend(userId, friendId);
 
         dispatch(updateCurrentPopup("friends"));
+        dispatch(updateFriends(friends.filter((friend) => friend.id !== friendId)));
       } catch (e) {
         console.log(e);
         setErrorMessage("Failed to delete friend");

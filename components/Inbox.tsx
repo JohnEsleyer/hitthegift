@@ -10,12 +10,8 @@ import InboxSkeleton from "./skeletons/InboxSkeleton";
 import { updateConversationId, updateFriendId, updateFriendName, updateIsOpenChatbox } from "@/lib/features/insideFriend";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
 
-
-
 export default function Inbox() {
-  const conversations = useSelector(
-    (state: RootState) => state.chat.conversations
-  );
+  const conversations = useSelector((state: RootState) => state.chat.conversations);
   const [isLoading, setIsLoading] = useState(true);
   const userId = useSelector((state: RootState) => state.userData.id);
   const dispatch = useDispatch();
@@ -40,9 +36,9 @@ export default function Inbox() {
     dispatch(updateShowLoading(true));
     dispatch(updateFriendId(friendId));
     dispatch(updateFriendName(friendName));
-
     dispatch(updateConversationId(conversationId));
     dispatch(updateIsOpenChatbox(true)); 
+    
   }
 
   return (

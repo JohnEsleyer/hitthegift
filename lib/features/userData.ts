@@ -5,6 +5,7 @@ export interface UserDataState {
     firstName: string;
     lastName: string;
     verified: boolean;
+    birthday: string;
     verificationToken: string;
     email: string;
     hobbyInfo: string;
@@ -16,6 +17,7 @@ const initialState: UserDataState = {
     firstName: '',
     lastName: '',
     verified: false, 
+    birthday:'',
     verificationToken: '',
     email: '',
     hobbyInfo: 'This is the value of hobbyInfo in redux',
@@ -64,6 +66,12 @@ const userDataSlice = createSlice({
                 ...state,
                 verificationToken: action.payload,
             }
+        },
+        updateUserBirthdayStore: (state, action: PayloadAction<string>) => {
+            return {
+            ...state, 
+            birthday: action.payload,   
+            }  
         }
     }
 });
@@ -76,5 +84,6 @@ export const {
     updateUserLastName,
     updateUserVerified,
     updateUserVerificationToken,
+    updateUserBirthdayStore,
 } = userDataSlice.actions;
 export default userDataSlice.reducer; // Ensure this exports the reducer

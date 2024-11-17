@@ -16,7 +16,7 @@ import { useWindowSize } from "@/utils/hooks/useWindowSize";
 export default function MyListRightSection() {
   const dispatch = useDispatch();
 
-  const [isProductsPending, startProductsTransition] = useTransition();
+  // const [isProductsPending, startProductsTransition] = useTransition();
   const [isClientMounted, setIsClientMounted] = useState(false);
   const userId = useSelector((state: RootState) => state.userData.id);
   const products = useSelector((state: RootState) => state.mylist.products);
@@ -25,13 +25,7 @@ export default function MyListRightSection() {
 
   useEffect(() => {
     setIsClientMounted(true);
-    startProductsTransition(async () => {
-      const results = await getUserProducts(userId);
-      if (results) {
-        // setProducts(results.data || []);
-        dispatch(updateMyListProducts(results.data || []));
-      }
-    });
+
   }, []);
 
  
@@ -64,16 +58,7 @@ export default function MyListRightSection() {
         <div
           className=" pt-4"
         >
-          {isProductsPending ? (
-            <div className="pl-4 flex flex-wrap gap-8">
-              <WishItemSkeleton />
-              <WishItemSkeleton />
-              <WishItemSkeleton />
-              <WishItemSkeleton />
-              <WishItemSkeleton />
-              <WishItemSkeleton />
-            </div>
-          ) : (
+
             <div>
               {
                 isClientMounted && <div>
@@ -95,7 +80,6 @@ export default function MyListRightSection() {
                 </div>
               }
             </div>
-          )}
         </div>
       </div>
       </div>

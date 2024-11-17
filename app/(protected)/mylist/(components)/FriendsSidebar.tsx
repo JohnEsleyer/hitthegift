@@ -7,6 +7,8 @@ import { DebouncedInput } from "@/components/DebounceInput";
 import FriendSkeleton from "@/components/skeletons/FriendSkeleton";
 import UserProfileImage from "@/components/UserProfileImage";
 import {
+  updateFriendRequests,
+  updateFriends,
   updateIsSidebarOpen,
   updateToDeleteFriend,
   updateToDeleteFriendRequest,
@@ -28,23 +30,17 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
-  const [friends, setFriends] = useState<Friend[]>([]);
+  const friends = useSelector((state: RootState) => state.friendsSidebar.friends);
   const [searchResults, setSearchResults] = useState<Friend[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchInput, setSearchInput] = useState('');
 
-  // States about Friend Request
-  const [friendRequests, setFriendRequests] = useState<
-    FriendRequestServerResponse[]
-  >([]);
-  const [isFriendsRequestsPending, startFriendRequestsTransition] =
-    useTransition();
-
-  // Did the sidebar just opened? Used to prevent some useEffect to be perform actions on initial render
-  const [justOpened, setJustOpened] = useState(true);
+  const friendRequests = useSelector((state: RootState) => state.friendsSidebar.friendRequests);
+ 
 
   const handleSearch = (query: string) => {
-    setSearchLoading(true);
+    console.log('start handleSearch');
+    // setSearchLoading(true);
     const trimmedQuery = query.trim().toLowerCase();
     const results = friends.filter(
       (friend) =>
@@ -53,48 +49,21 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
     );
 
     setSearchResults(results);
-    setSearchLoading(false);
+    // setSearchLoading(false);
+    console.log('end handleSearch ')
   };
 
   const handleSearchWait = () => {
     setSearchLoading(true);
   };
 
-  function fetchFriends() {
-    dispatch(updateIsSidebarOpen(true));
-    startTransition(async () => {
-      console.log(`id sent to server: ${userId}`);
-      const results = await getAllFriends(userId);
-      console.log(`status: ${results?.status}`);
-      if (results) {
-        setFriends(results.friends || []);
-        setSearchResults(results.friends || []);
-      }
 
-      setJustOpened(false);
-    });
-  }
 
   useEffect(() => {
-    fetchFriends();
-    startFriendRequestsTransition(async () => {
-      try {
-        const res = await getFriendRequests(userId);
-        if (res.data) {
-          console.log("fetching FriendRequests success");
-          setFriendRequests(res.data);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    });
+    setSearchResults(friends);
+
   }, []);
 
-  useEffect(() => {
-    if (!justOpened) {
-      fetchFriends();
-    }
-  }, [friendRequests]);
 
   const handleAcceptFriendRequest = async (friendRequestId: string) => {
     try {
@@ -113,7 +82,7 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
           onWait={handleSearchWait}
           placeholder="Search friends..."
           fontSize={16}
-          delay={20000}
+          delay={1000}
           width={300}
           height={50}
           isCenter={false}
@@ -128,15 +97,6 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
 
       {/**Friends Request */}
 
-      {isFriendsRequestsPending ? (
-        <div>
-          <FriendSkeleton />
-          <FriendSkeleton />
-          <FriendSkeleton />
-          <FriendSkeleton />
-          <FriendSkeleton />
-        </div>
-      ) : (
         <div>
        
           {friendRequests.length > 0 ? (
@@ -171,11 +131,8 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
                       onClick={() => {
                         handleAcceptFriendRequest(friendRequest.id);
                         // Remove the accepted friend request from state
-                        setFriendRequests((prev) =>
-                          prev.filter(
-                            (element) => element.id !== friendRequest.id
-                          )
-                        );
+                        setSearchResults((friends) => [...friends, {id: friendRequest.sender.id,firstName: friendRequest.sender.firstName, lastName: friendRequest.sender.lastName}])
+                        dispatch(updateFriendRequests(friendRequests.filter((element) => element.id !== friendRequest.id)));
                       }}
                     >
                       <Check color={"green"} />
@@ -198,18 +155,9 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
             </div>
           )}
         </div>
-      )}
 
       {/**Friends Section */}
-      {isPending || searchLoading ? (
-        <div>
-          <FriendSkeleton />
-          <FriendSkeleton />
-          <FriendSkeleton />
-          <FriendSkeleton />
-          <FriendSkeleton />
-        </div>
-      ) : (
+     
         <div>
           {searchResults.length > 0 ? (
             <div>
@@ -255,7 +203,6 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
             <div>No friends found</div>
           )} */}
         </div>
-      )}
     </div>
   );
 }

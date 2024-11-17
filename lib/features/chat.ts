@@ -1,15 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {ServerResponseForEvents } from '../types/event';
+import { UserConversation } from '../types/conversation';
 
 
-interface UserConversation {
-    conversationId: string;
-    unreadMessageCount: number;
-    friend: {
-      id: string;
-      name: string;
-    };
-  }
   
 
 export interface ChatState {

@@ -37,21 +37,19 @@ export default function AddEventPopup() {
   const [dateSelected, setDateSelected] = useState<Date | undefined>();
   const [isFriendPending, startFriendTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
-  const [friends, setFriends] = useState<Friend[]>([]);
+  const [displayFriends, setDisplayFriends] = useState<Friend[]>([]);
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [handledAllError, setHandledAllError] = useState(false);
 
+  const friends = useSelector(
+    (state: RootState) => state.friendsSidebar.friends
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    startFriendTransition(async () => {
-      const results = await getAllFriends(userId);
-      if (results) {
-        setFriends(results.friends || []);
-      }
-    });
+    setDisplayFriends(friends);
   }, []);
 
   const handleSubmit = async () => {
@@ -108,11 +106,13 @@ export default function AddEventPopup() {
 
   const handleSelectFriend = (friend: Friend) => {
     setSelectedFriends((prev) => [friend, ...prev]);
-    setFriends((prev) => prev.filter((element) => element.id !== friend.id));
+    setDisplayFriends((prev) =>
+      prev.filter((element) => element.id !== friend.id)
+    );
   };
 
   const handleRemoveSelectedFriend = (friend: Friend) => {
-    setFriends((prev) => [friend, ...prev]);
+    setDisplayFriends((prev) => [friend, ...prev]);
     setSelectedFriends((prev) =>
       prev.filter((element) => element.id !== friend.id)
     );
@@ -223,7 +223,7 @@ export default function AddEventPopup() {
             </div>
           ) : (
             <div className="flex w-full">
-              {friends.map((friend) => (
+              {displayFriends.map((friend) => (
                 <div key={friend.id} onClick={() => handleSelectFriend(friend)}>
                   <UserProfileImage
                     userId={friend.id}
@@ -239,12 +239,17 @@ export default function AddEventPopup() {
         </div>
       </div>
       <div className="flex justify-center gap-8 mt-6">
-        <button
-          onClick={handleSubmit}
-          className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white"
-        >
-          Accept
-        </button>
+        {isLoading ? (
+          <Image src={Loading} alt="" style={{ width: 30 }} />
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white"
+          >
+            Accept
+          </button>
+        )}
+
         <button
           className="bg-black rounded-2xl pl-12 pr-12  text-white"
           onClick={() => {
@@ -255,7 +260,6 @@ export default function AddEventPopup() {
         </button>
       </div>
       <div className="flex justify-center items-center p-4">
-        {isLoading && <Image src={Loading} alt="" style={{ width: 30 }} />}
         {errorMessage && !handledAllError && (
           <p className="text-red-500">{errorMessage}</p>
         )}

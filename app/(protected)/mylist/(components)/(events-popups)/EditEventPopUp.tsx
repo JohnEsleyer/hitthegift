@@ -1,4 +1,3 @@
-
 "use client";
 import { Calendar } from "@/components/ui/calendar";
 import { useEffect, useState, useTransition } from "react";
@@ -9,17 +8,25 @@ import { RootState } from "@/lib/store";
 import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
 import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
-import Loading from '/public/loading.svg';
-import Image from 'next/image';
-import { deleteMyListEventById, insertMyListEvent, updateEventStore, updateMyListEvents } from "@/lib/features/mylist";
-import { updateEditEventDate, updateEditEventInvitedFriends, updateEditEventTitle } from "@/lib/features/editEventsPopup";
+import Loading from "/public/loading.svg";
+import Image from "next/image";
+import {
+  deleteMyListEventById,
+  insertMyListEvent,
+  updateEventStore,
+  updateMyListEvents,
+} from "@/lib/features/mylist";
+import {
+  updateEditEventDate,
+  updateEditEventInvitedFriends,
+  updateEditEventTitle,
+} from "@/lib/features/editEventsPopup";
 import { convertTo12HourFormat, getMeridiem } from "@/utils/convertTo12Hour";
 import { updateEvent } from "@/app/actions/events/updateEvent";
 import UserProfileImage from "@/components/UserProfileImage";
 import { CircleSkeleton } from "@/components/skeletons/CircleSkeleton";
 import { Trash2 } from "lucide-react";
 import { deleteEvent } from "@/app/actions/events/deleteEvent";
-
 
 const getCurrentDate = () => {
   const today = new Date();
@@ -38,51 +45,50 @@ const getCurrentDate = () => {
 export default function EditEventPopup() {
   const [meridiem, setMeridiem] = useState<"AM" | "PM">("AM");
   const [hourSelected, setHourSelected] = useState(8);
-  const eventTitle = useSelector((state: RootState) => state.editEventPopup.eventTitle);
-  const dateSelected = useSelector((state: RootState) => state.editEventPopup.date);
+  const eventTitle = useSelector(
+    (state: RootState) => state.editEventPopup.eventTitle
+  );
+  const dateSelected = useSelector(
+    (state: RootState) => state.editEventPopup.date
+  );
   const [isFriendPending, startFriendTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
-  const [friends, setFriends] = useState<Friend[]>([]);
-  const selectedFriends = useSelector((state: RootState) => state.editEventPopup.invitedFriends);
+  const [displayFriends, setDisplayFriends] = useState<Friend[]>([]);
+  const selectedFriends = useSelector(
+    (state: RootState) => state.editEventPopup.invitedFriends
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [handledAllError, setHandledAllError] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [isDeletePending, startDeleteTransition] = useTransition();
   const [deleteFailed, setDeleteFailed] = useState(false);
 
   const eventId = useSelector((state: RootState) => state.editEventPopup.id);
-
+  const friends = useSelector(
+    (state: RootState) => state.friendsSidebar.friends
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
     // Knowing whether date hour is AM or PM
-    setMeridiem(getMeridiem(new Date(dateSelected).getHours()))
+    setMeridiem(getMeridiem(new Date(dateSelected).getHours()));
 
-    startFriendTransition(async () => {
-      const results = await getAllFriends(userId);
-      if (results) {
-        // Filter unselected friends
-
-        const filterFriends = results.friends.filter(
-          (friend) => !selectedFriends.some((selected) => selected.id === friend.id)
-        );
-        
-        setFriends(filterFriends || []);
-      }
-    });
-
+    // Filter unselected friends
+    const filterFriends = friends.filter(
+      (friend) => !selectedFriends.some((selected) => selected.id === friend.id)
+    );
+    setDisplayFriends(filterFriends);
   }, []);
 
   const handleSubmit = async () => {
-    
     // Check if no date is selected
-    if (!dateSelected){
+    if (!dateSelected) {
       setErrorMessage("No date selected, please select a date");
       setHandledAllError(false);
       return;
     }
-    if (eventTitle.length == 0){
+    if (eventTitle.length == 0) {
       setErrorMessage("Please provide an event title");
       setHandledAllError(false);
       return;
@@ -93,7 +99,6 @@ export default function EditEventPopup() {
     setIsLoading(true);
     try {
       if (dateSelected) {
-       
         const parsedDate = new Date(dateSelected);
         const eventDate = new Date(
           parsedDate.getFullYear(), // Set year
@@ -105,21 +110,20 @@ export default function EditEventPopup() {
         const friendsId = selectedFriends.map((friend) => friend.id);
 
         const responseData = await updateEvent({
-            id: eventId,
-            userId: userId,
-            date: eventDate.toString(),
-            eventTitle: eventTitle,
-            invitedFriends: friendsId,
+          id: eventId,
+          userId: userId,
+          date: eventDate.toString(),
+          eventTitle: eventTitle,
+          invitedFriends: friendsId,
         });
         if (responseData.data) {
           dispatch(updateEventStore(responseData.data));
         } else {
-          console.error('No event data returned from the server.');
+          console.error("No event data returned from the server.");
           // You can also handle this error case here (e.g., show an error message to the user)
         }
-        
-        dispatch(updateCurrentPopup('none'));
 
+        dispatch(updateCurrentPopup("none"));
       }
     } catch (e) {
       console.log(e);
@@ -128,81 +132,80 @@ export default function EditEventPopup() {
   };
 
   const handleSelectFriend = (friend: Friend) => {
-
-    const updatedSelectedFriends: Friend[] = [
-        friend,
-        ...selectedFriends,
-    ]
+    const updatedSelectedFriends: Friend[] = [friend, ...selectedFriends];
     dispatch(updateEditEventInvitedFriends(updatedSelectedFriends));
-    setFriends((prev) => prev.filter((element) => element.id !== friend.id));
+    setDisplayFriends((prev) =>
+      prev.filter((element) => element.id !== friend.id)
+    );
   };
 
   const handleRemoveSelectedFriend = (friend: Friend) => {
-    setFriends((prev) => [friend, ...prev]);
+    setDisplayFriends((prev) => [friend, ...prev]);
 
-    const updatedSelectedFriends: Friend[] = selectedFriends.filter((element) => element.id !== friend.id);
+    const updatedSelectedFriends: Friend[] = selectedFriends.filter(
+      (element) => element.id !== friend.id
+    );
     dispatch(updateEditEventInvitedFriends(updatedSelectedFriends));
   };
 
   const handleDeleteEvent = () => {
     startDeleteTransition(async () => {
       setDeleteFailed(false);
-      try{
+      try {
         const res = await deleteEvent(eventId);
-        if (res){
+        if (res) {
           console.log(res.status);
           dispatch(deleteMyListEventById(eventId));
-          dispatch(updateCurrentPopup('none'));
+          dispatch(updateCurrentPopup("none"));
         }
-      }catch(e){
+      } catch (e) {
         console.log(e);
         setDeleteFailed(true);
       }
     });
-  }
-
+  };
 
   // The following will be displayed if user clicks on the delete icon
-  if (showConfirmDelete){
+  if (showConfirmDelete) {
     return (
       <div
-      style={{ height: 230 }}
-      className="flex flex-col justify-center border border-gray items-center rounded-2xl p-16 bg-white "
-    >
-      <p className="mt-4">Are you sure you want to delete this product?</p>
-      <div className="flex gap-4 mt-4">
-        <button
-          onClick={handleDeleteEvent}
-          className="text-white bg-blue-500 rounded-2xl p-2 pl-4 pr-4"
-        >
-          Yes
-        </button>
-        <button
-          onClick={() => {
-            setShowConfirmDelete(false);
-          }}
-          className="text-white bg-slate-400 rounded-2xl p-2 pl-4 pr-4"
-        >
-          No
-        </button>
-      </div>
-      <div
-        style={{ height: 40 }}
-        className="h-4 mt-2 w-full flex flex-col justify-center items-center"
+        style={{ height: 230 }}
+        className="flex flex-col justify-center border border-gray items-center rounded-2xl p-16 bg-white "
       >
-        <Image
-          className={`${!isDeletePending && "invisible"} mt-4`}
-          src={Loading}
-          alt=""
-          width={30}
-          height={30}
-        />
-         {deleteFailed && <p className={`text-red-600`}>
-          Failed to delete product
-        </p>}
+        <p className="mt-4">Are you sure you want to delete this product?</p>
+        <div className="flex gap-4 mt-4">
+          <button
+            onClick={handleDeleteEvent}
+            className="text-white bg-blue-500 rounded-2xl p-2 pl-4 pr-4"
+          >
+            Yes
+          </button>
+          <button
+            onClick={() => {
+              setShowConfirmDelete(false);
+            }}
+            className="text-white bg-black rounded-2xl p-2 pl-4 pr-4"
+          >
+            No
+          </button>
+        </div>
+        <div
+          style={{ height: 40 }}
+          className="h-4 mt-2 w-full flex flex-col justify-center items-center"
+        >
+          <Image
+            className={`${!isDeletePending && "invisible"} mt-4`}
+            src={Loading}
+            alt=""
+            width={30}
+            height={30}
+          />
+          {deleteFailed && (
+            <p className={`text-red-600`}>Failed to delete product</p>
+          )}
+        </div>
       </div>
-    </div>
-    )
+    );
   }
 
   return (
@@ -219,7 +222,7 @@ export default function EditEventPopup() {
 
         {/*Delete product */}
         <button onClick={() => setShowConfirmDelete(true)}>
-          <Trash2 className="hover:text-red-500"/>
+          <Trash2 className="hover:text-red-500" />
         </button>
       </div>
       {/**Calendar Section **/}
@@ -237,10 +240,9 @@ export default function EditEventPopup() {
         mode="single"
         selected={new Date(dateSelected)}
         onSelect={(selected) => {
-            if (selected){
-                dispatch(updateEditEventDate(selected.toString()))
-            }
-            
+          if (selected) {
+            dispatch(updateEditEventDate(selected.toString()));
+          }
         }}
         className="m-2 rounded-md border"
       />
@@ -249,7 +251,9 @@ export default function EditEventPopup() {
         <span>Ends</span>
         <div className="flex gap-2">
           <HourSelector
-            initialHour={convertTo12HourFormat(new Date(dateSelected).getHours())}
+            initialHour={convertTo12HourFormat(
+              new Date(dateSelected).getHours()
+            )}
             onSelect={(selectedHour) => {
               setHourSelected(selectedHour);
             }}
@@ -295,14 +299,17 @@ export default function EditEventPopup() {
         <div className="flex gap-2 overflow-auto w-96 h-8 ">
           <div className="flex w-full">
             {selectedFriends.map((friend) => (
-              <div key={friend.id} onClick={() => handleRemoveSelectedFriend(friend)}>
+              <div
+                key={friend.id}
+                onClick={() => handleRemoveSelectedFriend(friend)}
+              >
                 <UserProfileImage
-                userId={friend.id}
-                userName={friend.firstName}
-                alt=""
-                width={30}
-                height={30}
-                /> 
+                  userId={friend.id}
+                  userName={friend.firstName}
+                  alt=""
+                  width={30}
+                  height={30}
+                />
               </div>
             ))}
           </div>
@@ -311,22 +318,22 @@ export default function EditEventPopup() {
         <div className="h-8 w-full">
           {isFriendPending ? (
             <div className="flex">
-              <CircleSkeleton height={30} width={30}/>
-              <CircleSkeleton height={30} width={30}/>
-              <CircleSkeleton height={30} width={30}/>
-              <CircleSkeleton height={30} width={30}/>
+              <CircleSkeleton height={30} width={30} />
+              <CircleSkeleton height={30} width={30} />
+              <CircleSkeleton height={30} width={30} />
+              <CircleSkeleton height={30} width={30} />
             </div>
           ) : (
             <div className="flex w-full">
-              {friends.map((friend) => (
+              {displayFriends.map((friend) => (
                 <div key={friend.id} onClick={() => handleSelectFriend(friend)}>
-                     <UserProfileImage
-                      userId={friend.id}
-                      userName={friend.firstName}
-                      alt=""
-                      width={30}
-                      height={30}
-                      /> 
+                  <UserProfileImage
+                    userId={friend.id}
+                    userName={friend.firstName}
+                    alt=""
+                    width={30}
+                    height={30}
+                  />
                 </div>
               ))}
             </div>
@@ -334,9 +341,17 @@ export default function EditEventPopup() {
         </div>
       </div>
       <div className="flex justify-center gap-8 mt-6">
-        <button onClick={handleSubmit} className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white">
-          Save
-        </button>
+        {isLoading ? (
+          <Image src={Loading} alt="" style={{ width: 30 }} />
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className="bg-blue-500 rounded-2xl pl-12 pr-12  text-white"
+          >
+            Save
+          </button>
+        )}
+
         <button
           className="bg-black rounded-2xl pl-12 pr-12  text-white"
           onClick={() => {
@@ -346,10 +361,11 @@ export default function EditEventPopup() {
           Cancel
         </button>
       </div>
-    
+
       <div className="flex justify-center items-center p-4">
-        {isLoading && <Image src={Loading} alt='' style={{width: 30}} />}
-        {errorMessage && !handledAllError && <p className="text-red-500">{errorMessage}</p>}
+        {errorMessage && !handledAllError && (
+          <p className="text-red-500">{errorMessage}</p>
+        )}
       </div>
     </div>
   );

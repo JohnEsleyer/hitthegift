@@ -71,7 +71,6 @@ export default function HomeTemplate({
         console.error(e);
       }
     }
-  
     getUnread();
   }, []);
 

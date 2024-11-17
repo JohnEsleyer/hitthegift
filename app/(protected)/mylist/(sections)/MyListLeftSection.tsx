@@ -17,24 +17,21 @@ import EventSkeleton from "@/components/skeletons/EventSkeleton";
 import { updateMyListEvents } from "@/lib/features/mylist";
 import { updateEditEventAll } from "@/lib/features/editEventsPopup";
 import UserProfileImage from "@/components/UserProfileImage";
-import { Spicy_Rice } from 'next/font/google';
 import '@/styles/calendar.css';
 import '@/styles/skeletons.css';
 import '@/styles/switch.css';
 import '@/styles/utilities.css';
 
-const spicyrice = Spicy_Rice({
-  weight: "400",
-  subsets: ['latin']
-});
 
 export default function MyListLeftSection() {
 
   const userId = useSelector((state: RootState) => state.userData.id);
   // const [events, setEvents] = useState<ServerResponseForEvents[]>([]);
   const events = useSelector((state: RootState) => state.mylist.events);
-  const [isEventsPending, startEventsTransition] = useTransition();
-  const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
+  // const [isEventsPending, startEventsTransition] = useTransition();
+  // const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
+  const highlightedDates = useSelector((state: RootState) => state.mylist.highlightedDates);
+
   const [isClientMounted, setIsClientMounted] = useState(false);
   const [displayedEvents, setDisplayedEvents] = useState<
     ServerResponseForEvents[]
@@ -45,25 +42,6 @@ export default function MyListLeftSection() {
 
   useEffect(() => {
     setIsClientMounted(true);
-    const fetchHobbyData = async () => {
-      const hobbyData = await getUserHobbies(userId);
-  
-    };
-
-    fetchHobbyData();
-    startEventsTransition(async () => {
-      const results = await getAllEvents(userId);
-      if (results.data) {
-
-        dispatch(updateMyListEvents(results.data || []));
-        const dates: Date[] = Array.isArray(results.data)
-          ? (results.data as ServerResponseForEvents[]).map(
-              (event) => new Date(event.date)
-            )
-          : [];
-        setHighlightedDates(dates);
-      }
-    });
   }, []);
 
   useEffect(() => {
@@ -97,16 +75,7 @@ export default function MyListLeftSection() {
         Add event
       </button>
       <div style={{width: 300, height: 200}} className="hide-scrollbar overflow-auto bg-white rounded-2xl shadow-xl m-2 pb-2">
-        {isEventsPending ? (
-          <div
-            style={{ height: 150 }}
-            className="flex flex-col items-between "
-          >
-            <EventSkeleton />
-            <EventSkeleton />
-            <EventSkeleton />
-          </div>
-        ) : (
+
           <div
             style={{ height: 150 }}
             className=" flex flex-col items-center"
@@ -179,7 +148,7 @@ export default function MyListLeftSection() {
               </div>
             )}
           </div>
-        )}
+        
       </div>
       {/**Calendar Section */}
       <div style={{width: 332}} className=" transformCalendar flex pr-4 items-center justify-center bg-white rounded-2xl mt-2 shadow-xl">

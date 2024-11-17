@@ -6,11 +6,13 @@ import { ProductType } from '../types/products';
 export interface MyListState {
    events: ServerResponseForEvents[];
    products: ProductType[];
+   highlightedDates: Date[];
 }
 
 const initialState: MyListState = {
    events: [],
    products: [],
+   highlightedDates: [],
 };
 
 const myListSlice = createSlice({
@@ -69,6 +71,12 @@ const myListSlice = createSlice({
             const updatedEvent = action.payload;
             state.events = state.events.map((event) => event.id === updatedEvent.id ? updatedEvent : event)
         },
+        updateHighlightedDates: (state, action: PayloadAction<Date[]>) => {
+            return {
+                ...state,
+                highlightedDates: action.payload,
+            }
+        }
         
     }
 });
@@ -82,5 +90,6 @@ export const {
      updateEventStore,
      deleteMyListProductById,
      deleteMyListEventById,
+     updateHighlightedDates,
     } = myListSlice.actions;
 export default myListSlice.reducer; // Ensure this exports the reducer

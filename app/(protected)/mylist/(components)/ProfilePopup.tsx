@@ -12,32 +12,21 @@ import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import { DebouncedInput } from "@/components/DebounceInput";
 import updateUserFirstName from "@/app/actions/user/updateUserFirstName";
 import updateUserEmail from "@/app/actions/user/updateUserEmail";
-import { updateUserFirstNameStore } from "@/lib/features/userData";
+import { updateUserBirthdayStore, updateUserFirstNameStore } from "@/lib/features/userData";
 import loading from '/public/loading.svg';
 import Image from 'next/image';
 
 export default function AddEventPopup() {
   const userId = useSelector((state: RootState) => state.userData.id);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [email, setEmail] = useState("");
+  const firstName = useSelector((state: RootState) => state.userData.firstName);
+  const lastName = useSelector((state: RootState) => state.userData.lastName);
+  const birthday = useSelector((state: RootState) => state.userData.birthday);
+  const email = useSelector((state: RootState) => state.userData.email);
+
   const [isPending, startTransition] = useTransition();
   const [isSaving, setIsSaving] = useState(false);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    startTransition(async () => {
-      const results = await getUserInfo(userId);
-      if (results) {
-        setFirstName(results.firstName || "");
-        setLastName(results.lastName || "");
-        setEmail(results.email || "");
-        setBirthday(results.birthday || "");
-      }
-    });
-  }, [userId, startTransition]);
 
   // Unified save function to handle API calls
   const handleSaveBirthday = async (value: string) => {
@@ -54,7 +43,7 @@ export default function AddEventPopup() {
 
   const handleChangeDate = async (e: ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
-    setBirthday(newDate);
+    dispatch(updateUserBirthdayStore(newDate));
     await handleSaveBirthday(newDate);
   };
 
@@ -80,9 +69,7 @@ export default function AddEventPopup() {
       console.log(e);
     }
     
-    
     setIsSaving(false);
-    
   }
 
   return (

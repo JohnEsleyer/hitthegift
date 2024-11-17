@@ -170,6 +170,7 @@ export default function RegisterPage() {
                 email: userData.email,
                 hobbyInfo: userData.hobbyInfo,
                 showInterest: false,
+                birthday: userData.birthday,
               })
             );
 

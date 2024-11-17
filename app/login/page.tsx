@@ -106,6 +106,7 @@ export default function LoginPage() {
                 email: userData.email || "",
                 hobbyInfo: userData.hobbyInfo || '',
                 showInterest: false,
+                birthday: userData.birthday || '',
               }));
 
               dispatch(updateCurrentPopup("none"));
