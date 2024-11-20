@@ -20,37 +20,30 @@ export function HomeLeftTemplate({
   highlight,
 }: HomeLeftTemplateProps) {
   return (
-    <div className="h-screen w-full flex flex-col">
-      <div style={{height: 40}}className="flex justify-center ">
-        <p
-          style={{
-            fontSize: 30,
-          }}
-          className={`${spicyrice.className} font-bold text-black`}
-        >
-          HitMyGift
-        </p>
+    <div style={{paddingLeft: 54}} className="h-screen w-full flex flex-col pl-2">
+      <div style={{height: 30}}className="flex justify-center ">
+
       </div>
-      <div style={{height: 35}} className="flex justify-center gap-4  ">
+      <div style={{height: 35}} className="flex justify-center  ">
 
         {/**My List */}
-        <div className="flex items-center ">
-        {highlight == "mylist" ? <span className="flex text-blue-600 ">
-          <House /> My List
+        <div className="flex items-center justify-center border-b border-[#007AFF]" style={{width: 156}}>
+        {highlight == "mylist" ? <span className="flex text-[#007AFF] ">
+          My List
         </span> :  <Link href="/mylist" className="flex">
-          <House /> My List
+          My List
         </Link>}
         </div>
           {/**Friends List */}
-          <div className=" flex items-center ">
-        {highlight == "friendslist" ? <Link href="/friendslist" className="flex text-blue-600 ">
-          <Users /> Friends List
+          <div className=" flex items-center justify-center border-b border-[#b1b1b1]" style={{width: 156}}>
+        {highlight == "friendslist" ? <Link href="/friendslist" className="flex text-[#007AFF] ">
+          Friends List
         </Link> : <Link href="/friendslist" className="flex">
-          <Users /> Friends List
+           Friends List
         </Link>}
         </div>
       </div>
-      <div className="flex-1 mb-2 ml-2 overflow-auto hide-scrollbar border-t-2 border-slate-400 ">
+      <div className="flex-1 mb-2 ml-2 overflow-auto hide-scrollbar border rounded-2xl mt-2 ">
        {children}
       </div>
     </div>

@@ -14,8 +14,6 @@ const spicy = Spicy_Rice({
   subsets: ["latin"],
 });
 
-
-
 export default function LandingPage() {
   const { width, height } = useWindowSize();
 

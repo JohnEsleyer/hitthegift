@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { termsAndConditions } from "./constants";
 import { useRouter } from "next/navigation";
 import Loading from "/public/loading.svg";
 import Image from "next/image";
@@ -12,7 +11,17 @@ import {
   updateUserFirstNameStore,
   updateUserId,
 } from "@/lib/features/userData";
-import TermsAndConditions from "./TermsAndConditions";
+import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
+import { Spicy_Rice } from "next/font/google";
+import { Snowfall } from "../(landing-page)/Snowfall";
+
+
+
+const spicy = Spicy_Rice({
+    weight: "400",
+    subsets: ["latin"],
+  });
+
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -158,8 +167,7 @@ export default function RegisterPage() {
         if (response.status == 200) {
           setResponseMessage(responseData.message);
           setTimeout(() => {
-            // dispatch(updateUserId(responseData.userId));
-            // dispatch(updateUserFirstNameStore(userData.firstName));
+
             dispatch(
               updateUserData({
                 id: responseData.userId,
@@ -188,54 +196,34 @@ export default function RegisterPage() {
     };
     registerUser();
   };
-
   return (
-  <div>
-    {/*Terms and conditions */}
-    {showTermsNConditions && (
-        <div
-          style={{ zIndex: 100, position: "absolute" }}
-          className={`flex justify-center items-center w-screen h-screen`}
-        >
-          <div
-            style={{ width: 500, height: 600 }}
-            className="p-4 bg-white rounded-2xl border-2 border-black"
-          >
-            <div style={{ height: 500 }} className="overflow-auto ">
-              <div className="container mx-auto p-2">
-               <TermsAndConditions/>
-              </div>
-
-              <div className="flex justify-center">
-                <button
-                  onClick={() => {
-                    setShowTermsNConditions(false);
-                  }}
-                  className="flex justify-center bg-blue-600 p-2 text-white font-bold rounded mt-4"
-                >
-                  Read
-                </button>
-              </div>
-            </div>
+    <RenderClientOnly loading={<div></div>}>
+      <div className="h-screen w-screen">
+        <div className="overflow-auto relative  hide-scrollbar h-screen w-screen flex flex-col bg-gradient-to-b from-[#030c42] to-blue-500 text-black ">
+          <div className="flex justify-center">
+            <p
+              style={{
+                fontSize: 30,
+              }}
+              className={`${spicy.className} font-bold`}
+            >
+              <span className="text-[#eb4034]">Hit</span>
+              <span className="text-white">My</span>
+              <span className="text-[#0cb00c]">Gift</span>
+            </p>
           </div>
-        </div>
-      )}
-    <div
-    style={{ zIndex: 1, position: "relative" }}
-      className={`${showTermsNConditions && "blurcontent"}  bg-[#31241e] bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
-    >
-
-      <div
-        className={`overflow-auto flex flex-col items-center overflow-auto justify-center w-screen  `}
-      >
-        <div className="text-xs gap-4 p-4 flex flex-col border bg-white rounded-2xl">
+          <div className="flex-1 flex flex-col justify-start pt-4 items-center text-center w-screen">
+          
+            {/**Register */}
+            <div className="relative flex justify-center w-screen pt-4" style={{zIndex: 100}}>
+            <div className="text-xs gap-4 p-4 flex flex-col border bg-white rounded-2xl">
           <div className="flex gap-2">
             {/*Name */}
             <div className="flex-1 flex flex-col">
               <label>First Name:</label>
               <input
                 className={`${
-                  errorFirstName ? "border-red-500" : "border-gray-300"
+                  errorFirstName ? "border-red-500" : "border-[#d9d9d9]"
                 } border-2 p-2 rounded`}
                 type="text"
                 placeholder="First Name"
@@ -255,7 +243,7 @@ export default function RegisterPage() {
               <label>Last Name:</label>
               <input
                 className={`${
-                  errorLastName ? "border-red-500" : "border-gray-300"
+                  errorLastName ? "border-red-500" : "border-[#d9d9d9]"
                 } border-2 p-2  rounded`}
                 type="text"
                 placeholder="Last Name"
@@ -276,7 +264,7 @@ export default function RegisterPage() {
               <label>Email:</label>
               <input
                 className={`${
-                  errorEmail ? "border-red-500" : "border-gray-300"
+                  errorEmail ? "border-red-500" : "border-[#d9d9d9]"
                 } p-2 border-2 rounded`}
                 type="text"
                 placeholder="firstname@email.com"
@@ -297,7 +285,7 @@ export default function RegisterPage() {
               <label>Password:</label>
               <input
                 className={`${
-                  errorPassword ? "border-red-500" : " border-gray-300"
+                  errorPassword ? "border-red-500" : " border-[#d9d9d9]"
                 } border-2 p-2 rounded`}
                 type="password"
                 placeholder="*******"
@@ -319,7 +307,7 @@ export default function RegisterPage() {
 
               <input
                 className={`${
-                  errorConfirmPassword ? "border-red-500" : "border-gray-300"
+                  errorConfirmPassword ? "border-red-500" : "border-[#d9d9d9]"
                 } border-2 p-2 rounded`}
                 type="password"
                 placeholder="*******"
@@ -338,7 +326,7 @@ export default function RegisterPage() {
               <label>Date of Birth</label>
               <input
                 className={`${
-                  errorDateOfBirth ? "border-red-500" : "border-gray-300"
+                  errorDateOfBirth ? "border-red-500" : "border-[#d9d9d9]"
                 } border-2`}
                 type="date"
                 onChange={(e) => {
@@ -377,7 +365,7 @@ export default function RegisterPage() {
               <textarea
                 style={{ width: 550, height: 140 }}
                 className={`${
-                  errorHobbiesInfo ? "border-red-500" : "border-gray-300"
+                  errorHobbiesInfo ? "border-red-500" : "border-[#d9d9d9]"
                 } border p-2`}
                 onChange={(e) => {
                   setUserData((prev) => ({
@@ -424,8 +412,13 @@ export default function RegisterPage() {
             <p className={`${isError && "text-red-500"}`}>{responseMessage}</p>
           </div>
         </div>
+          </div>
+          </div>
+          <div className="absolute">
+            <Snowfall />
+          </div>
+        </div>
       </div>
-    </div>
-    </div>
+    </RenderClientOnly>
   );
 }

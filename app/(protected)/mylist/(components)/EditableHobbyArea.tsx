@@ -60,13 +60,13 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
     
     
     return (
-        <div className="flex flex-col p-2 m-2 flex items-center rounded-2xl shadow-xl bg-white ">
-        <p className="w-64 font-bold">My hobbies and interests</p>
+        <div className="flex flex-col m-2 pb-4 flex items-center rounded-2xl shadow-md bg-white border border-gray-300 rounded-2xl ">
+
       <Textarea
           key={"hobbyInfo"}
-          style={{height: 150, width: 280}}
-          className="border border-gray-300 rounded-2xl"
+          style={{height: 200, width: 280, border: 'none'}}
           maxLength={500}
+          className="text-xs"
           value={hobbyInfo}
           onChange={(e)=>{
             handleInputChange(e);
@@ -80,7 +80,7 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
             <div>
               {isTyping && <div className="flex"><Image src={loading} alt="" width={20} height={20}/> <p className="text-xs">Saving</p></div>}
             </div>
-            <div className="text-gray-600 text-xs">
+            <div className="text-gray-600 text-xs p-2">
           {(hobbyInfo.length || 0) + "/500"}
             </div>
           </div>

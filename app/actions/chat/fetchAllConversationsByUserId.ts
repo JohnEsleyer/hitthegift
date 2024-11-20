@@ -1,6 +1,6 @@
 "use server";
 
-import { Conversation } from "@/lib/types/conversation";
+import { Conversation, UserConversation } from "@/lib/types/conversation";
 import { Message } from "@/lib/types/message";
 import { MongoClient, ObjectId } from "mongodb";
 
@@ -18,14 +18,7 @@ import { MongoClient, ObjectId } from "mongodb";
  *              - `unreadCount`: The number of unread messages in the conversation.
  */
 
-interface UserConversation {
-  conversationId: string;
-  unreadMessageCount: number;
-  friend: {
-    id: string;
-    name: string;
-  };
-}
+
 
 export default async function fetchAllConversationsByUserId(userId: string) {
     const uri = process.env.MONGODB_URI || "";

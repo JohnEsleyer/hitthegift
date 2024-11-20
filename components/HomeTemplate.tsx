@@ -23,7 +23,6 @@ import UserProfileImage from "./UserProfileImage";
 import EmailVerifier from "./EmailVerifier";
 import { updateShowLoading } from "@/lib/features/chat";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
-import Inbox from "./Inbox";
 import { getUnreadMessages } from "@/app/actions/chat/getUnreadMessages";
 
 interface HomeTemplateProps {
@@ -56,9 +55,7 @@ export default function HomeTemplate({
   const router = useRouter();
   const { width, height } = useWindowSize();
 
-  const toggleInbox = () => {
-    setIsInboxOpen((prev) => !prev);
-  };
+
 
   useEffect(() => {
     async function getUnread() {
@@ -75,7 +72,7 @@ export default function HomeTemplate({
   }, []);
 
   return (
-    <div className="bg-[#e4e7f7] w-screen h-screen flex overflow-auto overflow-x-hidden">
+    <div className="bg-white w-screen h-screen flex overflow-auto overflow-x-hidden">
       <RenderClientOnly
         loading={
           <div className="flex w-full justify-center items-center">
@@ -89,48 +86,16 @@ export default function HomeTemplate({
               <div className="flex h-full ">
                 {/**Layout */}
                 <div className="flex">
-                  <div style={{ width: 320 }}>{leftSide}</div>
+                  <div style={{ width: 354 }}>{leftSide}</div>
                   <div className="flex-1">{rightSide}</div>
                 </div>
 
-                {/**Profile and Inbox*/}
+                {/**Profile */}
                 {width > 800 && (
                   <div
                     style={{ zIndex: 90, right: 30 }}
                     className="absolute p-2 pr-8  flex justify-between "
                   >
-                    {/**Inbox button*/}
-                    <div
-                      className="absolute flex justify-end"
-                      style={{ right: 50, top: 13 }}
-                    >
-                      <button
-                        className="flex justify-center items-center"
-                        onClick={toggleInbox}
-                      >
-                        <Mail />
-                        <span>Inbox</span>
-                        {totalUnread !== 0 && (
-                          <span
-                            style={{ fontSize: 16 }}
-                            className="pl-2 pr-2 bg-red-500 text-white rounded-full"
-                          >
-                            {totalUnread}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                    {/**Inbox */}
-                    <div
-                      style={{ width: 300, right: 40, top: 35 }}
-                      className="bg-white absolute shadow-md"
-                    >
-                      {isInboxOpen && (
-                        <div>
-                          <Inbox />
-                        </div>
-                      )}
-                    </div>
 
                     {/**Profile */}
                     <button

@@ -61,7 +61,7 @@ export default function LoadMyListData({children}: LoadMyListDataProps){
                    {children} 
                 </>
             ) : (
-                <div className="bg-[#e4e7f7] w-screen h-screen flex justify-center items-center">
+                <div className="bg-white w-screen h-screen flex justify-center items-center">
                     <Image src={giftloading} width={50} height={50} alt="loading" />
                 </div>
             )}

@@ -6,6 +6,8 @@ import {ImageUp } from 'lucide-react';
 import { useTransition, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EmptyItem } from './EmptyItem';
+import Image from 'next/image';
+import emptyItem from '/public/emptyItem.png';
 
 interface ProductImageUploaderProps {
   productId: string;
@@ -91,7 +93,7 @@ export default function ProductImageUploader({
   return (
     <div className="relative">
       {imageUrl === '' ? (
-        <EmptyItem width={width} height={height}/>
+        <Image className="bg-[#E3E3E3]" src={emptyItem} alt="empty" width={width} height={height}/>
       ) : (
         <img
           className="rounded-md"

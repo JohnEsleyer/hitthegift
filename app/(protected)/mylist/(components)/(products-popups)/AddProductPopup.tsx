@@ -186,9 +186,9 @@ export default function AddProductPopup() {
           <div className="flex gap-2">
             <div>
               <p>Title</p>
-              <div  style={{width: 270, height: 40}} className={`${isAutoFillPending && 'glowing-border'}`}>
+              <div  style={{width: 280, height: 40}} className={`${isAutoFillPending && 'glowing-border'}`}>
               <input
-                className={`rounded-full p-2 pl-4 border ${emptyInputs.includes('title') ? 'border-red-500' : 'border-slate-400' } `}
+                className={`rounded-full p-2 pl-4 border ${emptyInputs.includes('title') ? 'border-red-500' : 'border-slate-300' } `}
                 placeholder={"Product name"}
                 value={productTitle}
                 onChange={(e) => {
@@ -200,10 +200,10 @@ export default function AddProductPopup() {
 
             <div className="flex flex-col">
               <label>Price</label>
-              <div className={`flex rounded-full bg-white border ${emptyInputs.includes('price') ? 'border-red-500' : 'border-slate-400' } ${isAutoFillPending && 'glowing-border'}`}>
+              <div className={`flex rounded-full bg-white border ${emptyInputs.includes('price') ? 'border-red-500' : 'border-slate-300' } ${isAutoFillPending && 'glowing-border'}`}>
                 <input
-                  style={{ width: 100 }}
-                  className="border-slate-400 border-r rounded-l-full pl-2 "
+                  style={{ width: 100, height: 40}}
+                  className="border-slate-400 rounded-full pl-2 "
                   placeholder="1.00"
                   type="number"
                   value={price}
@@ -211,36 +211,6 @@ export default function AddProductPopup() {
                     setPrice(e.target.value);
                   }}
                 />
-
-                <div className="relative p-2 flex items-center ">
-                  <button
-                    className=" "
-                    onClick={() => {
-                      setShowCurrencyOptions((prev) => !prev);
-                    }}
-                  >
-                    {currency}
-                  </button>
-                  {showCurrencyOptions && (
-                    <ul
-                      style={{ zIndex: 100,width:80, top: 30, right: 1 }}
-                      className="flex flex-col h-52 p-2 overflow-auto absolute mt-2 bg-white rounded shadow-md"
-                    >
-                      {currencies.map((currency) => (
-                        <button
-                        className="flex justify-between hover:bg-gray-200 w-full"
-                          onClick={() => {
-                            setCurrency(currency);
-                            setShowCurrencyOptions(false);
-                          }}
-                          key={currency}
-                        >
-                            <CountryFlag currency={currency}/> <span>{currency}</span>
-                        </button>
-                      ))}
-                    </ul>
-                  )}
-                </div>
               </div>
             </div>
           </div>
@@ -251,8 +221,8 @@ export default function AddProductPopup() {
           <div>
             <p>Product URL</p>
             <input
-              style={{ width: 430 }}
-              className={` border border-slate-400 rounded-full p-2 pl-4`}
+              style={{ width: 390 }}
+              className={` border border-slate-300 rounded-full p-2 pl-4`}
               placeholder={"Product URL"}
               value={productUrl}
               onChange={(e) => {
@@ -268,7 +238,7 @@ export default function AddProductPopup() {
           <div className="flex justify-between">
             <div className="flex flex-col">
               <p>Auto Fill Product Details</p>
-              <p style={{width: 350}} className="text-gray-500 ">
+              <p style={{width: 350}} className="text-gray-500 text-xs ">
                 Fill product title, description, and image when product URL is given.
               </p>
             </div>
@@ -287,11 +257,11 @@ export default function AddProductPopup() {
         
         {/* Description  */}
         <div className="mt-4 m-4 pb-8 flex justify-center gap-2">
-          <div style={{ width: 400 }}>
+          <div style={{ width: 370 }}>
             <label>Description</label>
             <div style={{height: 100}} className={`${isAutoFillPending && 'glowing-border'}`}>
             <textarea
-              className={`w-full h-full rounded-2xl p-2 pl-4 border ${emptyInputs.includes('description') ? 'border-red-500' : 'border-slate-400' }`}
+              className={`w-full h-full rounded-2xl p-2 pl-4 border ${emptyInputs.includes('description') ? 'border-red-500' : 'border-slate-300' }`}
               value={productDescription}
               onChange={(e) => {
                 setProductDescription(e.target.value);

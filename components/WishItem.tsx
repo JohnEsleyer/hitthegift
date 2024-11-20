@@ -10,6 +10,10 @@ import { EmptyItem } from "./EmptyItem";
 import { currencySymbolMap } from "@/utils/currencySymbols";
 import { ProductType } from "@/lib/types/products";
 import { extractASIN } from "@/app/(protected)/mylist/(components)/(products-popups)/functions";
+import Link from "next/link";
+import Image from 'next/image';
+import emptyItem from '/public/emptyItem.png';
+import LimitText from "./ui/LimitText";
 
 interface WishItemProps {
   product: ProductType;
@@ -28,30 +32,6 @@ export default function WishItem({
     (state: RootState) => state.friendsSidebar.isSidebarOpen
   );
 
-  // Wrapper component to enable/disable link functionality of WishItem
-  function EnableAnchor({
-    enable,
-    children,
-  }: {
-    children: ReactNode;
-    enable: boolean;
-  }): ReactNode {
-    if (enable) {
-      
-      // Extract the ASIN from the product URL
-      const asin = extractASIN(product.productUrl);
-
-      const affliateLink = `https://www.amazon.com/dp/${asin}/?tag=${process.env.NEXT_PUBLIC_AFFILIATE_ID}`;
-    
-      return (
-        <a href={affliateLink} target={"_blank"}>
-          {children}
-        </a>
-      );
-    }
-    return <div>{children}</div>;
-  }
-
   function EnableEdit({
     enable,
     children,
@@ -60,27 +40,12 @@ export default function WishItem({
     children: ReactNode;
   }) {
     if (enable) {
-      return (
-        <button
-          onClick={() => {
-            dispatch(updateCurrentPopup("editProduct"));
-            dispatch(
-              updateEditProductAll({
-                id: product.id,
-                userId: "",
-                price: product.price,
-                currency: product.currency,
-                title: product.title,
-                productUrl: product.productUrl,
-                imageUrl: product.imageUrl,
-                description: product.description,
-              })
-            );
-          }}
-        >
-          {children}
-        </button>
-      );
+      // Extract the ASIN from the product URL
+      const asin = extractASIN(product.productUrl);
+
+      const affiliateLink = `https://www.amazon.com/dp/${asin}/?tag=${process.env.NEXT_PUBLIC_AFFILIATE_ID}`;
+
+      return <Link href={affiliateLink}>{children}</Link>;
     }
     return <>{children}</>;
   }
@@ -89,14 +54,15 @@ export default function WishItem({
     <div className="relative">
       <EnableEdit enable={owner || false}>
         <div
-          style={{ width: 200 }}
-          className={` p-4 rounded-xl border border-b-4 shadow-xl border-slate-300 bg-white ${
+          style={{ width: 167, height: 329, borderRadius: 5}}
+          className={`p-2 border border-[#d9d9d9] bg-white ${
             !isSidebarOpen && "hover:scale-100"
           }`}
         >
           <div className="relative">
             {product.imageUrl == "" ? (
-              <EmptyItem width={165} height={150} />
+              // <EmptyItem width={165} height={150} />
+              <Image className="bg-[#E3E3E3]" alt="" src={emptyItem} width={165} height={150}/>
             ) : (
               <div
                 style={{ height: 150 }}
@@ -106,16 +72,16 @@ export default function WishItem({
               </div>
             )}
           </div>
-          <p
-            style={{fontSize:14}}
-            className="line-clamp-3 h-16 mt-2"
-          >
-            {product.title}
+          <div style={{height: 40, paddingTop: 10}}>
+          <LimitText text={product.title} fontSize={12} length={40}/>
+          </div>
+          <p className="font-bold text-xs">
+            {currencySymbolMap[product.currency]}
+            {product.price} {product.currency}
           </p>
-          <p className="font-bold">
-            {currencySymbolMap[product.currency]}{product.price} {product.currency}
-          </p>
-          <p className="line-clamp-6 text-xs mt-2 h-24 ">{product.description}</p>
+          <div style={{height:60}}>
+          <LimitText text={product.description} fontSize={12} length={100} /> 
+          </div>
           <div className="flex justify-center items-center">
             {showBuyButton && (
               <a
@@ -128,15 +94,6 @@ export default function WishItem({
             )}
           </div>
         </div>
-        {owner && (
-          <EnableAnchor enable={!isSidebarOpen}>
-            <div style={{ top: 130, right: 10 }} className="absolute flex">
-              <div className="bg-amber-500 rounded-2xl p-2 shadow-md">
-                <ShoppingCart size={20} />
-              </div>
-            </div>
-          </EnableAnchor>
-        )}
       </EnableEdit>
     </div>
   );

@@ -31,28 +31,28 @@ export default function MyListRightSection() {
  
   return (
     <div className="w-full h-screen flex flex-col">
-      <div style={{height:75}} className="ml-8 flex items-end pb-4 gap-2 ">
+      <div style={{height:75, marginTop: 40}} className="ml-8 flex items-end pb-4 gap-2">
         {/**Buttons*/}
         <button
-            className="text-white p-2 rounded-full flex bg-black text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
+            className="text-xs text-white rounded-full flex bg-[#047afe] text-white "
+            style={{padding: 4, paddingLeft: 30, paddingRight: 30}}
             onClick={() => {
               dispatch(updateCurrentPopup("addProduct"));
             }}
           >
-            <Gift/>
             Add Product
           </button>
           <button
-            className="text-white p-2 rounded-full flex  bg-black text-white font-bold py-2 px-4 hover:from-blue-500 hover:to-purple-500 transition duration-300"
+            className="text-xs text-white rounded-full flex bg-[#047afe] text-white "
+            style={{padding: 4, paddingLeft: 30, paddingRight: 30}}
             onClick={() => {
               dispatch(updateCurrentPopup('shareWishlist'));
             }}
           >
-            <UserPlus />
             Share list
           </button>
       </div>
-      <div className="w-full ml-8 mb-2 pl-2 flex-1 overflow-auto border-t-2 border-slate-400">
+      <div className="w-full ml-8 mb-2 pl-2 flex-1 overflow-auto">
             {/**Body */}
       <div style={{ position: "relative", width: width - 420}} className="h-full hide-scrollbar">
         <div
