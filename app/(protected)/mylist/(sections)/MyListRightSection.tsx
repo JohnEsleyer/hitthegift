@@ -108,7 +108,7 @@ export default function MyListRightSection() {
             <div>
               {isClientMounted && (
                 <div>
-                  {products.length > 0 ? (
+                  {products ? (
                     <div className="p-2 w-full flex flex-wrap gap-8 h-full">
                       {products.map((product) => (
                         <WishItem

@@ -2,11 +2,10 @@
 
 import { LoginData } from "@/lib/types/authTypes";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Loading from "/public/loading.svg";
-import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   updateUserData,
 } from "@/lib/features/userData";
@@ -15,6 +14,8 @@ import getUserInfo from "../actions/user/getUserInfo";
 import AuthMiddleware from "@/components/AuthMiddleware";
 import Cookies from "js-cookie"; 
 import { navigateTo } from "../actions/navigateTo";
+import { RootState } from "@/lib/store";
+import verifyToken from "../actions/auth/verifyToken";
 
 type ResponseData = {
   message: string;
@@ -43,7 +44,8 @@ export default function LoginPage() {
 
   // State to control password visibility.
   const [showPassword, setShowPassword] = useState(false);
-  
+  const isVerified = useSelector((state: RootState) => state.userData.verified);   
+
   const handleSubmit = () => {
     // Reset error message and set loading state
     setErrorMessage('');
@@ -131,8 +133,22 @@ export default function LoginPage() {
     loginUser();
   };
 
+  useEffect(() => {
+   async function validateToken() {
+    const token = Cookies.get("token");
+    const rememberMe = Cookies.get("rememberMe") === "true"; 
+    console.log(`Auth - RememberMe: ${rememberMe}`);
+    console.log(`Auth - isVerified: ${isVerified}`);
+    if (token){
+      const res = await verifyToken(token);
+      if (res.status == 200 && rememberMe && isVerified){
+        navigateTo('/mylist');
+      }
+    }
+   }
+   validateToken();
+  }, []);
   return (
-    <AuthMiddleware>
     <div className='bg-[#31241e] h-screen w-screen bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center flex items-center justify-center'>
       <div style={{fontSize: 14}} className="flex flex-col bg-white rounded-2xl p-8">
         <label>Email:</label>
@@ -222,9 +238,8 @@ export default function LoginPage() {
         >
           {errorMessage}
         </p>
-        <Link style={{width: 120}} href={"/forgot-password" }className="mt-8 underline">Forgot Password</Link>
+        <Link style={{width: 120}} href={"/forgot-password" } className="mt-8 underline">Forgot Password</Link>
       </div>
     </div>
-    </AuthMiddleware>
   );
 }

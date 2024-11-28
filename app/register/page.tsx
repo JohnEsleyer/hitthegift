@@ -12,11 +12,14 @@ import {
 import TermsAndConditions from "./TermsAndConditions";
 import PasswordStrengthMeter from "@/components/ui/PasswordStrengthMeter";
 import { navigateTo } from "../actions/navigateTo";
+import Cookies from "js-cookie"; 
+import { createEvent } from "../actions/events/createEvent";
+
 
 export default function RegisterPage() {
   const router = useRouter();
   const dispatch = useDispatch();
-  
+
   const [isPasswordStrong, setIsPasswordStrong] = useState<boolean>(false);
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showTermsNConditions, setShowTermsNConditions] =
@@ -183,13 +186,31 @@ export default function RegisterPage() {
 
             setIsError(false);
             dispatch(updateCurrentPopup("none"));
-            navigateTo("/mylist");
+            router.push('/verify-email');
           }, 3000);
+            Cookies.set("rememberMe", "false");
+          
         } else {
           setIsLoading(false);
         }
+
+        // Automatically create temporary events for the user
+        const responseData2 = await createEvent({
+          userId: responseData.userId,
+          data: {
+            id: "",
+            userId: responseData.userId,
+            date: userData.birthday,
+            eventTitle: 'My birthday',
+            invitedFriends: [],
+          }
+        
+        });
+        if (responseData2){
+          console.log(`Register - Create Event: ${responseData2.status}`);
+        }
       } catch (e) {
-        console.log(e);
+        console.log(`Failed to register user: ${e}`);
         setIsLoading(false);
       }
     };

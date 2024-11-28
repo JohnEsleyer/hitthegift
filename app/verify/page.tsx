@@ -42,6 +42,7 @@ function Search() {
           setIsVerified(true);
           dispatch(updateUserVerified(true));
           dispatch(updateUserVerificationToken("none"));
+          navigateTo('/login');
         } else {
           console.log(`Failed: status code ${res.status} ${res.message}`);
           setIsVerified(false);
@@ -62,39 +63,7 @@ function Search() {
 
   }, []);
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      {isVerified ? (
-        <div className="w-screen h-screen flex items-center justify-center bg-gray-200 p-4">
-        <div className="max-w-lg w-full bg-white shadow-md rounded-2xl p-6 text-center">
-          <div className="flex justify-center">
-            <div className="bg-blue-500 p-6 rounded-full">
-              <CheckCircle size={32} color="white" /> 
-            </div>
-          </div>
-          <h1 className="text-2xl font-semibold text-black mb-4">
-            Congratulations!
-          </h1>
-          <p className="text-gray-700 mb-4">
-            Your email address has been successfully verified.
-          </p>
-          <p className="text-gray-700 mb-6">
-            You can now access all the features of your account.
-          </p>
-          <button
-            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl border"
-            onClick={() => (window.location.href = "/mylist")}
-          >
-            Go to Login
-          </button> 
-          <p className="mt-6 text-gray-500 text-sm">
-            Thank you for confirming your email!
-          </p>
-        </div>
-      </div>
-      ) : (
-        <Image src={giftloading} alt="" width={50} height={50} />
-      )}
-    </div>
+   <div></div>
   );
 }
 

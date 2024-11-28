@@ -51,17 +51,17 @@ export default function LoadMyListData({ children }: LoadMyListDataProps) {
           dispatch(updateFriendRequests(res.friendRequests));
           dispatch(updateMyListProducts(res.products));
 
-          console.log(`loading events /mylist data: ${res.events.length}`);
-          console.log(`loading products /mylist data: ${res.products.length}`);
-          console.log(`loading friends /friends data: ${res.friends.length}`);
+          console.log(`loading events /mylist data: ${res.events?.length}`);
+          console.log(`loading products /mylist data: ${res.products?.length}`);
+          console.log(`loading friends /friends data: ${res.friends?.length}`);
           console.log(
-            `loading friend requests /mylist data: ${res.friendRequests.length}`
+            `loading friend requests /mylist data: ${res.friendRequests?.length}`
           );
           console.log(
-            `loading conversations  /mylist data: ${res.conversations.length}`
+            `loading conversations  /mylist data: ${res.conversations?.length}`
           );
 
-          const dates: Date[] = res.events.map((event) => new Date(event.date));
+          const dates: Date[] = res.events?.map((event) => new Date(event.date));
           dispatch(updateHighlightedDates(dates));
         } else {
           console.error("Failed to fetch /mylist data");

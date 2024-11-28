@@ -52,7 +52,7 @@ export default function MyListLeftSection() {
           <div className=" flex flex-col items-center">
             {isClientMounted && (
               <div style={{ width: 240 }} className="h-full">
-                {events.length > 0 ? (
+                {events ? (
                   events.map((event) => (
                     <button
                       onClick={() => {

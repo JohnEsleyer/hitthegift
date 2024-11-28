@@ -106,7 +106,6 @@ export default function HomeTemplate({
                           className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
                           onClick={() => {
                             document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                            // router.push("/login");
                             navigateTo('/login');
                           }}
                         >
