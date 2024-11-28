@@ -16,8 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Chatbox() {
   const dispatch = useDispatch();
-  const friendName = useSelector(
-    (state: RootState) => state.insideFriend.friendName
+  const friendData = useSelector(
+    (state: RootState) => state.insideFriend.friendData
   );
   const friendId = useSelector(
     (state: RootState) => state.insideFriend.friendId
@@ -157,12 +157,12 @@ export default function Chatbox() {
         <div className="flex items-center gap-2">
           <UserProfileImage
             userId={friendId}
-            userName={friendName}
+            userName={friendData?.firstName || ''}
             alt={""}
             width={30}
             height={30}
           />
-          <span>{friendName}</span>
+          <span>{friendData?.firstName || ''}</span>
         </div>
         <div className="flex items-center gap-1 p-2">
           <button

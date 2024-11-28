@@ -1,7 +1,8 @@
 'use client'
 
-import Avvvatars from "avvvatars-react";
 import { useState } from "react";
+import Image from 'next/image';
+import user from '/public/user.webp';
 
 interface UserProfileImageProps{
     userId: string;
@@ -21,7 +22,7 @@ export default function UserProfileImage({userId,userName ,width, height, alt}: 
 
     return hasError? (
         <div>
-            <Avvvatars value={userName} size={width}/>
+            <Image className="border rounded-full" src={user} alt={"profile"} width={width} height={height}/> 
         </div>
     ) : (
         <img className="border rounded-full " src={`https://${bucketName}.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/${userId}.webp`} alt={alt} width={width} height={height} onError={handleError}/>

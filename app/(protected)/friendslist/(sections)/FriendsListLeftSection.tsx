@@ -1,31 +1,34 @@
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState } from "react";
 import { getMonthName } from "@/utils/getMonthName";
 import { RootState } from "@/lib/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import EventsCalendar from "@/components/EventsCalendar";
 import { InvitedEventsResponse } from "@/lib/types/event";
-import { updateEvents } from "@/lib/features/friendslistPage";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
-import FriendEventSkeleton from "@/components/skeletons/FriendEventSkeleton";
-import { getAllInvitedEvents } from "@/app/actions/events/getAllInvitedEvents";
-import '@/styles/calendar.css';
-import '@/styles/utilities.css';
+import { convertTo12HourFormat, getMeridiem } from "@/utils/convertTo12Hour";
+import "@/styles/calendar.css";
+import "@/styles/utilities.css";
 
 export default function FriendsListLeftSection() {
-  const dispatch = useDispatch();
-
-  const [isEventsPending, startEventsTransition] = useTransition();
-  const userId = useSelector((state: RootState) => state.userData.id);
-  const [events, setEvents] = useState<InvitedEventsResponse[]>([]);
-  const [displayedEvents, setDisplayedEvents] = useState<
-    InvitedEventsResponse[]
-  >([]);
-  const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
+  const events = useSelector((state: RootState) => state.friendsListPage.events);
+  const [displayedEvents, setDisplayedEvents] = useState<InvitedEventsResponse[]>([]);
+  const highlightedDates = useSelector((state: RootState) => state.friendsListPage.highlightedDates);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-const filterEvents = async () => {
+  function findMatchingDay(date1: Date, dates2: Date[]): Date {
+    const dayOfWeek = date1.getDate(); 
+  
+    for (const date2 of dates2) {
+      if (dayOfWeek === date2.getDate()) {
+        return date2;
+      }
+    }
+    return new Date(); // No matching day found
+  }
+
+  const filterEvents = async () => {
     // Filter events by the selected month
     const filteredEvents = events.filter((event) => {
       const tempDate = new Date(event.date);
@@ -38,24 +41,8 @@ const filterEvents = async () => {
       const dateB = new Date(b.date).getTime();
       return dateA - dateB; // Ascending order (earliest date first)
     });
-
     setDisplayedEvents(sortedEvents);
-}
-
-  useEffect(() => {
-    startEventsTransition(async () => {
-      const results = await getAllInvitedEvents(userId);
-      if (results) {
-        setEvents(results.data || []);
-        const dates: Date[] = (results.data as InvitedEventsResponse[]).map(
-          (event) => new Date(event.date)
-        );
-        setHighlightedDates(dates);
-        dispatch(updateEvents(events));
-      }
-    });
-
-  }, []);
+  };
 
   useEffect(() => {
     filterEvents();
@@ -64,67 +51,70 @@ const filterEvents = async () => {
   return (
     <HomeLeftTemplate highlight="friendslist">
       <div className="w-full">
-        <div
-          style={{ height: 600 }}
-          className="p-2 flex flex-col gap-4"
-        >
+        <div style={{ height: 600 }} className="p-2 flex flex-col gap-4">
           {/**Calendar Section */}
-          <div className="rounded-2xl shadow-xl bg-white flex items-center justify-center mt-2 w-full  pr-4 pb-2">
+          <div style={{paddingLeft: 5, paddingRight: 10}} className="rounded-2xl bg-white flex items-center justify-center mt-2 w-full  pr-4 pb-2">
             <EventsCalendar
-              highlightedDates={highlightedDates}
+              invitedEvents={events}
               onClick={(date) => setSelectedDate(date)}
+              onSelectDate={(selectedDate) => setSelectedDate(selectedDate)}
             />
           </div>
+          <div className="flex justify-between pl-6 pr-6">
+              <span style={{fontSize: 14}} className="pl-2">Ends</span>
+              <div style={{fontSize: 14}} className="mr-2 rounded border bg-[#e6e6e6] pl-2 pr-2">
+                {convertTo12HourFormat(findMatchingDay(selectedDate, highlightedDates).getHours() | new Date().getHours())}:00 {getMeridiem(selectedDate.getHours() | new Date().getHours())}
+              </div>
+          </div>
           <div className="flex-1">
-            <span>
+            <span style={{fontSize: 14}} className="pl-2">
               Friends{"'"} events in {getMonthName(selectedDate)}
             </span>
-            <div style={{height: 250}} className="hide-scrollbar overflow-auto bg-white p-2 rounded-2xl shadow-xl flex flex-col gap-4 items-between justify-between ">
-              {isEventsPending ? (
-                <div>
-                  <FriendEventSkeleton />
-                  <FriendEventSkeleton />
-                  <FriendEventSkeleton />
-                  <FriendEventSkeleton />
-                  <FriendEventSkeleton />
-                  <FriendEventSkeleton />
-                </div>
-              ) : (
-                <div>
-                  {events.length > 0 ? (
-                    <div>
-                      {displayedEvents.length > 0 ? (
-                        <div className="">
-                          {displayedEvents.map((event) => (
+            <div
+              style={{ height: 250 }}
+              className="hide-scrollbar overflow-auto bg-white p-2 rounded-2xl flex flex-col gap-4 items-between justify-between "
+            >
+              <div>
+                {events.length > 0 ? (
+                  <div>
+                    {displayedEvents.length > 0 ? (
+                      <div className="">
+                        {displayedEvents.map((event) => (
+                          <div
+                            key={event.id}
+                            style={{fontSize: 14}}
+                            className="flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2"
+                          >
                             <div
-                              key={event.id}
-                              className="flex gap-2 items-center justify-between p-2 bg-gray-100 rounded-2xl m-2"
+                              style={{ fontSize: 15, width: 35, height: 30 }}
+                              className="bg-[#d7e6f6] text-[#3774c3] flex justify-center items-center font-bold rounded-full"
                             >
-                              <div
-                                style={{ fontSize: 15, width: 30, height: 30 }}
-                                className="bg-blue-200 text-blue-600 flex justify-center items-center font-bold rounded-full"
-                              >
-                                {new Date(event.date).getDate()}
-                              </div>
-                              <p style={{ width: 240 }} className="truncate">
-                                {event.ownerName} {event.eventTitle}
-                              </p>
+                              {new Date(event.date).getDate()}
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div style={{height: 100}} className=" flex justify-center items-center w-full text-gray-400">
+                            <p style={{ width: 240 }} className="truncate">
+                              {event.ownerName} {event.eventTitle}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div
+                        style={{ height: 100 }}
+                        className=" flex justify-center items-center w-full text-gray-400"
+                      >
                         No events for this month
                       </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div style={{height: 100}} className=" flex justify-center items-center w-full text-gray-400">
-                      No events to show
-                    </div>
-                  )}
-                </div>
-              )}
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    style={{ height: 100 }}
+                    className=" flex justify-center items-center w-full text-gray-400"
+                  >
+                    No events to show
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

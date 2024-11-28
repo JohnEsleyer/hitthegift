@@ -13,7 +13,9 @@ import EditEventPopup from "../app/(protected)/mylist/(components)/(events-popup
 import DeleteFriendPopup from "../app/(protected)/mylist/(components)/DeleteFriendPopup";
 import DeleteFriendRequestPopup from "../app/(protected)/mylist/(components)/DeleteFriendRequest";
 import { updateIsSidebarOpen } from "@/lib/features/friendsSidebar";
-import ShareWishlistPopup from "../app/(protected)/mylist/(components)/ShareWishlistPopup";
+import ShareWishlistPopup from "../app/(protected)/mylist/(components)/AddFriendPopup";
+import AddFriendPopup from "../app/(protected)/mylist/(components)/AddFriendPopup";
+import SendWishlistPopup from "@/app/(protected)/mylist/(components)/SendWishlistPopup";
 
 interface PopupPageProps {
   children: ReactNode;
@@ -41,20 +43,22 @@ export function Popups({ children }: PopupPageProps) {
       <div
         onClick={handleClosePopup}
         className={`flex h-full w-full ${
-          currentPopup !== "none" && "blurcontent"
+          currentPopup !== "none" && "darken-background"
         }`}
       >
         {children}
       </div>
+
+      {/**Friends Sidebar  */}
       {currentPopup == "friends" && (
         <div
-          className="rounded-2xl p-2 bg-slate-100 border border-slate-400 border-2 rounded"
+          className="rounded-2xl p-2 bg-slate-100 shadow-md border-2 rounded"
           style={{
             position: "absolute",
             top: 60,
             right: 0,
             bottom: 0,
-            width: 300,
+            width: 200,
             zIndex: 999,
             transition: "transform 0.3s ease-in-out",
             transform:
@@ -72,7 +76,7 @@ export function Popups({ children }: PopupPageProps) {
       {/**Add Product  */}
       {currentPopup == "addProduct" && (
         <div
-          style={{ zIndex: 999, position: "absolute" }}
+          style={{ zIndex: 999, position: "absolute", top: -30 }}
           className=" flex justify-center items-center w-screen h-screen"
         >
           {" "}
@@ -81,10 +85,11 @@ export function Popups({ children }: PopupPageProps) {
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}
+
       {/**Edit Product  */}
       {currentPopup == "editProduct" && (
         <div
-          style={{ zIndex: 999, position: "absolute" }}
+          style={{ zIndex: 999, position: "absolute", top:-30 }}
           className=" flex justify-center items-center w-screen h-screen"
         >
           {" "}
@@ -93,7 +98,6 @@ export function Popups({ children }: PopupPageProps) {
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}
-
 
       {/**Add Event Popup*/}
       {currentPopup == "addEvent" && (
@@ -107,7 +111,6 @@ export function Popups({ children }: PopupPageProps) {
         </div>
       )}
 
-
       {/**Edit Event Popup*/}
       {currentPopup == "editEvent" && (
         <div
@@ -120,7 +123,6 @@ export function Popups({ children }: PopupPageProps) {
         </div>
       )}
 
-
       {/**Profile Popup*/}
       {currentPopup == "profile" && (
         <div
@@ -132,6 +134,7 @@ export function Popups({ children }: PopupPageProps) {
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}
+
        {/**Delete Friend Popup*/}
        {currentPopup == "deleteFriend" && (
         <div
@@ -156,14 +159,25 @@ export function Popups({ children }: PopupPageProps) {
         </div>
       )}
   
-      {/**Send Wishlist and Add Friend Popup */}
-      {currentPopup == "shareWishlist" && (
+      {/** Add Friend Popup */}
+      {currentPopup == "addFriend" && (
         <div
           style={{ zIndex: 999, position: "absolute" }}
           className=" flex justify-center items-center w-screen h-screen"
         >
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
-          <ShareWishlistPopup/>
+          <AddFriendPopup/>
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+        </div>
+      )}
+         {/** Send wishlist Popup */}
+         {currentPopup == "sendWishlist" && (
+        <div
+          style={{ zIndex: 999, position: "absolute" }}
+          className=" flex justify-center items-center w-screen h-screen"
+        >
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+          <SendWishlistPopup/>
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}

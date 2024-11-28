@@ -1,11 +1,12 @@
 // store.ts
+
 import { configureStore } from '@reduxjs/toolkit';
 import userDataSlice, { UserDataState } from './features/userData';
 import { loadState, saveState } from '@/utils/localStorage';
 import popupsSlice from './features/popups';
 import wishlist from './features/wishlist';
 import insideFriend from './features/insideFriend';
-import friendsListPage from './features/friendslistPage';
+import friendsListPage from './features/friendslist';
 import mylist from './features/mylist';
 import productImageUpload from './features/productImageUpload';
 import editProductPopup from './features/editProductsPopup';

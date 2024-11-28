@@ -5,7 +5,6 @@ import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { currencies } from "./constants";
 import Image from "next/image";
 import Loading from "/public/loading.svg";
 import ProductImageUploader from "@/components/ProductImageUploader";
@@ -14,10 +13,10 @@ import { insertMyListProduct } from "@/lib/features/mylist";
 import { handleBase64ToFormData } from "@/utils/base64ToFormData";
 import uploadProductImage from "@/app/actions/s3/uploadProductImage";
 import { createObjectId } from "@/app/actions/mongoActions";
-import CountryFlag from "./CountryFlag";
 import { extractASIN } from "./functions";
 import getProductDetails from "@/app/actions/amazon/getProductDetails";
 import { updateAmazonImageUrl, updateBase64Image } from "@/lib/features/productImageUpload";
+import { getAmazonDomain } from "@/utils/getAmazonDomain";
 
 export default function AddProductPopup() {
   const dispatch = useDispatch();
@@ -26,7 +25,6 @@ export default function AddProductPopup() {
   const [price, setPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [currency, setCurrency] = useState("USD");
-  const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const userId = useSelector((state: RootState) => state.userData.id);
@@ -60,11 +58,11 @@ export default function AddProductPopup() {
       emptyInput = 'price';
       emptyCounter++;
     }
-    if (productDescription == ''){
-      setEmptyInputs((prev) => [...prev, 'description']);
-      emptyInput = 'description'
-      emptyCounter++;
-    }
+    // if (productDescription == ''){
+    //   setEmptyInputs((prev) => [...prev, 'description']);
+    //   emptyInput = 'description'
+    //   emptyCounter++;
+    // }
 
     if (emptyCounter >= 1){
       return;
@@ -115,18 +113,15 @@ export default function AddProductPopup() {
       console.error('Error creating product:', error);
     }
     
-
     setTimeout(() => {
       dispatch(updateCurrentPopup("none"));
       setIsLoading(false);
     }, 3000);
   };
 
-
   // Initialization
   useEffect(() => {
     dispatch(updateAmazonImageUrl(''));
-
     setDidInitialize(true);
   }, []);
 
@@ -136,11 +131,13 @@ export default function AddProductPopup() {
     if (autoFill && didInitialize){
       const ASIN = extractASIN(productUrl);
       startAutoFillTransition(async () => {
-        if (ASIN){
+        const domain = getAmazonDomain(productUrl);
+        if (ASIN && domain){
           console.log('has ASIN');
           try{
-            const res = await getProductDetails(ASIN);
+            const res = await getProductDetails(ASIN,domain);
             if (res){
+              console.log('Product details fetched');
               setProductTitle(res.title);
               setProductDescription(res.description);
               setPrice(res.price);
@@ -149,8 +146,9 @@ export default function AddProductPopup() {
             }
             // Reset Image Upload state
             dispatch(updateBase64Image(''));
+            console.log('Fetch product details: Success');
           }catch(e){
-            console.log(e);
+            console.log(`Failed to fetch product detaisl: ${e}`);
           }
         }else{
           console.log('No ASIN');
@@ -163,15 +161,16 @@ export default function AddProductPopup() {
 
   return (
     <div
-      style={{ width: 500, height: 630, marginTop: 50 }}
+      style={{fontSize: 14, width: 426, height: 552, marginTop: 50}}
       className="pt-4 pr-1 overflow-auto hide-scrollbar bg-white rounded-2xl border-2 border-gray-300"
     >
       <div className="h-full">
         {/*Image of the Product */}
-        <div className="flex justify-center ">
+        <div className={`flex justify-center`}>
+          <div className={`${isAutoFillPending && 'glowing-border'}`}>
           <ProductImageUploader
-            width={150}
-            height={150}
+            width={130}
+            height={130}
             productId={(() => {
               return uuidv4();
             })()}
@@ -179,15 +178,16 @@ export default function AddProductPopup() {
               setProductImageUrl('');
             }}
           />
+          </div>
         </div>
-
         {/*Title input */}
         <div className="mt-4 flex justify-center ">
-          <div className="flex gap-2">
+
             <div>
               <p>Title</p>
-              <div  style={{width: 280, height: 40}} className={`${isAutoFillPending && 'glowing-border'}`}>
+              <div  style={{width: 250, height: 30}} className={`${isAutoFillPending && 'glowing-border'}`}>
               <input
+                style={{ height: 30}}
                 className={`rounded-full p-2 pl-4 border ${emptyInputs.includes('title') ? 'border-red-500' : 'border-slate-300' } `}
                 placeholder={"Product name"}
                 value={productTitle}
@@ -202,10 +202,10 @@ export default function AddProductPopup() {
               <label>Price</label>
               <div className={`flex rounded-full bg-white border ${emptyInputs.includes('price') ? 'border-red-500' : 'border-slate-300' } ${isAutoFillPending && 'glowing-border'}`}>
                 <input
-                  style={{ width: 100, height: 40}}
+                  style={{ width: 100, height:30}}
                   className="border-slate-400 rounded-full pl-2 "
                   placeholder="1.00"
-                  type="number"
+                  type="string"
                   value={price}
                   onChange={(e) => {
                     setPrice(e.target.value);
@@ -213,16 +213,15 @@ export default function AddProductPopup() {
                 />
               </div>
             </div>
-          </div>
         </div>
         
         {/*Product URL input */}
         <div className="mt-4 flex justify-center ">
-          <div>
+          <div style={{ width: 350 }}>
             <p>Product URL</p>
             <input
-              style={{ width: 390 }}
-              className={` border border-slate-300 rounded-full p-2 pl-4`}
+              style={{height:30}}
+              className={` border border-slate-300 rounded-full w-full p-2 pl-4`}
               placeholder={"Product URL"}
               value={productUrl}
               onChange={(e) => {
@@ -235,10 +234,10 @@ export default function AddProductPopup() {
           
         {/** Auto fill product details */}
         <div className="mt-4 flex justify-center">
-          <div className="flex justify-between">
-            <div className="flex flex-col">
+          <div style={{height: 50}} className="flex justify-between">
+            <div style={{fontSize: 14}} className="flex flex-col">
               <p>Auto Fill Product Details</p>
-              <p style={{width: 350}} className="text-gray-500 text-xs ">
+              <p style={{width: 250}} className="text-gray-500 text-xs ">
                 Fill product title, description, and image when product URL is given.
               </p>
             </div>
@@ -256,11 +255,12 @@ export default function AddProductPopup() {
         </div>
         
         {/* Description  */}
-        <div className="mt-4 m-4 pb-8 flex justify-center gap-2">
-          <div style={{ width: 370 }}>
+        <div className="mt-4 m-4 flex justify-center gap-2">
+          <div style={{ width: 340 }}>
             <label>Description</label>
-            <div style={{height: 100}} className={`${isAutoFillPending && 'glowing-border'}`}>
+            <div style={{height: 70}} className={`${isAutoFillPending && 'glowing-border'}`}>
             <textarea
+            placeholder="Brief description "
               className={`w-full h-full rounded-2xl p-2 pl-4 border ${emptyInputs.includes('description') ? 'border-red-500' : 'border-slate-300' }`}
               value={productDescription}
               onChange={(e) => {
@@ -272,17 +272,19 @@ export default function AddProductPopup() {
         </div>
 
         {/*Buttons */}
-        <div style={{height: 70}} className="mt-4  flex items-start  justify-center gap-8">
+        <div style={{height: 70}} className=" flex items-start  justify-center gap-8">
           {isLoading ? <div style={{height: 40}} className="flex justify-center items-center">
             <Image alt="" width={30} height={30} src={Loading} />
           </div> : <button
-            className="bg-blue-500 rounded-2xl pl-8 pr-8 p-2  text-white"
+            style={{width:120, height: 30}}
+            className="bg-blue-500 rounded-2xl text-white"
             onClick={clickAddProduct}
           >
             Add product
           </button>}
           <button
-            className="bg-black rounded-2xl pl-12 pr-12  p-2 text-white"
+           style={{width:120, height: 30}}
+            className="bg-black rounded-2xl  text-white"
             onClick={() => {
               dispatch(updateCurrentPopup("none"));
             }}

@@ -1,82 +1,88 @@
-'use client'
+"use client";
 
-import getFriendsProducts from "@/app/actions/products/getFriendsProducts";
 import { RootState } from "@/lib/store";
-import { ProductType } from "@/lib/types/products";
-import { useTransition, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import FriendsWishItem from "../_components/FriendsWishItem";
-import FriendsWishItemSkeleton from "@/components/skeletons/FriendsWishitemSkeleton";
+import FriendsWishItem from "../(components)/FriendsWishItem";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
+import { FriendWithProducts } from "@/lib/types/friend";
+import Image from "next/image";
+import searchIcon from "/public/searchIcon.svg";
 
-interface FriendsProducts {
-    friendId: string;
-    friendFirstName: string;
-    friendImageURL: string;
-    products: ProductType[];
-}
+export default function FriendsListRightSection() {
+  const friendsProducts = useSelector(
+    (state: RootState) => state.friendsListPage.friendsWithProducts
+  );
+  const { width, height } = useWindowSize();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState<
+    FriendWithProducts[]
+  >([]);
 
-export default function FriendsListRightSection(){
-    const [isPending, startTransition] = useTransition();
-    const userId = useSelector((state: RootState) => state.userData.id);
-    const [friendsProducts, setFriendsProducts] = useState<FriendsProducts[]>([]);
-    const {width, height} = useWindowSize();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredProducts, setFilteredProducts] = useState<FriendsProducts[]>([]);
-
-    useEffect(() => {
-        setFilteredProducts((prev) => friendsProducts.filter((friend) => friend.friendFirstName.toLocaleLowerCase().includes(searchTerm.toLowerCase())))
-    }, [searchTerm]);
-
-    useEffect(() => {
-        startTransition(async () => {
-            const results = await getFriendsProducts(userId);
-            if (results){
-                setFriendsProducts(results.data || []);
-                setFilteredProducts(results.data || []);
-            }            
-        });
-    }, []);
-
-    return (
-        <div className="ml-8 h-screen">
-            {/**Search bar */}
-                <input
-                    style={{height: 40, marginTop: 20, marginBottom: 15}} 
-                    className="p-4 rounded-full shadow-md w-64" 
-                    placeholder={`Friend's name`}
-                    value={searchTerm}
-                    onChange={(e)=>{
-                        setSearchTerm(e.target.value);
-                    }}
-                    />
-            <div style={{height: height-75, width: width-400}} className="hide-scrollbar pt-4 flex flex-wrap gap-2 overflow-auto border-t-2 border-slate-400 p-2">
-                    {
-                        isPending ? 
-                        (<div className="pl-2 flex flex-wrap gap-2 ">
-                            <FriendsWishItemSkeleton/>
-                            <FriendsWishItemSkeleton/>
-                            <FriendsWishItemSkeleton/>
-                            <FriendsWishItemSkeleton/>
-                            <FriendsWishItemSkeleton/>
-                            <FriendsWishItemSkeleton/>
-                            <FriendsWishItemSkeleton/>
-                        </div>) 
-                        : <div className="pl-2  w-full h-full">
-                            {filteredProducts.length > 0 ? <div className="flex flex-wrap gap-2 justify-start">
-                            {
-                                filteredProducts.map((product, friendIndex) => (
-                                    <FriendsWishItem key={product.friendId} friendProduct={product}/>
-                                ))
-                            }
-                        </div> : <div style={{height: 400}} className="text-gray-400 flex justify-center items-center ">
-                            No friends to show
-                            </div>}
-                        </div>
-                    }
-                    
-
-                </div>
-        </div>
+  useEffect(() => {
+    setFilteredProducts((prev) =>
+      friendsProducts.filter((friend) =>
+        friend.friendFirstName
+          .toLocaleLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
     );
+  }, [searchTerm]);
+
+  return (
+    <div className="ml-8 h-screen">
+      {/**Search bar */}
+      <div style={{ position: "relative", width: 250 }}>
+        <input
+          style={{
+            height: 40,
+            marginTop: 20,
+            marginBottom: 15,
+            paddingRight: 60, // Add padding to accommodate the icon
+          }}
+          className="p-4 w-full rounded-xl border border-gray-300"
+          placeholder={`Friend's name`}
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: 10,
+            paddingTop: 2,
+            transform: "translateY(-50%)",
+          }}
+        >
+          <Image src={searchIcon} alt="searchIcon" width={40} height={40} />
+        </div>
+      </div>
+      <div
+        style={{ height: height - 75, width: width - 400 }}
+        className="hide-scrollbar pt-4 flex flex-wrap gap-2 overflow-auto  p-2"
+      >
+        <div className="pl-2 w-full h-full">
+          {filteredProducts.length > 0 ? (
+            <div className="flex flex-wrap gap-6 justify-start">
+              {filteredProducts.map((product, friendIndex) => (
+                <FriendsWishItem
+                  key={product.friendId}
+                  friendProduct={product}
+                />
+              ))}
+            </div>
+          ) : (
+            <div
+              style={{ height: 400 }}
+              className="text-gray-400 flex justify-center items-center "
+            >
+              No friends to show
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

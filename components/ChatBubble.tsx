@@ -21,7 +21,7 @@ export function ChatBubble({
 
     const userName = useSelector((state: RootState) => state.userData.firstName);
     const userId = useSelector((state: RootState) => state.userData.id);
-    const friendName = useSelector((state: RootState) => state.insideFriend.friendName);
+    const friendData = useSelector((state: RootState) => state.insideFriend.friendData);
     const friendId = useSelector((state: RootState) => state.insideFriend.friendId)
 
     return (
@@ -30,7 +30,7 @@ export function ChatBubble({
       {/**Friend's Profile Image */}      
       {!isSender && (
         <div className="pl-2 pt-2">
-        <UserProfileImage userId={friendId} userName={friendName} alt="" width={30} height={30}/>
+        <UserProfileImage userId={friendId} userName={friendData?.firstName || ''} alt="" width={30} height={30}/>
         </div>
       )}
       <div>
@@ -43,7 +43,7 @@ export function ChatBubble({
         <div>
           {isSender ? null : (
             <span className="text-sm font-semibold">
-              {friendName}
+              {friendData?.firstName}
             </span>
           )}
         </div>

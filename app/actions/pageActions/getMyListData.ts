@@ -23,6 +23,7 @@ import getUserInfo from "../user/getUserInfo";
  * @returns An object containing the fetched data or an error message.
  */
 export async function getMyListData(userId: string) {
+    console.log(`getMyListData userId: ${userId}`);
     const uri = process.env.MONGODB_URI || "";
     const mongoClient = new MongoClient(uri);
 

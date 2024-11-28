@@ -2,7 +2,6 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import verifyVerificationToken from "../actions/email/verifyVerificationToken";
 import Image from "next/image";
 import giftloading from "/public/giftloading.svg";
@@ -12,6 +11,8 @@ import {
   updateUserVerified,
 } from "@/lib/features/userData";
 import { CheckCircle } from "lucide-react";
+import { navigateTo } from "../actions/navigateTo";
+import Cookies from "js-cookie"; 
 
 // Example Query: domain.com/verify?token=8723hud&email=johndoe@gmail.com
 
@@ -20,7 +21,6 @@ import { CheckCircle } from "lucide-react";
 // This page is accessible even when the user is not signed in.
 
 function Search() {
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const searchParams = useSearchParams();
@@ -28,10 +28,12 @@ function Search() {
   const email = searchParams.get("email");
   const [isVerified, setIsVerified] = useState(false);
   useEffect(() => {
+
     const verify = async () => {
       if (email && verificationToken) {
         if (verificationToken == "none") {
-          router.push("/mylist");
+          // router.push("/login");
+          navigateTo('/login');
           return;
         }
         // Verify verification token
@@ -43,21 +45,26 @@ function Search() {
         } else {
           console.log(`Failed: status code ${res.status} ${res.message}`);
           setIsVerified(false);
-          router.push("/mylist");
+          // router.push("/login");
+          navigateTo("/login");
         }
       } else {
         console.log("no query parameters given");
         setIsVerified(false);
-        router.push("/login");
+        // router.push("/login");
+        navigateTo("/login");
       }
     };
 
     verify();
+    Cookies.remove('token');
+    Cookies.remove('rememberMe');
+
   }, []);
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       {isVerified ? (
-        <div className="w-screen h-screen flex items-center justify-center bg-gray-300 p-4">
+        <div className="w-screen h-screen flex items-center justify-center bg-gray-200 p-4">
         <div className="max-w-lg w-full bg-white shadow-md rounded-2xl p-6 text-center">
           <div className="flex justify-center">
             <div className="bg-blue-500 p-6 rounded-full">

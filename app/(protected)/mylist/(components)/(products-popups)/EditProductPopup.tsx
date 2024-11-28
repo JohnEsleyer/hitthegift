@@ -4,7 +4,6 @@ import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { currencies } from "./constants";
 import Image from "next/image";
 import Loading from "/public/loading.svg";
 import ProductImageUploader from "@/components/ProductImageUploader";
@@ -30,10 +29,10 @@ import { handleBase64ToFormData } from "@/utils/base64ToFormData";
 import uploadProductImage from "@/app/actions/s3/uploadProductImage";
 import { Trash2 } from "lucide-react";
 import { deleteProduct } from "@/app/actions/products/deleteProduct";
-import CountryFlag from "./CountryFlag";
 import { extractASIN } from "./functions";
 import getProductDetails from "@/app/actions/amazon/getProductDetails";
 import '@/styles/GlowingBorder.css';
+import { getAmazonDomain } from "@/utils/getAmazonDomain";
 
 type ResponseData = {
   message: string;
@@ -53,7 +52,6 @@ export default function EditProductPopup() {
   const currency = useSelector(
     (state: RootState) => state.editProductPopup.currency
   );
-  const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
   const [response, setResponse] = useState<ResponseData>({
     message: "",
     status: 0,
@@ -102,10 +100,12 @@ export default function EditProductPopup() {
     if (autoFill && didInitialize) {
       const ASIN = extractASIN(productUrl);
       startAutoFillTransition(async () => {
-        if (ASIN) {
+        const domain = getAmazonDomain(productUrl);
+
+        if (ASIN && domain) {
           console.log('has ASIN');
           try {
-            const res = await getProductDetails(ASIN);
+            const res = await getProductDetails(ASIN, domain);
             if (res) {
               dispatch(updateEditProductTitle(res.title));
               dispatch(updateEditProductDescription(res.description));
@@ -229,7 +229,7 @@ export default function EditProductPopup() {
   if (showConfirmDelete) {
     return (
       <div
-        style={{ height: 230 }}
+        style={{ height: 230, width: 426, marginTop: 50 }}
         className="flex flex-col justify-center border-2 border-slate-400 items-center rounded-2xl p-16 bg-white "
       >
         <p className="mt-4">Are you sure you want to delete this product?</p>
@@ -271,39 +271,40 @@ export default function EditProductPopup() {
 
   return (
     <div
-      style={{ width: 500, height: 630, marginTop: 50 }}
-      className="overflow-auto hide-scrollbar pt-4 pr-1 rounded-2xl border-2 bg-white border-slate-400"
+      style={{fontSize: 14, width: 426, height: 552, marginTop: 50}}
+      className="pt-4 pr-1 overflow-auto hide-scrollbar bg-white rounded-2xl border-2 border-gray-300"
     >
-      <div className="h-full  ">
+      <div className="h-full">
         {/*Delete product */}
-        <div className="flex justify-start pl-4 ">
+        <div className="absolute flex justify-start pl-4 ">
           <button onClick={() => setShowConfirmDelete(true)}>
             <Trash2 className="hover:text-red-500" size={25} />
           </button>
         </div>
         {/*Image of the Product */}
-        <div className="flex justify-center ">
+        <div className="flex justify-center">
+        <div className={`${isAutoFillPending && 'glowing-border'}`}>
           <ProductImageUploader
-            width={150}
-            height={150}
+            width={130}
+            height={130}
             productId={(() => {
               return uuidv4();
             })()}
             loadInitialImage={true}
           />
         </div>
+        </div>
         {/*Title input */}
         <div className="mt-4 flex justify-center ">
-          <div className="flex gap-2">
             <div>
               <p>Title</p>
-              <div  style={{width: 270, height: 40}} className={`${isAutoFillPending && 'glowing-border'}`}>
+              <div  style={{width: 250, height: 30}} className={`${isAutoFillPending && 'glowing-border'}`}>
               <input
-                className={`rounded-full p-2 pl-4 border border-slate-400 `}
+                style={{ height: 30}}
+                className={`rounded-full p-2 pl-4 border border-slate-300 `}
                 placeholder={"Product name"}
                 value={title}
                 onChange={(e) => {
-                  //   setTitle(e.target.value);
                   dispatch(updateEditProductTitle(e.target.value));
                 }}
               />
@@ -311,80 +312,48 @@ export default function EditProductPopup() {
             </div>
             <div className="flex flex-col">
               <label>Price</label>
-              <div className={`border border-slate-400 flex rounded-full bg-white ${isAutoFillPending && 'glowing-border'}`}>
+              <div className={`flex rounded-full bg-white border border-slate-300 ${isAutoFillPending && 'glowing-border'}`}>
                 <input
-                  style={{ width: 100 }}
-                  className="border-r border-slate-400 rounded-l-full pl-2 p-2 "
-                  type="number"
-                  value={price}
+                  style={{ width: 100, height:30}}
+                  className="border-slate-400 rounded-full pl-2 "
+                  type="text"
                   placeholder="1.00"
+                  value={price}
                   onChange={(e) => {
-                    // setPriceInput(e.target.value);
                     dispatch(updateEditProductPrice(e.target.value));
                   }}
                 />
-                <div className="relative p-2 flex items-center ">
-                  <button
-                    className=" "
-                    onClick={() => {
-                      setShowCurrencyOptions((prev) => !prev);
-                    }}
-                  >
-                    {currency}
-                  </button>
-                  {showCurrencyOptions && (
-                    <ul
-                      style={{ zIndex: 100, width: 80, top: 30, right: 1 }}
-                      className="flex flex-col border border-slate-400 h-52 p-2 overflow-auto absolute mt-2 bg-white rounded shadow-md"
-                    >
-                      {currencies.map((currency) => (
-                        <button
-                          className="flex justify-between hover:bg-gray-200 w-full"
-                          onClick={() => {
-                            //   setCurrencyInput(currency);
-                            dispatch(updateEditProductCurrency(currency));
-                            setShowCurrencyOptions(false);
-                          }}
-                          key={currency}
-                        >
-                          <CountryFlag currency={currency} />{" "}
-                          <span>{currency}</span>
-                        </button>
-                      ))}
-                    </ul>
-                  )}
-                </div>
               </div>
             </div>
-          </div>
         </div>
+        
         {/*Product URL input */}
         <div className="mt-4 flex justify-center ">
-          <div>
+          <div style={{ width: 350 }}>
             <p>Product URL</p>
             <input
-              style={{ width: 430 }}
-              className="rounded-full p-2 pl-4 border border-slate-400"
+              style={{height:30}}
+              className={` border border-slate-300 rounded-full w-full p-2 pl-4`}
               placeholder={"Product URL"}
               value={productUrl}
               onChange={(e) => {
-                // setProductUrlInput(e.target.value);
                 dispatch(updateEditProductProductUrl(e.target.value));
               }}
             />
+         <p className="text-gray-500 text-xs flex justify-center">If autofill doesn't work, please enter the information manually</p>
           </div>
         </div>
-        {/** Auto fill produduct details */}
+          
+        {/** Auto fill product details */}
         <div className="mt-4 flex justify-center">
-          <div className="flex justify-between">
-            <div className="flex flex-col">
-              <p>Picture and description auto</p>
-              <p style={{width: 350}} className="text-gray-500">
-                Fill product title, description, and image when product URL is
-                given.
+          <div style={{height: 50}} className="flex justify-between items-center">
+            <div style={{fontSize: 14}} className="flex flex-col">
+              <p>Auto Fill Product Details</p>
+              <p style={{width: 250}} className="text-gray-500 text-xs ">
+                Fill product title, description, and image when product URL is given.
               </p>
             </div>
-            <label className="switch">
+            <label className="switch ">
               <input
                 type="checkbox"
                 checked={autoFill}
@@ -396,17 +365,17 @@ export default function EditProductPopup() {
             </label>
           </div>
         </div>
-
+        
         {/* Description  */}
-        <div className="mt-4 m-4 pb-8 flex justify-center gap-2">
-          <div style={{ width: 400 }}>
+        <div className="mt-4 m-4 flex justify-center gap-2">
+          <div style={{ width: 340 }}>
             <label>Description</label>
-            <div style={{height: 100}} className={`${isAutoFillPending && 'glowing-border'}`}>
+            <div style={{height: 70}} className={`${isAutoFillPending && 'glowing-border'}`}>
             <textarea
-              className="hide-scrollbar w-full h-full rounded-2xl p-2 pl-4 border border-slate-400"
+            placeholder="Brief description "
+              className={`w-full h-full rounded-2xl p-2 pl-4 border border-slate-300`}
               value={description}
               onChange={(e) => {
-                // setDescriptionInput(e.target.value);
                 dispatch(updateEditProductDescription(e.target.value));
               }}
             />
@@ -415,17 +384,19 @@ export default function EditProductPopup() {
         </div>
 
         {/*Buttons */}
-        <div style={{height: 70}} className="mt-4  flex items-start justify-center gap-8">
+        <div style={{height: 70}} className=" flex items-start  justify-center gap-8">
           {isLoading ? <div style={{height: 40}} className="flex justify-center items-center">
             <Image alt="" width={30} height={30} src={Loading} />
-            </div> : <button
-            className="bg-blue-500 rounded-2xl pl-12 pr-12 p-2 text-white"
+          </div> : <button
+            style={{width:120, height: 30}}
+            className="bg-blue-500 rounded-2xl text-white"
             onClick={clickSaveProduct}
           >
             Save
           </button>}
           <button
-            className="bg-black rounded-2xl pl-12 pr-12 p-2 text-white"
+           style={{width:120, height: 30}}
+            className="bg-black rounded-2xl  text-white"
             onClick={() => {
               dispatch(updateCurrentPopup("none"));
             }}
@@ -433,6 +404,7 @@ export default function EditProductPopup() {
             Cancel
           </button>
         </div>
+    
       </div>
     </div>
   );

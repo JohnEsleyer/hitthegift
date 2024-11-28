@@ -1,68 +1,90 @@
-"use client";
-
-import { useEffect, ReactNode, useState } from "react";
+import { useEffect, ReactNode, useState, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Cookies from "js-cookie"; // You'll need js-cookie package to get cookies on the client side
+import Cookies from "js-cookie"; 
 import verifyToken from "@/app/actions/auth/verifyToken";
 import Image from 'next/image';
 import giftloading from '/public/giftloading.svg';
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
+import { navigateTo } from "@/app/actions/navigateTo";
+import getUserInfo from "@/app/actions/user/getUserInfo";
 
-
-// Middleware Component that wraps the content
 interface AuthMiddlewareProps {
-  children: ReactNode; // The component/page to wrap
+  children: ReactNode; 
 }
 
 export default function AuthMiddleware({ children }: AuthMiddlewareProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const isVerified = useSelector((state: RootState) => state.userData.verified);   
+  const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    async function checkToken() {
-      const publicRoutes = ["/login", "/register", "/sandbox"]; // Define public routes
+  const userId = useSelector((state: RootState) => state.userData.id);
 
-      // If the route is public, no need to verify the token
-      if (publicRoutes.includes(pathname)) {
-        setIsAuthenticated(true);
-        return;
+  async function checkEmail(){
+    // Check if email is verified
+    try{
+      const res = await getUserInfo(userId);
+      if (res.verified){
+        navigateTo(pathname);
+      }else{
+        console.log('Failed to fetch user data');
+        navigateTo('/verify-email');
       }
-
-      const token = Cookies.get("token"); // Get token from cookies
-
-      if (!token) {
-        // If no token is found, redirect to login
-        router.push("/login");
-        return;
-      }
-
-        // Verify the token on the server
-
-        const res = await verifyToken(token);
-
-        if (res.status == 200){
-            // Token is valid, allow access to the wrapped page
-            setIsAuthenticated(true);
-        }else{
-            // If verification fails, redirect to login
-            router.push("/login");
-        }
-        
-      
+    }catch(e){
+      console.error(e);
+      navigateTo('/login');
     }
-    checkToken();
-  }, [router]);
-
-  // While the authentication check is happening, you can show a loading state
-  if (!isAuthenticated) {
-    return <div className="h-screen w-screen flex justify-center items-center">  <Image
-    src={giftloading}
-    alt=""
-    width={50}
-    height={50}
-  /></div>;
   }
 
-  // If authenticated, render the wrapped component
-  return <div>{children}</div>;
+  useEffect(() => {
+    startTransition(async () => {
+      const token = Cookies.get("token"); 
+      const rememberMe = Cookies.get("rememberMe") === "true"; // Get rememberMe cookie
+      const publicRoutes = ["/register", "/sandbox"]; // Public routes
+      try{
+      if (token){
+        const res = await verifyToken(token);
+        if (res.status == 200){
+          // Redirect to /mylist if user is in /login and rememberMe and isVerified are true.
+          if (pathname == '/login' && rememberMe && isVerified){
+            navigateTo('/mylist');
+          }else if (pathname !== '/login' && isVerified){
+            navigateTo(pathname);
+          }else{
+           checkEmail();
+          }
+        }else{
+          if (publicRoutes.includes(pathname) || pathname == '/login'){
+            navigateTo(pathname);
+          }else{
+            navigateTo('/login');
+          }
+        }
+      }else{
+        if (publicRoutes.includes(pathname) || pathname == '/login'){
+          navigateTo(pathname);
+        }else{
+          navigateTo('/login');
+        }
+      }
+      }catch(e){
+        console.error(e);
+      } 
+
+      
+    });
+    
+  }, [pathname]); 
+
+
+  if (isPending) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Image src={giftloading} alt="" width={50} height={50} />
+      </div>
+    );
+  }else{
+    return <div>{children}</div>;
+  }  
 }

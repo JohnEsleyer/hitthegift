@@ -1,39 +1,41 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Friend } from '../types/friend';
+import { ProductType } from '../types/products';
+import { UserData } from '../types/user';
+
+type FriendData = {
+    hobbyInfo: string;
+    firstName: string;
+    lastName: string;
+    verified: boolean;
+    verificationToken: string;
+    email: string;
+    birthday: string;
+}
 
 export interface InsideFriendState {
    friendId: string;
-   friendName: string;
-   friends: string[];
+   friends: Friend[];
+   products: ProductType[];
+   friendData: FriendData | undefined;
    isOpenChatbox: boolean;
    conversationId: string;
-   profileImageUrl: string;
 }
 
 const initialState: InsideFriendState = {
-   friendId: '',
-   friendName: '',
+friendId: '',
    friends: [],
+   products: [],
+   friendData: undefined,
    isOpenChatbox: false,
    conversationId: '',
-   profileImageUrl: '',
 };
 
 const insideFriendSlice = createSlice({
     name: 'insideFriend',
     initialState,
     reducers: {
-        updateFriendId: (state, action: PayloadAction<string>) => {
-            return {
-                ...state,
-                friendId: action.payload,
-            };
-        },
-        updateFriendName: (state, action: PayloadAction<string>) => {
-            return {
-                ...state,
-                friendName: action.payload,
-            }
-        },
+  
         updateIsOpenChatbox: (state, action: PayloadAction<boolean>) => {
             return {
                 ...state,
@@ -46,20 +48,40 @@ const insideFriendSlice = createSlice({
                 conversationId: action.payload,
             }
         },
-        updateProfileImageUrl: (state, action: PayloadAction<string>) => {
+
+        updateFriendsForInsideFriend: (state, action: PayloadAction<Friend[]>) => {
             return {
                 ...state,
-                profileImageUrl: action.payload,
+                friends: action.payload,
             }
         },
+        updateProdctsForInsideFriend: (state, action: PayloadAction<ProductType[]>) => {
+            return {
+                ...state,
+                products: action.payload,
+            }
+        },
+        updateFriendData: (state, action: PayloadAction<FriendData>) => {
+            return {
+                ...state,
+                friendData: action.payload as FriendData,
+            }
+        },
+        updateFriendId: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                friendId: action.payload,
+            }
+        }
     }
 });
 
 export const { 
-    updateFriendId, 
-    updateFriendName, 
     updateIsOpenChatbox,
     updateConversationId,
-    updateProfileImageUrl,
+    updateFriendsForInsideFriend,
+    updateProdctsForInsideFriend,
+    updateFriendData,
+    updateFriendId, 
 } = insideFriendSlice.actions;
 export default insideFriendSlice.reducer; // Ensure this exports the reducer

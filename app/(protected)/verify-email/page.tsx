@@ -1,37 +1,49 @@
-'use client'
+'use client';
 
-import sendEmailVerification from "@/app/actions/email/sendEmailVerification";
 import { RootState } from "@/lib/store";
 import { MailCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
+import sendEmailVerification from "../../actions/email/sendEmailVerification";
+import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
+import { navigateTo } from "../../actions/navigateTo";
 
-interface EmailVerifierProps{
-    children: React.ReactNode;
-}
-
-export default function EmailVerifier({children}: EmailVerifierProps){
-    const isVerified = useSelector((state: RootState) => state.userData.verified);   
-    const userId = useSelector((state: RootState) => state.userData.id);
+export default function VerifyEmailPage(){ const userId = useSelector((state: RootState) => state.userData.id);
     const userEmail = useSelector((state: RootState) => state.userData.email);
     const firstName = useSelector((state: RootState) => state.userData.firstName);
     const lastName = useSelector((state: RootState) => state.userData.lastName);
+    const isVerified = useSelector((state: RootState) => state.userData.verified);
     const verificationToken = useSelector((state: RootState) => state.userData.verificationToken);
     const [enableResend, setEnableResend] = useState(true);
+    const [isPending, startTransition] = useTransition();
+    
+    useEffect(()=> {
+      startTransition(() => {
+        if (isVerified){
+          navigateTo('/mylist');   
+         }
+      })
+      
+    }, []);
 
     const onResendVerification = async () => {
-      setEnableResend(false);
-        try{
-            await sendEmailVerification(userId, userEmail, firstName, lastName, verificationToken);
-        }catch(e){
-            console.log(e);
-        }
-       
+        setEnableResend(false);
+          try{
+              await sendEmailVerification(userId, userEmail, firstName, lastName, verificationToken);
+          }catch(e){
+              console.log(e);
+          }
+      }
+      
+
+    if (isPending){
+      return <div></div>
     }
- 
-    if (!isVerified){
-        return ( <div className="w-screen flex items-center justify-center bg-gray-300 p-4">
-            <div className="max-w-lg w-full bg-white shadow-md rounded-lg p-6 text-center">
+
+    return (
+        <RenderClientOnly loading={<div></div>}>
+        <div className="w-screen h-screen flex items-center justify-center bg-gray-200 p-4">
+            <div style={{fontSize: 12}} className="max-w-lg w-full bg-white shadow-md rounded-lg p-6 text-center">
               <div className="flex justify-center">
                 <div className="bg-blue-500 p-6 rounded-full">
                 <MailCheck  size={32} color="white"/>
@@ -71,12 +83,7 @@ export default function EmailVerifier({children}: EmailVerifierProps){
                 Thank you for your patience! We can't wait for you to explore everything our app has to offer once you're verified.
               </p>
             </div>
-          </div>)
-    }
-
-    return (
-        <div>
-            {children}
-        </div>
-    );
+          </div>
+          </RenderClientOnly>
+    )
 }

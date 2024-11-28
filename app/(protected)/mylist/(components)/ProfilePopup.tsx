@@ -74,7 +74,7 @@ export default function AddEventPopup() {
 
   return (
     <div
-      style={{ width: 500, height: 500 }}
+      style={{ width: 420, height: 390 }}
       className="p-4 bg-white flex flex-col items-center justify-start rounded-2xl border border-slate-300 border-2"
     >
       {isPending ? (
@@ -84,13 +84,13 @@ export default function AddEventPopup() {
           <div className="flex flex-col items-left w-full h-8">
             {isSaving && (
               <div className="flex" style={{width: 50}}>
-                <Image src={loading} alt="" width={20} height={20}/> 
+                <Image src={loading} alt="" width={15} height={15}/> 
                 <span className="text-xs flex items-center pl-2">Saving</span>
               </div>
             )}
           </div>
 
-          <UserProfile width={120} height={120} />
+          <UserProfile width={100} height={100} />
           <div className="mt-2 flex justify-center">
             <DebouncedInput
               value={firstName}
@@ -104,6 +104,7 @@ export default function AddEventPopup() {
               width={200}
               height={30}
               isCenter={true}
+              disableSearchIcon={true}
             />
           </div>
           <DebouncedInput
@@ -117,11 +118,13 @@ export default function AddEventPopup() {
             }}
             width={300}
             height={10}
+            color={'text-gray-500'}
             isCenter={true}
+            disableSearchIcon={true}
           />
 
           {/**Date of birth */}
-          <div className="w-full mt-4">
+          <div style={{fontSize: 14}} className="w-full mt-4">
             <p>Date of birth</p>
             <input
               className="border-2 border-gray-300"

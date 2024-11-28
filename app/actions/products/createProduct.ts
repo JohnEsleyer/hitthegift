@@ -44,7 +44,7 @@ export async function createProduct(data: RequestPayload) {
         }
 
         console.log("create product: SUCCESS");
-         
+        console.log(`Inserted ID: ${product.insertedId}`);
         return { message: "Product Creation Success",data: responseData, status: 200 };
     } catch (e) {
         console.log(e);

@@ -29,8 +29,7 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
         dispatch(updateHobbyInfo(value));
         dispatch(updateHobbyInfo(value))
     };
-
-
+    
     // debounce mechanism
     useEffect(() => {
         setIsTyping(true);
@@ -60,11 +59,12 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
     
     
     return (
-        <div className="flex flex-col m-2 pb-4 flex items-center rounded-2xl shadow-md bg-white border border-gray-300 rounded-2xl ">
 
+        <div style={{paddingRight: 5, paddingTop:3}} className=" flex flex-col m-2 pb-2 flex items-center rounded-2xl shadow-md bg-white border border-b-4 border-[#c7c7c7] rounded-2xl ">
+        
       <Textarea
           key={"hobbyInfo"}
-          style={{height: 200, width: 280, border: 'none'}}
+          style={{height: 180, border: 'none'}}
           maxLength={500}
           className="text-xs"
           value={hobbyInfo}
@@ -74,13 +74,11 @@ export default function EditableHobbyArea({onPending}: EditableHobbyAreaProps){
         />
 
         <div 
-        style={{height: 16}}
-          className=" w-full flex justify-between"
+        style={{height: 16,width: 300, }}
+          className=" flex justify-between items-center"
           >
-            <div>
-              {isTyping && <div className="flex"><Image src={loading} alt="" width={20} height={20}/> <p className="text-xs">Saving</p></div>}
-            </div>
-            <div className="text-gray-600 text-xs p-2">
+            <span className={`text-gray-600 text-xs ml-8 blinking ${!isTyping && 'invisible'}`}>Saving</span>
+            <div className="text-gray-600 text-xs mr-6 bg-white">
           {(hobbyInfo.length || 0) + "/500"}
             </div>
           </div>

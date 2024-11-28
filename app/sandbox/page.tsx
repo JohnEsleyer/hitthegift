@@ -1,28 +1,11 @@
 'use client'
 
-import React from 'react';
+import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
+import { RootState } from "@/lib/store"
+import { useSelector } from "react-redux";
 
-interface Props {
-  text: string;
-  length: number;
+export default function Sandbox(){
+    const userId = useSelector((state: RootState) => state.userData.id);
+
+    return <RenderClientOnly loading={<div></div>}><div>v1.0.2 {userId}</div></RenderClientOnly>
 }
-
-const TextElement: React.FC<Props> = ({ text, length }) => {
-  const truncatedText = text.length > length ? `${text.substring(0, length)}...` : text;
-
-  return (
-    <span>{truncatedText}</span>
-  );
-};
-
-
-const MyComponent = () => {
-    return (
-      <div>
-        <TextElement text="Hello World" length={8} /> {/* Output: Hello W... */}
-        <TextElement text="Short Text" length={10} /> {/* Output: Short Text */}
-      </div>
-    );
-  };
-
-export default MyComponent;

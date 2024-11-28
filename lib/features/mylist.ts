@@ -69,7 +69,14 @@ const myListSlice = createSlice({
         },
         updateEventStore: (state, action: PayloadAction<ServerResponseForEvents>) => {
             const updatedEvent = action.payload;
-            state.events = state.events.map((event) => event.id === updatedEvent.id ? updatedEvent : event)
+            state.events = state.events.map((event) => event.id === updatedEvent.id ? updatedEvent : event);
+      
+        },
+        insertHighlightedDate: (state, action: PayloadAction<Date>) => {
+            return {
+                ...state,
+                highlightedDates: [...state.highlightedDates, action.payload],
+            }
         },
         updateHighlightedDates: (state, action: PayloadAction<Date[]>) => {
             return {
@@ -77,7 +84,6 @@ const myListSlice = createSlice({
                 highlightedDates: action.payload,
             }
         }
-        
     }
 });
 
@@ -91,5 +97,6 @@ export const {
      deleteMyListProductById,
      deleteMyListEventById,
      updateHighlightedDates,
+     insertHighlightedDate,
     } = myListSlice.actions;
 export default myListSlice.reducer; // Ensure this exports the reducer

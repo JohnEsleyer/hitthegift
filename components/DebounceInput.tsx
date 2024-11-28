@@ -1,4 +1,6 @@
 import { useState, ChangeEvent } from "react";
+import searchIcon from '/public/searchIcon.svg';
+import Image from 'next/image';
 
 interface DebounceInputProps{
     onUserStopTyping: (value: string) => void;
@@ -12,6 +14,8 @@ interface DebounceInputProps{
     isCenter: boolean;
     value: string;
     rounded?: boolean;
+    disableSearchIcon?: boolean;
+    color?: string;
   }
   
 export function DebouncedInput({
@@ -26,6 +30,8 @@ export function DebouncedInput({
     isCenter,
     rounded,
     value,
+    color,
+    disableSearchIcon,
 }: DebounceInputProps){  
       const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
       const [inputValue, setInputValue] = useState(value || '');
@@ -50,8 +56,8 @@ export function DebouncedInput({
       };
   
       return (
+        <div className="relative ">
         <input
-        
           type="text"
           value={inputValue}
           onChange={(event) => {
@@ -60,8 +66,10 @@ export function DebouncedInput({
           }}
           placeholder={placeholder}
           style={{width: width, height: height, fontSize: fontSize}}
-          className={`flex ${isCenter && 'text-center'} ${rounded && 'border rounded-xl '} p-2 m-2 bg-white w-full`}
+          className={`flex ${isCenter && 'text-center'} ${rounded && 'border rounded-xl '} ${color && color} p-2 bg-white w-full`}
         />
+        {!disableSearchIcon && <Image style={{top: -1, right: 1}} className="absolute" src={searchIcon} alt="" width={40} height={40}/> }
+        </div>
       )
   }
 

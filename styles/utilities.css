@@ -7,7 +7,11 @@
 }
 
 .transformCalendar {
-  transform: scale(0.9) translate(-10px, -15px);
+  transform: scale(0.9) translate(-20px, -15px);
+}
+
+.scale-down {
+  transform: scale(0.9) translate(-20px, -15px);
 }
 
 .bg-gradient-radial {
@@ -30,4 +34,18 @@
 .hide-scrollbar {
   -ms-overflow-style: none; /* Internet Explorer and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+
+.blinking {
+  animation: blink 1s ease-in-out infinite alternate;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

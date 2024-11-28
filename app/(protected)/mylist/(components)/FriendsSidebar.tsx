@@ -1,26 +1,24 @@
 "use client";
 
 import acceptFriendRequest from "@/app/actions/user/acceptFriendRequest";
-import getAllFriends from "@/app/actions/user/getAllFriends";
-import getFriendRequests from "@/app/actions/user/getFriendRequests";
+
 import { DebouncedInput } from "@/components/DebounceInput";
-import FriendSkeleton from "@/components/skeletons/FriendSkeleton";
 import UserProfileImage from "@/components/UserProfileImage";
 import {
   updateFriendRequests,
-  updateFriends,
-  updateIsSidebarOpen,
   updateToDeleteFriend,
   updateToDeleteFriendRequest,
 } from "@/lib/features/friendsSidebar";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import { Friend } from "@/lib/types/friend";
-import { FriendRequestServerResponse } from "@/lib/types/friendrequest";
 import Avvvatars from "avvvatars-react";
-import { Check, Search, X } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Image from "next/image";
+import checkmark from "/public/checkmark.svg";
+import xicon from "/public/xicon.svg";
+import xicongray from "/public/xicongray.svg";
 
 interface FriendsSidebarProps {
   onClick: () => void;
@@ -30,16 +28,19 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
-  const friends = useSelector((state: RootState) => state.friendsSidebar.friends);
+  const friends = useSelector(
+    (state: RootState) => state.friendsSidebar.friends
+  );
   const [searchResults, setSearchResults] = useState<Friend[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
 
-  const friendRequests = useSelector((state: RootState) => state.friendsSidebar.friendRequests);
- 
+  const friendRequests = useSelector(
+    (state: RootState) => state.friendsSidebar.friendRequests
+  );
 
   const handleSearch = (query: string) => {
-    console.log('start handleSearch');
+    console.log("start handleSearch");
     // setSearchLoading(true);
     const trimmedQuery = query.trim().toLowerCase();
     const results = friends.filter(
@@ -50,20 +51,16 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
 
     setSearchResults(results);
     // setSearchLoading(false);
-    console.log('end handleSearch ')
+    console.log("end handleSearch ");
   };
 
   const handleSearchWait = () => {
     setSearchLoading(true);
   };
 
-
-
   useEffect(() => {
     setSearchResults(friends);
-
   }, []);
-
 
   const handleAcceptFriendRequest = async (friendRequestId: string) => {
     try {
@@ -74,108 +71,130 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
   };
 
   return (
-    <div className="h-full overflow-auto hide-scrollbar ">
-      <div className="flex items-center ">
-
-        <DebouncedInput 
+    <div
+      style={{ width: 183 }}
+      className="flex flex-col bg-white h-full overflow-auto hide-scrollbar "
+    >
+      <div className=" ">
+        <DebouncedInput
           onUserStopTyping={handleSearch}
           onWait={handleSearchWait}
           placeholder="Search friends..."
-          fontSize={16}
+          fontSize={14}
           delay={1000}
-          width={300}
-          height={50}
+          width={180}
+          height={40}
           isCenter={false}
           value=""
           rounded={true}
           onChange={(event) => {
             setSearchInput(event.target.value);
           }}
-
         />
       </div>
 
       {/**Friends Request */}
 
-        <div>
-       
-          {friendRequests.length > 0 ? (
-            <div>
-              {!searchLoading && searchInput.length == 0 && 
+      <div>
+        {friendRequests.length > 0 ? (
+          <div>
+            {!searchLoading && searchInput.length == 0 && (
               <div>
-                   <p>Requests</p>
-              {friendRequests.map((friendRequest) => (
-                <div
-                  key={friendRequest.id}
-                  className="flex bg-white border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2 flex justify-between"
-                >
-                  <div className="flex items-center">
-                    {friendRequest.sender.imageUrl == "" ? (
-                      <Avvvatars
-                        size={48}
-                        value={friendRequest.sender.firstName}
-                      />
-                    ) : (
-                      <img
-                        className="border rounded-full"
-                        src={friendRequest.sender.imageUrl}
-                        alt={friendRequest.sender.imageUrl}
-                        width={48}
-                        height={48}
-                      />
-                    )}
-                    <p>{friendRequest.sender.firstName}</p>
+                <p>Requests</p>
+                {friendRequests.map((friendRequest) => (
+                  <div
+                    key={friendRequest.id}
+                    style={{ height: 35, fontSize: 14 }}
+                    className="flex bg-white border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2 flex justify-between"
+                  >
+                    <div className="flex items-center">
+                      {friendRequest.sender.imageUrl == "" ? (
+                        <Avvvatars
+                          size={28}
+                          value={friendRequest.sender.firstName}
+                        />
+                      ) : (
+                        <img
+                          className="border rounded-full"
+                          src={friendRequest.sender.imageUrl}
+                          alt={friendRequest.sender.imageUrl}
+                          width={28}
+                          height={28}
+                        />
+                      )}
+                      <p>{friendRequest.sender.firstName}</p>
+                    </div>
+                    <div className="flex">
+                      <button
+                        onClick={() => {
+                          handleAcceptFriendRequest(friendRequest.id);
+                          // Remove the accepted friend request from state
+                          setSearchResults((friends) => [
+                            ...friends,
+                            {
+                              id: friendRequest.sender.id,
+                              firstName: friendRequest.sender.firstName,
+                              lastName: friendRequest.sender.lastName,
+                            },
+                          ]);
+                          dispatch(
+                            updateFriendRequests(
+                              friendRequests.filter(
+                                (element) => element.id !== friendRequest.id
+                              )
+                            )
+                          );
+                        }}
+                      >
+                        <Image
+                          src={checkmark}
+                          alt="checkmark"
+                          width={20}
+                          height={20}
+                        />
+                      </button>
+                      <button
+                        onClick={() => {
+                          dispatch(
+                            updateToDeleteFriendRequest(friendRequest.id)
+                          );
+                          dispatch(updateCurrentPopup("deleteFriendRequest"));
+                        }}
+                      >
+                        <Image src={xicon} alt="xicon" width={20} height={20} />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex">
-                    <button
-                      onClick={() => {
-                        handleAcceptFriendRequest(friendRequest.id);
-                        // Remove the accepted friend request from state
-                        setSearchResults((friends) => [...friends, {id: friendRequest.sender.id,firstName: friendRequest.sender.firstName, lastName: friendRequest.sender.lastName}])
-                        dispatch(updateFriendRequests(friendRequests.filter((element) => element.id !== friendRequest.id)));
-                      }}
-                    >
-                      <Check color={"green"} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        dispatch(updateToDeleteFriendRequest(friendRequest.id));
-                        dispatch(updateCurrentPopup("deleteFriendRequest"));
-                      }}
-                    >
-                      <X color={"red"} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-              </div>}
-            </div>
-          ) : (
-            <div className="mt-2 flex justify-center items-center text-gray-300">
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="mt-2 flex justify-center items-center text-gray-300"></div>
+        )}
+      </div>
 
       {/**Friends Section */}
-     
-        <div>
-          {searchResults.length > 0 ? (
+      <div className="flex-1 flex flex-col justify-between">
+        {searchResults.length > 0 ? (
+          <div className="flex-1 flex-col justify-between items-between">
             <div>
-              <p>Friends</p>
+            <p>Friends</p>
             <div>
               {searchResults.map((friend) => (
                 <div
                   key={friend.id}
+                  style={{ height: 35, fontSize: 14 }}
                   className="bg-white border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2  flex justify-between "
                 >
                   <div className="flex items-center gap-2 ">
-                    <div className="flex justify-center items-center w-12 h-12 bg-blue-400 rounded-full">
+                    <div className="flex justify-center items-center bg-gray-300 rounded-xl">
                       <UserProfileImage
                         userId={friend.id}
                         alt={friend.firstName}
                         userName={friend.firstName}
-                        width={48}
-                        height={48}
+                        width={28}
+                        height={28}
                       />
                     </div>
                     <span>{friend.firstName}</span>
@@ -187,22 +206,32 @@ export default function FriendsSidebar({ onClick }: FriendsSidebarProps) {
                       dispatch(updateCurrentPopup("deleteFriend"));
                     }}
                   >
-                    <X />
+                    <Image
+                      src={xicongray}
+                      alt="xicongray"
+                      width={20}
+                      height={20}
+                    />
                   </button>
                 </div>
               ))}
-              </div>
             </div>
-          ) : (
-            <div className="text-gray-300 mt-24 flex justify-center items-center">
-              No Friends to Show
             </div>
-          )}
-          {/* Display a message when there are no search results */}
-          {/* {!searchLoading && searchResults.length === 0 && (
-            <div>No friends found</div>
-          )} */}
+          </div>
+        ) : (
+          <div className="text-gray-300 mt-24 flex justify-center items-center">
+            No Friends to Show
+          </div>
+        )}
+        <div className="flex justify-center">
+        <button 
+        style={{fontSize: 14, width: 138}} className="bg-[#027afe] text-white rounded-full"
+        onClick={() => {
+          dispatch(updateCurrentPopup('addFriend'));
+        }}
+        >Add Friend</button>
         </div>
+      </div>
     </div>
   );
 }

@@ -28,7 +28,6 @@ export default async function getFriendsByIds(friendsIds: string[]) {
             }
         }));
         if (users){
-            console.log(`LENGTH: ${users.length}`);
              
             return {
                 friends: users as Friend[],

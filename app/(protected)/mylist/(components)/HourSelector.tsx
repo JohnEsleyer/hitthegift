@@ -11,7 +11,6 @@ function HourSelector({ initialHour = 8, onSelect}: HourSelectorProps) {
   const [selectedHour, setSelectedHour] = useState<number | null>(initialHour);
   const [showOptions, setShowOptions] = useState(false);
 
-  
   const handleHourClick = (hour: number) => {
     setSelectedHour(hour);
     setShowOptions(false);
@@ -25,7 +24,7 @@ function HourSelector({ initialHour = 8, onSelect}: HourSelectorProps) {
   return (
     <div>
       <button
-        className="rounded border bg-gray-200 pl-2 pr-2"
+        className="rounded border bg-[#dadadb] pl-2 pr-2 p"
         onClick={handleOptionsClick}
       >
         {selectedHour !== null ? `${selectedHour}:00` : '8:00'}

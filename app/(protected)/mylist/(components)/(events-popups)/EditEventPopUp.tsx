@@ -1,20 +1,17 @@
 "use client";
-import { Calendar } from "@/components/ui/calendar";
+
 import { useEffect, useState, useTransition } from "react";
 import HourSelector from "../HourSelector";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
-import getAllFriends from "@/app/actions/user/getAllFriends";
 import { Friend } from "@/lib/types/friend";
 import { convertTo24HourFormat } from "@/utils/convertTo24Hour";
 import Loading from "/public/loading.svg";
 import Image from "next/image";
 import {
   deleteMyListEventById,
-  insertMyListEvent,
   updateEventStore,
-  updateMyListEvents,
 } from "@/lib/features/mylist";
 import {
   updateEditEventDate,
@@ -24,23 +21,8 @@ import {
 import { convertTo12HourFormat, getMeridiem } from "@/utils/convertTo12Hour";
 import { updateEvent } from "@/app/actions/events/updateEvent";
 import UserProfileImage from "@/components/UserProfileImage";
-import { CircleSkeleton } from "@/components/skeletons/CircleSkeleton";
-import { Trash2 } from "lucide-react";
 import { deleteEvent } from "@/app/actions/events/deleteEvent";
-
-const getCurrentDate = () => {
-  const today = new Date();
-
-  const year = today.getFullYear();
-  const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
-    today
-  );
-
-  return {
-    month: monthName,
-    year: year,
-  };
-};
+import DateSelector from "@/components/DateSelector";
 
 export default function EditEventPopup() {
   const [meridiem, setMeridiem] = useState<"AM" | "PM">("AM");
@@ -48,10 +30,7 @@ export default function EditEventPopup() {
   const eventTitle = useSelector(
     (state: RootState) => state.editEventPopup.eventTitle
   );
-  const dateSelected = useSelector(
-    (state: RootState) => state.editEventPopup.date
-  );
-  const [isFriendPending, startFriendTransition] = useTransition();
+  const dateSelected = useSelector((state: RootState) => state.editEventPopup.date);
   const userId = useSelector((state: RootState) => state.userData.id);
   const [displayFriends, setDisplayFriends] = useState<Friend[]>([]);
   const selectedFriends = useSelector(
@@ -63,7 +42,6 @@ export default function EditEventPopup() {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [isDeletePending, startDeleteTransition] = useTransition();
   const [deleteFailed, setDeleteFailed] = useState(false);
-
   const eventId = useSelector((state: RootState) => state.editEventPopup.id);
   const friends = useSelector(
     (state: RootState) => state.friendsSidebar.friends
@@ -93,9 +71,7 @@ export default function EditEventPopup() {
       setHandledAllError(false);
       return;
     }
-
     setHandledAllError(true);
-
     setIsLoading(true);
     try {
       if (dateSelected) {
@@ -118,9 +94,9 @@ export default function EditEventPopup() {
         });
         if (responseData.data) {
           dispatch(updateEventStore(responseData.data));
+          
         } else {
           console.error("No event data returned from the server.");
-          // You can also handle this error case here (e.g., show an error message to the user)
         }
 
         dispatch(updateCurrentPopup("none"));
@@ -172,7 +148,7 @@ export default function EditEventPopup() {
         style={{ height: 230 }}
         className="flex flex-col justify-center border border-gray items-center rounded-2xl p-16 bg-white "
       >
-        <p className="mt-4">Are you sure you want to delete this product?</p>
+        <p className="mt-4">Are you sure you want to delete this event?</p>
         <div className="flex gap-4 mt-4">
           <button
             onClick={handleDeleteEvent}
@@ -201,7 +177,7 @@ export default function EditEventPopup() {
             height={30}
           />
           {deleteFailed && (
-            <p className={`text-red-600`}>Failed to delete product</p>
+            <p className={`text-red-600`}>Failed to delete event</p>
           )}
         </div>
       </div>
@@ -210,44 +186,20 @@ export default function EditEventPopup() {
 
   return (
     <div
-      style={{ width: 500, height: 630 }}
-      className=" p-4 bg-white  rounded-2xl border-2 border-gray"
+      style={{backgroundColor: '#f5f5f5', width: 426, height: 552, paddingLeft: 10, paddingTop: 5}}
+      className=" bg-white  rounded-2xl"
     >
-      {/* <p className="text-2xl font-bold">Add Event</p> */}
-      <div className=" flex justify-between">
-        <div className="text-2xl font-bold flex gap-2">
-          <span>{getCurrentDate().month}</span>
-          <span>{getCurrentDate().year}</span>
-        </div>
-
-        {/*Delete product */}
-        <button onClick={() => setShowConfirmDelete(true)}>
-          <Trash2 className="hover:text-red-500" />
-        </button>
-      </div>
       {/**Calendar Section **/}
-      <Calendar
-        classNames={{
-          day_selected: "bg-blue-500 rounded-xl text-white",
-          day: "p-1 pt-2 pb-2 pl-4 pr-4 hover:bg-gray-300 rounded-xl",
-          months:
-            "flex w-full flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 flex-1",
-          month: "space-y-4 w-full flex flex-col",
-          table: "w-full h-full border-collapse space-y-1",
-          head_row: "",
-          row: "w-full mt-2",
-        }}
-        mode="single"
+      <DateSelector
         selected={new Date(dateSelected)}
         onSelect={(selected) => {
           if (selected) {
-            dispatch(updateEditEventDate(selected.toString()));
+            dispatch(updateEditEventDate(selected.toDateString()));
           }
         }}
-        className="m-2 rounded-md border"
       />
       {/**Ends Section **/}
-      <div className="flex justify-between mb-2">
+      <div style={{fontSize: 14}} className="flex justify-between mb-2 ">
         <span>Ends</span>
         <div className="flex gap-2">
           <HourSelector
@@ -258,10 +210,10 @@ export default function EditEventPopup() {
               setHourSelected(selectedHour);
             }}
           />
-          <div className="flex bg-gray-200 rounded border">
+          <div className="flex bg-[#e6e6e6] rounded border mr-2">
             <button
               className={`${
-                meridiem == "AM" && "bg-white"
+                meridiem == "AM" && "bg-white border-2 border-gray-400s rounded shadow-xl"
               }  pl-4 pr-4 rounded `}
               onClick={() => {
                 setMeridiem("AM");
@@ -270,7 +222,7 @@ export default function EditEventPopup() {
               AM
             </button>
             <button
-              className={`${meridiem == "PM" && "bg-white"} pl-4 pr-4 rounded`}
+              className={`${meridiem == "PM" && "bg-white border-2 border-gray-400s rounded shadow-xl"} pl-4 pr-4 rounded`}
               onClick={() => {
                 setMeridiem("PM");
               }}
@@ -281,10 +233,11 @@ export default function EditEventPopup() {
         </div>
       </div>
       {/**Event title section **/}
-      <div className="flex flex-col mb-2">
+      <div style={{fontSize: 14}} className="flex flex-col mb-2">
         <span>Event title</span>
         <input
-          className="bg-white rounded-full p-2 w-64 pl-4"
+          style={{width: 200 }}
+          className="bg-white rounded-xl p-2 pl-4 border border-gray-300"
           placeholder="Event title"
           value={eventTitle}
           onChange={(e) => {
@@ -295,7 +248,7 @@ export default function EditEventPopup() {
       </div>
       {/**Friend Section **/}
       <div className="w-full">
-        <span className="text-xl pt-2">Friend you{"'"}ll share this event</span>
+        <span className=" pt-2">Friend you{"'"}ll share this event</span>
         <div className="flex gap-2 overflow-auto w-96 h-8 ">
           <div className="flex w-full">
             {selectedFriends.map((friend) => (
@@ -314,16 +267,9 @@ export default function EditEventPopup() {
             ))}
           </div>
         </div>
-        <span className="text-xl pt-2 ">Select Friends</span>
+        <span className="pt-2 ">Select Friends</span>
         <div className="h-8 w-full">
-          {isFriendPending ? (
-            <div className="flex">
-              <CircleSkeleton height={30} width={30} />
-              <CircleSkeleton height={30} width={30} />
-              <CircleSkeleton height={30} width={30} />
-              <CircleSkeleton height={30} width={30} />
-            </div>
-          ) : (
+     
             <div className="flex w-full">
               {displayFriends.map((friend) => (
                 <div key={friend.id} onClick={() => handleSelectFriend(friend)}>
@@ -337,7 +283,6 @@ export default function EditEventPopup() {
                 </div>
               ))}
             </div>
-          )}
         </div>
       </div>
       <div className="flex justify-center gap-8 mt-6">
@@ -351,7 +296,6 @@ export default function EditEventPopup() {
             Save
           </button>
         )}
-
         <button
           className="bg-black rounded-2xl pl-12 pr-12  text-white"
           onClick={() => {

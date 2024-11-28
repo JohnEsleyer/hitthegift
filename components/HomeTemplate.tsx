@@ -2,13 +2,10 @@
 
 import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
 import { updateCurrentPopup } from "@/lib/features/popups";
-import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Image from "next/image";
-import Loading from "/public/loading.svg";
-import AuthMiddleware from "@/components/AuthMiddleware";
 import { RootState } from "@/lib/store";
 import {
   updateConversationId,
@@ -20,10 +17,10 @@ import { Popups } from "@/components/Popups";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
 import Friends from "/public/friends.png";
 import UserProfileImage from "./UserProfileImage";
-import EmailVerifier from "./EmailVerifier";
 import { updateShowLoading } from "@/lib/features/chat";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
-import { getUnreadMessages } from "@/app/actions/chat/getUnreadMessages";
+import { updateIsSidebarOpen } from "@/lib/features/friendsSidebar";
+import { navigateTo } from "@/app/actions/navigateTo";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -49,44 +46,23 @@ export default function HomeTemplate({
   const friendId = useSelector(
     (state: RootState) => state.insideFriend.friendId
   );
-  const [isInboxOpen, setIsInboxOpen] = useState(false);
-  const [totalUnread, setTotalUnread] = useState(0);
+
   const dispatch = useDispatch();
-  const router = useRouter();
   const { width, height } = useWindowSize();
-
-
-
-  useEffect(() => {
-    async function getUnread() {
-      try {
-        const res = await getUnreadMessages(userId);
-        if (res.unreadCount && res.status == 200){
-          setTotalUnread(res.unreadCount);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    getUnread();
-  }, []);
 
   return (
     <div className="bg-white w-screen h-screen flex overflow-auto overflow-x-hidden">
       <RenderClientOnly
         loading={
-          <div className="flex w-full justify-center items-center">
-            <Image src={Loading} alt="" className="w-8 h-8" />
+          <div>
           </div>
         }
       >
-        <AuthMiddleware>
-          <EmailVerifier>
             <Popups>
               <div className="flex h-full ">
                 {/**Layout */}
                 <div className="flex">
-                  <div style={{ width: 354 }}>{leftSide}</div>
+                  <div style={{ width: 315 }}>{leftSide}</div>
                   <div className="flex-1">{rightSide}</div>
                 </div>
 
@@ -130,7 +106,8 @@ export default function HomeTemplate({
                           className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
                           onClick={() => {
                             document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                            router.push("/login");
+                            // router.push("/login");
+                            navigateTo('/login');
                           }}
                         >
                           Log out
@@ -189,19 +166,18 @@ export default function HomeTemplate({
                     className="absolute text-white flex justify-end"
                   >
                     <button
-                      className="bg-blue-500 p-2 border border-blue-500 rounded-2xl rounded-r-lg"
+                      className="bg-blue-500 pt-2 pb-2 pr-2 border border-blue-500 rounded-xl rounded-r-lg"
                       onClick={() => {
                         dispatch(updateCurrentPopup("friends"));
+                        dispatch(updateIsSidebarOpen(true));
                       }}
                     >
-                      <Image alt="" width={30} src={Friends} />
+                      <Image alt="" width={25} src={Friends} />
                     </button>
                   </div>
                 )}
               </div>
             </Popups>
-          </EmailVerifier>
-        </AuthMiddleware>
       </RenderClientOnly>
     </div>
   );

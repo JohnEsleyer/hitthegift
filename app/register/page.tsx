@@ -8,25 +8,16 @@ import { useDispatch } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import {
   updateUserData,
-  updateUserFirstNameStore,
-  updateUserId,
 } from "@/lib/features/userData";
-import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
-import { Spicy_Rice } from "next/font/google";
-import { Snowfall } from "../(landing-page)/Snowfall";
-
-
-
-const spicy = Spicy_Rice({
-    weight: "400",
-    subsets: ["latin"],
-  });
-
+import TermsAndConditions from "./TermsAndConditions";
+import PasswordStrengthMeter from "@/components/ui/PasswordStrengthMeter";
+import { navigateTo } from "../actions/navigateTo";
 
 export default function RegisterPage() {
   const router = useRouter();
   const dispatch = useDispatch();
-
+  
+  const [isPasswordStrong, setIsPasswordStrong] = useState<boolean>(false);
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showTermsNConditions, setShowTermsNConditions] =
     useState<boolean>(false);
@@ -58,8 +49,8 @@ export default function RegisterPage() {
   const [errorDateOfBirth, setErrorDateOfBirth] = useState(false);
   const [errorHobbiesInfo, setErrorHobbiesInfo] = useState(false);
   const [errorTerms, setErrorTerms] = useState(false);
-
-  const handleSubmit = async () => {
+  
+  const handleSubmit = async (passwordStrong: boolean) => {
     setResponseMessage("");
     setIsError(false);
     setIsLoading(true);
@@ -98,11 +89,18 @@ export default function RegisterPage() {
       invalidInputs++;
     }
 
+    if (!passwordStrong) {
+      setResponseMessage("Password is not strong enough");
+      setErrorPassword(true);
+      invalidInputs++;
+    }
+
     if (confirmPassword == "") {
       setResponseMessage("Please confirm your passsword.");
       setErrorConfirmPassword(true);
       invalidInputs++;
     }
+    
 
     if (userData.birthday == "") {
       setResponseMessage("Please provide your date of birth.");
@@ -128,7 +126,7 @@ export default function RegisterPage() {
       setResponseMessage("Passwords do not match");
       invalidInputs++;
     }
-
+    console.log(`invalidInputs: ${invalidInputs}`);
     // Do not proceed if there are still errors
     if (invalidInputs == 1) {
       setIsError(true);
@@ -167,7 +165,8 @@ export default function RegisterPage() {
         if (response.status == 200) {
           setResponseMessage(responseData.message);
           setTimeout(() => {
-
+            // dispatch(updateUserId(responseData.userId));
+            // dispatch(updateUserFirstNameStore(userData.firstName));
             dispatch(
               updateUserData({
                 id: responseData.userId,
@@ -184,7 +183,7 @@ export default function RegisterPage() {
 
             setIsError(false);
             dispatch(updateCurrentPopup("none"));
-            router.push("/mylist");
+            navigateTo("/mylist");
           }, 3000);
         } else {
           setIsLoading(false);
@@ -196,35 +195,57 @@ export default function RegisterPage() {
     };
     registerUser();
   };
+
   return (
-    <RenderClientOnly loading={<div></div>}>
-      <div className="h-screen w-screen">
-        <div className="overflow-auto relative  hide-scrollbar h-screen w-screen flex flex-col bg-gradient-to-b from-[#030c42] to-blue-500 text-black ">
-          <div className="flex justify-center">
-            <p
-              style={{
-                fontSize: 30,
-              }}
-              className={`${spicy.className} font-bold`}
-            >
-              <span className="text-[#eb4034]">Hit</span>
-              <span className="text-white">My</span>
-              <span className="text-[#0cb00c]">Gift</span>
-            </p>
+  <div>
+    {/*Terms and conditions */}
+    {showTermsNConditions && (
+        <div
+          style={{ zIndex: 100, position: "absolute" }}
+          className={`flex justify-center items-center w-screen h-screen`}
+        >
+          <div
+            style={{ width: 500, height: 600 }}
+            className="p-4 bg-white rounded-2xl border-2 border-black"
+          >
+            <div style={{ height: 500 }} className="overflow-auto ">
+              <div className="container mx-auto p-2">
+               <TermsAndConditions/>
+              </div>
+
+              <div className="flex justify-center">
+                <button
+                  onClick={() => {
+                    setShowTermsNConditions(false);
+                  }}
+                  className="flex justify-center bg-blue-600 p-2 text-white font-bold rounded mt-4"
+                >
+                  Read
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="flex-1 flex flex-col justify-start pt-4 items-center text-center w-screen">
-          
-            {/**Register */}
-            <div className="relative flex justify-center w-screen pt-4" style={{zIndex: 100}}>
-            <div className="text-xs gap-4 p-4 flex flex-col border bg-white rounded-2xl">
+        </div>
+      )}
+    <div
+    style={{ zIndex: 1, position: "relative" }}
+      className={`${showTermsNConditions && "blurcontent"} bg-[#31241e] bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
+    >
+      <div
+        className={`flex flex-col items-center justify-center w-screen  `}
+      >
+        <div 
+        style={{ width:466,  height: 560, marginTop: 20}}
+        className="overflow-auto hide-scrollbar text-xs gap-2 p-4 flex flex-col border bg-white rounded-2xl">
           <div className="flex gap-2">
             {/*Name */}
             <div className="flex-1 flex flex-col">
               <label>First Name:</label>
               <input
+              style={{height: 30}}
                 className={`${
-                  errorFirstName ? "border-red-500" : "border-[#d9d9d9]"
-                } border-2 p-2 rounded`}
+                  errorFirstName ? "border-red-500" : "border-gray-300"
+                } border p-2 rounded`}
                 type="text"
                 placeholder="First Name"
                 onChange={(e) => {
@@ -242,9 +263,10 @@ export default function RegisterPage() {
             <div className="flex-1 flex flex-col">
               <label>Last Name:</label>
               <input
+              style={{height: 30}}
                 className={`${
-                  errorLastName ? "border-red-500" : "border-[#d9d9d9]"
-                } border-2 p-2  rounded`}
+                  errorLastName ? "border-red-500" : "border-gray-300"
+                } border p-2  rounded`}
                 type="text"
                 placeholder="Last Name"
                 onChange={(e) => {
@@ -263,9 +285,10 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <label>Email:</label>
               <input
+              style={{height: 30}}
                 className={`${
-                  errorEmail ? "border-red-500" : "border-[#d9d9d9]"
-                } p-2 border-2 rounded`}
+                  errorEmail ? "border-red-500" : "border-gray-300"
+                } p-2 border rounded`}
                 type="text"
                 placeholder="firstname@email.com"
                 onChange={(e) => {
@@ -284,9 +307,10 @@ export default function RegisterPage() {
             <div className="flex flex-col">
               <label>Password:</label>
               <input
+              style={{height: 30}}
                 className={`${
-                  errorPassword ? "border-red-500" : " border-[#d9d9d9]"
-                } border-2 p-2 rounded`}
+                  errorPassword ? "border-red-500" : " border-gray-300"
+                } border p-2 rounded`}
                 type="password"
                 placeholder="*******"
                 onChange={(e) => {
@@ -299,6 +323,17 @@ export default function RegisterPage() {
                 required
               />
             </div>
+            {/**Password strength meter */}
+            <div>
+              <PasswordStrengthMeter password={userData.password} onPasswordStrengthChange={(isStrong, pass) => {
+                setIsPasswordStrong(isStrong);
+
+              }}/>
+              <p className="text-xs text-gray-500">
+              Password should be at least 8 characters with lowercase, uppercase, numbers, and special characters.
+    </p> 
+            </div>
+          
           </div>
           <div>
             {/*Confirm Password */}
@@ -306,9 +341,10 @@ export default function RegisterPage() {
               <label>Confirm Password:</label>
 
               <input
+              style={{height: 30}}
                 className={`${
-                  errorConfirmPassword ? "border-red-500" : "border-[#d9d9d9]"
-                } border-2 p-2 rounded`}
+                  errorConfirmPassword ? "border-red-500" : "border-gray-300"
+                } border p-2 rounded`}
                 type="password"
                 placeholder="*******"
                 onChange={(e) => {
@@ -326,8 +362,8 @@ export default function RegisterPage() {
               <label>Date of Birth</label>
               <input
                 className={`${
-                  errorDateOfBirth ? "border-red-500" : "border-[#d9d9d9]"
-                } border-2`}
+                  errorDateOfBirth ? "border-red-500" : "border-gray-300"
+                } border`}
                 type="date"
                 onChange={(e) => {
                   setErrorDateOfBirth(false);
@@ -363,9 +399,9 @@ export default function RegisterPage() {
             <span>Hobbies and interests</span>
             <div>
               <textarea
-                style={{ width: 550, height: 140 }}
+                style={{ width: 430, height: 105 }}
                 className={`${
-                  errorHobbiesInfo ? "border-red-500" : "border-[#d9d9d9]"
+                  errorHobbiesInfo ? "border-red-500" : "border-gray-300"
                 } border p-2`}
                 onChange={(e) => {
                   setUserData((prev) => ({
@@ -397,28 +433,28 @@ export default function RegisterPage() {
           </div>
           {/** Buttons */}
           <div className="flex gap-4 justify-center">
-            <button
-              onClick={handleSubmit}
-              className="bg-blue-600 p-2 pl-16 pr-16 rounded-full text-white"
+            {isLoading ? <div style={{width: 135}} className="flex justify-center items-center"><Image src={Loading} height={25} width={25} alt="" /></div> : <button
+              style={{height: 25, width: 135}}
+              onClick={() => {
+               
+                  handleSubmit(isPasswordStrong);
+                
+                
+              }}
+              className="bg-blue-600  flex justify-center items-center pl-12 pr-12 rounded-full text-white"
             >
               Create
-            </button>
-            <button className="bg-black p-2 pl-16 pr-16 rounded-full text-white">
+            </button>}
+            <button onClick={() => {navigateTo('/login')}} style={{height: 25}} className="bg-black pl-12 pr-12 rounded-full text-white">
               Cancel
             </button>
           </div>
           <div className="flex flex-col items-center justify-center h-8">
-            {isLoading && <Image src={Loading} height={30} width={30} alt="" />}
             <p className={`${isError && "text-red-500"}`}>{responseMessage}</p>
           </div>
         </div>
-          </div>
-          </div>
-          <div className="absolute">
-            <Snowfall />
-          </div>
-        </div>
       </div>
-    </RenderClientOnly>
+    </div>
+    </div>
   );
 }

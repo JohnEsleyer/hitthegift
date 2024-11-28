@@ -35,24 +35,31 @@
   }
   
   .day-label {
-    font-size: 12px;
+    font-size: 10px;
     padding: 5px;
-    font-weight: bold;
-    background-color: #f4f4f4;
+    text-align: center;
+    color: rgb(179, 179, 179);
     border-radius: 3px;
   }
   
   .day-cell {
-    padding: 8px;
+    padding: 4px;
     font-size: 12px;
     background-color: #fcfcfc;
     text-align: center;
-    border-radius: 3px;
+    border-radius: 100%;
+  }
+    
+  .day-cell2 {
+    padding: 6px;
+    font-size: 15px;
+    text-align: center;
   }
   
   .highlighted {
-    background-color: #00aeff; /* Highlight color for selected dates */
-    color: black;
+    color: #0970f7; /* Highlight color for selected dates */
+    background-color: #e0efff;
+    border-radius: 100%;
   }
   
   button:focus {
