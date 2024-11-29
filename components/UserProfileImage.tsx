@@ -12,7 +12,7 @@ interface UserProfileImageProps{
     alt: string;
 }
 
-export default function UserProfileImage({userId,userName ,width, height, alt}: UserProfileImageProps){
+export default function UserProfileImage({userId, userName ,width, height, alt}: UserProfileImageProps){
     const bucketName = 'profile-hitmygift';
     const [hasError, setHasError] = useState(false);
     
@@ -22,7 +22,7 @@ export default function UserProfileImage({userId,userName ,width, height, alt}: 
 
     return hasError? (
         <div>
-            <Image className="border rounded-full" src={user} alt={"profile"} width={width} height={height}/> 
+            <Image className="border rounded-full" src={user} alt={"profile"} loading="lazy" width={width} height={height}/> 
         </div>
     ) : (
         <img className="border rounded-full " src={`https://${bucketName}.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/${userId}.webp`} alt={alt} width={width} height={height} onError={handleError}/>

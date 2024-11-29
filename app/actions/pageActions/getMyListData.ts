@@ -31,6 +31,7 @@ export async function getMyListData(userId: string) {
         const db = mongoClient.db("hitmygift");
 
         // Fetch events
+        console.log('Fetching events');
         const events = await db.collection<EventData>("events").find({ userId: userId }).toArray();
         let eventsData: { id: string; userId: string; date: string; eventTitle: string; invitedFriends: Friend[]; }[] = [];
         if (events.length > 0) {
@@ -47,8 +48,10 @@ export async function getMyListData(userId: string) {
                 })
             );
         }
+        console.log('Fetching events done!');
 
         // Fetch products
+        console.log('Fetching products');
         const products = await db.collection<ProductType>("products").find({ userId: userId }).toArray();
         const productsData: ProductType[] = products.map((product) => ({
             id: product._id.toString(),
@@ -60,8 +63,10 @@ export async function getMyListData(userId: string) {
             imageUrl: product.imageUrl,
             description: product.description,
         }));
+        console.log('Fetching products done!');
 
         // Fetch conversations
+        console.log('Fetching conversations');
         const conversations = await db
             .collection<Conversation>("conversations")
             .find({ participants: userId })
@@ -98,8 +103,10 @@ export async function getMyListData(userId: string) {
                 },
             });
         }
+        console.log('Fetching conversations done!');
 
         // Fetch friends ID
+        console.log('Fetching friends Ids');
         const user = await db.collection<UserData>('users').findOne({ _id: new ObjectId(userId) });
         let userFriends: Friend[] = [];
         if (user) {
@@ -119,9 +126,12 @@ export async function getMyListData(userId: string) {
             );
             userFriends = friendsData.filter((friend): friend is Friend => friend !== null);
         }
+        console.log('Fetching friends Ids done!');
 
         // Fetch friend requests
+        console.log('Fetching friend requests');
         const friendRequestsResponse = await db.collection<FriendRequestMongoType>('friendRequest').find({ receiverId: userId }).toArray();
+        console.log(`friendRequestsResponse: ${friendRequestsResponse.length}`);
         let friendRequests: FriendRequestServerResponse[] = [];
         if (friendRequestsResponse.length > 0) {
             friendRequests = await Promise.all(friendRequestsResponse.map(async (friendRequest) => {
@@ -150,6 +160,41 @@ export async function getMyListData(userId: string) {
             }));
         }
 
+        // Fetch all friend requests as the sender
+        const friendRequestsSenderResponse = await db.collection<FriendRequestMongoType>('friendRequest').find({ senderId: userId }).toArray();
+        console.log(`friendRequestsSenderResponse: ${friendRequestsSenderResponse.length}`);
+        let friendRequestsSender: FriendRequestServerResponse[] = [];
+        if (friendRequestsSenderResponse.length > 0) {
+            friendRequestsSender = await Promise.all(friendRequestsSenderResponse.map(async (friendRequest) => {
+                const [senderInfo, receiverInfo] = await Promise.all([
+                    getUserInfo(friendRequest.senderId),
+                    getUserInfo(friendRequest.receiverId),
+                ]);
+
+                return {
+                    id: friendRequest._id.toString(),
+                    sender: {
+                        id: friendRequest.senderId,
+                        firstName: senderInfo.firstName || '',
+                        lastName: senderInfo.lastName || '',
+                    },
+                    receiver: {
+                        id: friendRequest.receiverId,
+                        firstName: receiverInfo.firstName || '',
+                        lastName: receiverInfo.lastName || '',
+                    }
+                };
+            }));
+        }
+        console.log('Fetching friend requests done!');
+
+
+        // Combine the two types of friend requests
+        let combinedFriendRequests: FriendRequestServerResponse[] = [
+            ...friendRequests,
+            ...friendRequestsSender,
+        ]
+
         console.log(`events: ${eventsData.length}`);
         console.log(`products: ${products.length}`);
         console.log(`conversations: ${conversations.length}`);
@@ -160,7 +205,7 @@ export async function getMyListData(userId: string) {
             products: productsData,
             conversations: userConversations,
             friends: userFriends,
-            friendRequests: friendRequests
+            friendRequests: combinedFriendRequests,
         };
     } catch (e) {
         console.error(e);

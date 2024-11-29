@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { updateCurrentPopup } from "@/lib/features/popups";
+import { updateCurrentPopup, updateInvitedEmailForPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
 import WishItem from "../../../../components/WishItem";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
@@ -12,11 +12,12 @@ import blackxcircle from "/public/blackxcircle.svg";
 import Image from "next/image";
 import { sendFriendRequest } from "@/app/actions/user/sendFriendRequest";
 import loading from '/public/loading.svg';
+import { insertFriendRequest} from "@/lib/features/friendsSidebar";
+import { extractNameFromEmail } from "@/utils/extractNameFromEmail";
 
 export default function MyListRightSection() {
   const dispatch = useDispatch();
 
-  // const [isProductsPending, startProductsTransition] = useTransition();
   const [isClientMounted, setIsClientMounted] = useState(false);
   const products = useSelector((state: RootState) => state.mylist.products);
   const [showShareInput, setShowShareInput] = useState(false);
@@ -24,30 +25,64 @@ export default function MyListRightSection() {
   const { width, height } = useWindowSize();
   const [sendPending, startSendTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
+  const firstName = useSelector((state: RootState) => state.userData.firstName);
   const [isEmptyShareInput, setIsEmptyShareInput] = useState(false);
+  const [displayAlreadySent, setDisplayAlreadySent] = useState(false);
 
   useEffect(() => {
     setIsClientMounted(true);
   }, []);
 
-
   const handleShareList = async () => {
+    setDisplayAlreadySent(false);
+    dispatch(updateInvitedEmailForPopup(shareInput));
     setIsEmptyShareInput(false);
     if (shareInput !== "") {
       startSendTransition(async () => {
         try {
-          await sendFriendRequest(userId, shareInput);
+          const res = await sendFriendRequest(userId, shareInput);
+          console.log(`res status: ${res.status}`);
+      
+          switch (res.status) {
+            case 200:
+              if (res.data) {
+                console.log('200 executed'); 
+                dispatch(insertFriendRequest({
+                  id: res.data,
+                  sender: {
+                    id: userId,
+                    firstName: firstName,
+                    lastName: '', 
+                  },
+                  receiver: {
+                    id: shareInput, // Assuming shareInput is receiverId or email
+                    firstName: extractNameFromEmail(shareInput) || '',
+                    lastName: '', 
+                  }
+                }));
+                dispatch(updateCurrentPopup('sendWishlist'));
+                // Optionally clear the input here: setShareInput(''); 
+              }
+              break;
+      
+            case 400:
+              console.log('400 executed');
+              setDisplayAlreadySent(true);
+              break;
+      
+            default:
+              console.error("Failed to send friend request:", res.message); 
+              // Consider providing user feedback (e.g., a toast notification)
+          }
         } catch (e) {
-          console.log(e);
+          console.error("Error sending friend request:", e);
+          // Consider providing user feedback
         }
-        dispatch(updateCurrentPopup('sendWishlist'))
-        setShareInput('');
       });
       
     }else{
       setIsEmptyShareInput(true);
     }
-    
   };
 
   return (
@@ -91,9 +126,13 @@ export default function MyListRightSection() {
           {sendPending ? <Image src={loading} alt="loading" width={20} height={20} /> :<button onClick={() => {handleShareList()}}>
           <Image src={bluearrowcircle} alt="bluearrowcircle" width={20} height={20}/> 
           </button>}
-          <button onClick={() => setShowShareInput(false)}>
+          <button onClick={() => {
+            setShowShareInput(false);
+            setShareInput('');
+            }}>
           <Image src={blackxcircle} alt="blackxcircle" width={20} height={20}/> 
           </button>
+          {displayAlreadySent && <p style={{fontSize: 12}} className="flex justify-center items-center text-red-400">Friend request already sent</p>}
           </div>
         </div>}
       </div>

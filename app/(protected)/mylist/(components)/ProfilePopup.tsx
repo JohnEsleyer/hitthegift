@@ -84,8 +84,7 @@ export default function AddEventPopup() {
           <div className="flex flex-col items-left w-full h-8">
             {isSaving && (
               <div className="flex" style={{width: 50}}>
-                <Image src={loading} alt="" width={15} height={15}/> 
-                <span className="text-xs flex items-center pl-2">Saving</span>
+                <span className="text-xs flex items-center pl-2 blinking text-gray-500">Saving</span>
               </div>
             )}
           </div>

@@ -13,9 +13,9 @@ import EditEventPopup from "../app/(protected)/mylist/(components)/(events-popup
 import DeleteFriendPopup from "../app/(protected)/mylist/(components)/DeleteFriendPopup";
 import DeleteFriendRequestPopup from "../app/(protected)/mylist/(components)/DeleteFriendRequest";
 import { updateIsSidebarOpen } from "@/lib/features/friendsSidebar";
-import ShareWishlistPopup from "../app/(protected)/mylist/(components)/AddFriendPopup";
 import AddFriendPopup from "../app/(protected)/mylist/(components)/AddFriendPopup";
 import SendWishlistPopup from "@/app/(protected)/mylist/(components)/SendWishlistPopup";
+import DeleteFriendRequestSenderPopup from "@/app/(protected)/mylist/(components)/DeleteFriendRequestSender";
 
 interface PopupPageProps {
   children: ReactNode;
@@ -57,7 +57,7 @@ export function Popups({ children }: PopupPageProps) {
             position: "absolute",
             top: 60,
             right: 0,
-            bottom: 0,
+            bottom: 20,
             width: 200,
             zIndex: 999,
             transition: "transform 0.3s ease-in-out",
@@ -68,7 +68,6 @@ export function Popups({ children }: PopupPageProps) {
           }}
         >
           <FriendsSidebar
-            onClick={() => dispatch(updateCurrentPopup("none"))}
           />
         </div>
       )}
@@ -155,6 +154,18 @@ export function Popups({ children }: PopupPageProps) {
         >
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
           <DeleteFriendRequestPopup/>
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+        </div>
+      )}
+
+      {/**Delete FriendRequest Popup*/}
+      {currentPopup == "deleteFriendRequestSender" && (
+        <div
+          style={{ zIndex: 999, position: "absolute" }}
+          className=" flex justify-center items-center w-screen h-screen"
+        >
+          <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
+          <DeleteFriendRequestSenderPopup/>
           <div onClick={handleClosePopup} className="flex-1 h-screen"></div>
         </div>
       )}

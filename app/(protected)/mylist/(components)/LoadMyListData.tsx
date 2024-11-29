@@ -15,6 +15,9 @@ import {
 } from "@/lib/features/mylist";
 import { updateConversations } from "@/lib/features/chat";
 import {
+  deleteAllFriendRequests,
+  deleteAllFriendRequestsReceiver,
+  deleteAllFriendRequestsSender,
   updateFriendRequests,
   updateFriends,
 } from "@/lib/features/friendsSidebar";
@@ -41,6 +44,11 @@ export default function LoadMyListData({ children }: LoadMyListDataProps) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // Reset local data
+    dispatch(deleteAllFriendRequests());
+    dispatch(deleteAllFriendRequestsSender());
+    dispatch(deleteAllFriendRequestsReceiver());
+
     startTransition(async () => {
       try {
         const res = (await getMyListData(userId)) as MyListData;

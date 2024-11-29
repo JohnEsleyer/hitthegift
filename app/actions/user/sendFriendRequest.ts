@@ -1,78 +1,68 @@
-'use server';
+"use server";
 
 import { MongoClient } from "mongodb";
 import sendInviteByEmail from "../email/sendInviteByEmail";
 
 export async function sendFriendRequest(senderId: string, receiverEmail: string) {
-    const uri = process.env.MONGODB_URI || '';
-    const mongoClient = new MongoClient(uri);
-    try {
-        const db = mongoClient.db('hitmygift');
+  const uri = process.env.MONGODB_URI || "";
+  const mongoClient = new MongoClient(uri);
 
-        // Check if the receiver exists by email
-        const receiver = await db.collection('users').findOne({
-            email: receiverEmail
-        });
+  try {
+    const db = mongoClient.db("hitmygift");
 
-        if (!receiver) {
-            console.log('Receiver not found');
-            // Send invitation email to the given email address
-            await sendInviteByEmail(senderId, receiverEmail);
-             
-            return {
-                status: 200,
-                message: 'Receiver not found. An invitation email is sent to the given email address'
-            };
-        }
+    // 1. Find the receiver by email
+    const receiver = await db.collection("users").findOne({ email: receiverEmail });
 
-        const receiverId = receiver._id.toString(); // Get the receiver's ID
-
-        // Check if a friend request already exists between senderId and receiverId
-        const existingRequest = await db.collection('friendRequest').findOne({
-            senderId: senderId,
-            receiverId: receiverId
-        });
-
-        if (existingRequest) {
-            console.log('Friend request already exists');
-             
-            return {
-                status: 400,
-                message: 'Friend request already exists'
-            };
-        }
-
-        // Create a new friend request record if no existing request is found
-        const friendRequest = {
-            senderId: senderId,
-            receiverId: receiverId
-        };
-
-        const result = await db.collection('friendRequest').insertOne(friendRequest);
-
-        if (result.insertedId) {
-            console.log('Friend request sent successfully');
-             
-            return {
-                status: 200,
-                message: 'Friend request sent successfully'
-            };
-        } else {
-             
-            return {
-                status: 500,
-                message: 'Failed to send friend request'
-            };
-        }
-    } catch (e) {
-        console.log(e);
-         
-        return {
-            status: 500,
-            message: 'Internal server error'
-        };
-    }finally{
-        mongoClient.close();
+    // 2. Determine receiverId
+    let receiverId: string;
+    if (receiver) {
+      receiverId = receiver._id.toString();
+    } else {
+      // If receiver not found, send an invite and use email as temporary ID
+      await sendInviteByEmail(senderId, receiverEmail);
+      receiverId = receiverEmail; 
     }
-}
 
+    // 3. Check for existing friend request (using a compound index for efficiency)
+    const existingRequest = await db.collection("friendRequest").findOne({
+      senderId: senderId,
+      receiverId: receiverId,
+    });
+
+    if (existingRequest) {
+      return {
+        status: 400,
+        message: "Friend request already exists",
+      };
+    }
+
+    // 4. Create the friend request
+    const friendRequest = {
+      senderId: senderId,
+      receiverId: receiverId,
+    };
+
+    const result = await db.collection("friendRequest").insertOne(friendRequest);
+
+    if (result.insertedId) {
+      return {
+        status: 200,
+        message: "Friend request sent successfully",
+        data: result.insertedId.toString(),
+      };
+    } else {
+      return {
+        status: 500,
+        message: "Failed to send friend request",
+      };
+    }
+  } catch (e) {
+    console.error(e);
+    return {
+      status: 500,
+      message: "Internal server error",
+    };
+  } finally {
+    mongoClient.close();
+  }
+}

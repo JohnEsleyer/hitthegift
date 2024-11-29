@@ -17,12 +17,10 @@ export type FriendRequestServerResponse = {
         id: string;
         firstName: string;
         lastName: string;
-        imageUrl: string;
     },
     receiver: {
         id: string;
         firstName: string;
         lastName: string;
-        imageUrl: string;
     }
 }

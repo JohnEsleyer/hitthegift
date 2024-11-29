@@ -1,15 +1,11 @@
 "use client";
 
-import { sendFriendRequest } from "@/app/actions/user/sendFriendRequest";
 import { RootState } from "@/lib/store";
-import { useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Image from "next/image";
-import loading from "/public/loading.svg";
 import { updateCurrentPopup } from "@/lib/features/popups";
 
 export default function SendWishlistPopup() {
-
+  const invitedEmail = useSelector((state: RootState) => state.popups.invitedEmail);
 
   const dispatch = useDispatch();
 
@@ -23,7 +19,13 @@ export default function SendWishlistPopup() {
       className="flex flex-col gap-2 justify-center border-2 border-gray-300  items-center rounded-2xl p-16 bg-white"
     >
       <p>List sent and friend added successfully</p>
-     
+      <div className="h-12 flex flex-col justify-center" style={{fontSize: 10}}>
+          <p className="text-center text-green-600">Friend Request is sent to {invitedEmail}</p>
+          <p className="text-center text-xs text-gray-500">
+            If the email doesn't have an account, they'll receive an invitation
+            from their email
+          </p>
+        </div>
       <div className="mt-6 pl-8  h-12 pr-8 w-full flex justify-center gap-8">
      
         <button

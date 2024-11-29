@@ -46,6 +46,7 @@ export default function HomeTemplate({
   const friendId = useSelector(
     (state: RootState) => state.insideFriend.friendId
   );
+  const friendRequests = useSelector((state: RootState) => state.friendsSidebar.friendRequests);
 
   const dispatch = useDispatch();
   const { width, height } = useWindowSize();
@@ -161,8 +162,8 @@ export default function HomeTemplate({
                 {/**Friends sidebar*/}
                 {showFriends && (
                   <div
-                    style={{ zIndex: 98, right: 0, top: 225 }}
-                    className="absolute text-white flex justify-end"
+                    style={{ zIndex: 98, right: 0, height: height }}
+                    className="absolute text-white flex justify-end items-center"
                   >
                     <button
                       className="bg-blue-500 pt-2 pb-2 pr-2 border border-blue-500 rounded-xl rounded-r-lg"
@@ -170,9 +171,11 @@ export default function HomeTemplate({
                         dispatch(updateCurrentPopup("friends"));
                         dispatch(updateIsSidebarOpen(true));
                       }}
-                    >
+                    > 
                       <Image alt="" width={25} src={Friends} />
                     </button>
+                    {friendRequests?.length > 0 && <div style={{zIndex: 99, width: 30,height:30,  marginBottom: 120, marginRight: 2}} className="absolute bg-red-500  flex justify-center items-center rounded-full">{friendRequests?.length}</div>}
+                    
                   </div>
                 )}
               </div>
