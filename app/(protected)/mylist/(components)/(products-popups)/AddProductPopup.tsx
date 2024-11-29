@@ -17,6 +17,10 @@ import { extractASIN } from "./functions";
 import getProductDetails from "@/app/actions/amazon/getProductDetails";
 import { updateAmazonImageUrl, updateBase64Image } from "@/lib/features/productImageUpload";
 import { getAmazonDomain } from "@/utils/getAmazonDomain";
+import { convertPriceToNumber } from "@/utils/convertPriceToNumber";
+import { currencies } from "./constants";
+import CountryFlag from "./CountryFlag";
+import { getCurrency } from "@/utils/getCurrencySymbol";
 
 export default function AddProductPopup() {
   const dispatch = useDispatch();
@@ -41,6 +45,10 @@ export default function AddProductPopup() {
   // States about checking for empty inputs 
   const [emptyInputs, setEmptyInputs] = useState<string[]>([]);
 
+  const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
+
+
+  
   const clickAddProduct = async () => {
     let emptyCounter = 0;
     let emptyInput = ''; // title, price, description
@@ -58,11 +66,7 @@ export default function AddProductPopup() {
       emptyInput = 'price';
       emptyCounter++;
     }
-    // if (productDescription == ''){
-    //   setEmptyInputs((prev) => [...prev, 'description']);
-    //   emptyInput = 'description'
-    //   emptyCounter++;
-    // }
+
 
     if (emptyCounter >= 1){
       return;
@@ -127,6 +131,7 @@ export default function AddProductPopup() {
 
   // This useEffect triggers when product URL is updated and auto fill is enabled.
   useEffect(() => {
+    setShowCurrencyOptions(false);
     setEmptyInputs([]);
     if (autoFill && didInitialize){
       const ASIN = extractASIN(productUrl);
@@ -141,6 +146,7 @@ export default function AddProductPopup() {
               setProductTitle(res.title);
               setProductDescription(res.description);
               setPrice(res.price);
+              setCurrency(getCurrency(domain) || 'USD');
               setProductImageUrl(res.imageUrl);
               dispatch(updateAmazonImageUrl(res.imageUrl));
             }
@@ -185,10 +191,10 @@ export default function AddProductPopup() {
 
             <div>
               <p>Title</p>
-              <div  style={{width: 250, height: 30}} className={`${isAutoFillPending && 'glowing-border'}`}>
+              <div  style={{width: 240, height: 30}} className={`${isAutoFillPending && 'glowing-border'}`}>
               <input
-                style={{ height: 30}}
-                className={`rounded-full p-2 pl-4 border ${emptyInputs.includes('title') ? 'border-red-500' : 'border-slate-300' } `}
+                style={{ height: 30, width: 230}}
+                className={` rounded-full p-2 mr-2 pl-4 border ${emptyInputs.includes('title') ? 'border-red-500' : 'border-slate-300' } `}
                 placeholder={"Product name"}
                 value={productTitle}
                 onChange={(e) => {
@@ -202,15 +208,44 @@ export default function AddProductPopup() {
               <label>Price</label>
               <div className={`flex rounded-full bg-white border ${emptyInputs.includes('price') ? 'border-red-500' : 'border-slate-300' } ${isAutoFillPending && 'glowing-border'}`}>
                 <input
-                  style={{ width: 100, height:30}}
-                  className="border-slate-400 rounded-full pl-2 "
+                  style={{ width: 60, height:30}}
+                  className="border-slate-400 border-r rounded-l-full pl-2 "
                   placeholder="1.00"
-                  type="string"
-                  value={price}
+                  type="number"
+                  value={convertPriceToNumber(price)}
                   onChange={(e) => {
                     setPrice(e.target.value);
                   }}
                 />
+                <div className="relative flex items-center pl-2 pr-2">
+                <button
+                    className=" "
+                    onClick={() => {
+                      setShowCurrencyOptions((prev) => !prev);
+                    }}
+                  >
+                    {currency}
+                  </button>
+                  {showCurrencyOptions && (
+                    <ul
+                      style={{ zIndex: 100,width:80, top: 30, right: 1 }}
+                      className="flex flex-col h-52 p-2 overflow-auto absolute mt-2 bg-white rounded shadow-md"
+                    >
+                      {currencies.map((currency) => (
+                        <button
+                        className="flex justify-between hover:bg-gray-200 w-full"
+                          onClick={() => {
+                            setCurrency(currency);
+                            setShowCurrencyOptions(false);
+                          }}
+                          key={currency}
+                        >
+                            <CountryFlag currency={currency}/> <span>{currency}</span>
+                        </button>
+                      ))}
+                    </ul>
+                  )}
+                  </div>
               </div>
             </div>
         </div>

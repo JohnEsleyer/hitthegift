@@ -6,15 +6,13 @@ import Image from "next/image";
 import { UserData } from "@/lib/types/user";
 import { useDispatch } from "react-redux";
 import { updateCurrentPopup } from "@/lib/features/popups";
-import {
-  updateUserData,
-} from "@/lib/features/userData";
+import { updateUserData } from "@/lib/features/userData";
 import TermsAndConditions from "./TermsAndConditions";
 import PasswordStrengthMeter from "@/components/ui/PasswordStrengthMeter";
 import { navigateTo } from "../actions/navigateTo";
-import Cookies from "js-cookie"; 
+import Cookies from "js-cookie";
 import { createEvent } from "../actions/events/createEvent";
-
+import { useWindowSize } from "@/utils/hooks/useWindowSize";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -52,7 +50,7 @@ export default function RegisterPage() {
   const [errorDateOfBirth, setErrorDateOfBirth] = useState(false);
   const [errorHobbiesInfo, setErrorHobbiesInfo] = useState(false);
   const [errorTerms, setErrorTerms] = useState(false);
-  
+  const { width, height } = useWindowSize();
   const handleSubmit = async (passwordStrong: boolean) => {
     setResponseMessage("");
     setIsError(false);
@@ -66,7 +64,7 @@ export default function RegisterPage() {
     setErrorDateOfBirth(false);
     setErrorHobbiesInfo(false);
     setErrorTerms(false);
-    
+
     let invalidInputs = 0; // count the number of invalid inputs
     if (userData.firstName == "") {
       setResponseMessage("Please provide your first name.");
@@ -103,7 +101,6 @@ export default function RegisterPage() {
       setErrorConfirmPassword(true);
       invalidInputs++;
     }
-    
 
     if (userData.birthday == "") {
       setResponseMessage("Please provide your date of birth.");
@@ -186,10 +183,9 @@ export default function RegisterPage() {
 
             setIsError(false);
             dispatch(updateCurrentPopup("none"));
-            router.push('/verify-email');
+            router.push("/verify-email");
           }, 3000);
-            Cookies.set("rememberMe", "false");
-          
+          Cookies.set("rememberMe", "false");
         } else {
           setIsLoading(false);
         }
@@ -201,12 +197,11 @@ export default function RegisterPage() {
             id: "",
             userId: responseData.userId,
             date: userData.birthday,
-            eventTitle: 'My birthday',
+            eventTitle: "My birthday",
             invitedFriends: [],
-          }
-        
+          },
         });
-        if (responseData2){
+        if (responseData2) {
           console.log(`Register - Create Event: ${responseData2.status}`);
         }
       } catch (e) {
@@ -218,9 +213,9 @@ export default function RegisterPage() {
   };
 
   return (
-  <div>
-    {/*Terms and conditions */}
-    {showTermsNConditions && (
+    <div>
+      {/*Terms and conditions */}
+      {showTermsNConditions && (
         <div
           style={{ zIndex: 100, position: "absolute" }}
           className={`flex justify-center items-center w-screen h-screen`}
@@ -231,7 +226,7 @@ export default function RegisterPage() {
           >
             <div style={{ height: 500 }} className="overflow-auto ">
               <div className="container mx-auto p-2">
-               <TermsAndConditions/>
+                <TermsAndConditions />
               </div>
 
               <div className="flex justify-center">
@@ -248,234 +243,262 @@ export default function RegisterPage() {
           </div>
         </div>
       )}
-    <div
-    style={{ zIndex: 1, position: "relative" }}
-      className={`${showTermsNConditions && "blurcontent"} bg-[#31241e] bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
-    >
       <div
-        className={`flex flex-col items-center justify-center w-screen  `}
+        style={{ zIndex: 1, position: "relative" }}
+        className={`${
+          showTermsNConditions && "blurcontent"
+        } bg-[#31241e] bg-[url("https://imageassets-hitmygift.fra1.cdn.digitaloceanspaces.com/background.webp")] bg-cover bg-center h-screen w-screen overflow-auto`}
       >
-        <div 
-        style={{ width:466,  height: 560, marginTop: 20}}
-        className="overflow-auto hide-scrollbar text-xs gap-2 p-4 flex flex-col border bg-white rounded-2xl">
-          <div className="flex gap-2">
-            {/*Name */}
-            <div className="flex-1 flex flex-col">
-              <label>First Name:</label>
-              <input
-              style={{height: 30}}
-                className={`${
-                  errorFirstName ? "border-red-500" : "border-gray-300"
-                } border p-2 rounded`}
-                type="text"
-                placeholder="First Name"
-                onChange={(e) => {
-                  setErrorFirstName(false);
-                  setUserData((prev) => ({
-                    ...prev,
-                    firstName: e.target.value,
-                  }));
-                }}
-                required
-              />
-            </div>
-
-            {/*Last Name */}
-            <div className="flex-1 flex flex-col">
-              <label>Last Name:</label>
-              <input
-              style={{height: 30}}
-                className={`${
-                  errorLastName ? "border-red-500" : "border-gray-300"
-                } border p-2  rounded`}
-                type="text"
-                placeholder="Last Name"
-                onChange={(e) => {
-                  setErrorLastName(false);
-                  setUserData((prev) => ({
-                    ...prev,
-                    lastName: e.target.value,
-                  }));
-                }}
-                required
-              ></input>
-            </div>
-          </div>
-          <div>
-            {/*Email */}
-            <div className="flex flex-col">
-              <label>Email:</label>
-              <input
-              style={{height: 30}}
-                className={`${
-                  errorEmail ? "border-red-500" : "border-gray-300"
-                } p-2 border rounded`}
-                type="text"
-                placeholder="firstname@email.com"
-                onChange={(e) => {
-                  setErrorEmail(false);
-                  setUserData((prev) => ({
-                    ...prev,
-                    email: e.target.value,
-                  }));
-                }}
-                required
-              />
-            </div>
-          </div>
-          <div>
-            {/*Password */}
-            <div className="flex flex-col">
-              <label>Password:</label>
-              <input
-              style={{height: 30}}
-                className={`${
-                  errorPassword ? "border-red-500" : " border-gray-300"
-                } border p-2 rounded`}
-                type="password"
-                placeholder="*******"
-                onChange={(e) => {
-                  setErrorPassword(false);
-                  setUserData((prev) => ({
-                    ...prev,
-                    password: e.target.value,
-                  }));
-                }}
-                required
-              />
-            </div>
-            {/**Password strength meter */}
-            <div>
-              <PasswordStrengthMeter password={userData.password} onPasswordStrengthChange={(isStrong, pass) => {
-                setIsPasswordStrong(isStrong);
-
-              }}/>
-              <p className="text-xs text-gray-500">
-              Password should be at least 8 characters with lowercase, uppercase, numbers, and special characters.
-    </p> 
-            </div>
-          
-          </div>
-          <div>
-            {/*Confirm Password */}
-            <div className="flex flex-col">
-              <label>Confirm Password:</label>
-
-              <input
-              style={{height: 30}}
-                className={`${
-                  errorConfirmPassword ? "border-red-500" : "border-gray-300"
-                } border p-2 rounded`}
-                type="password"
-                placeholder="*******"
-                onChange={(e) => {
-                  setErrorConfirmPassword(false);
-                  setConfirmPassword(e.target.value);
-                }}
-                required
-              />
-            </div>
-          </div>
-
-          {/**Date of Birth and Toggle On/Off */}
-          <div className="flex gap-4 ">
-            <div className="flex flex-col">
-              <label>Date of Birth</label>
-              <input
-                className={`${
-                  errorDateOfBirth ? "border-red-500" : "border-gray-300"
-                } border`}
-                type="date"
-                onChange={(e) => {
-                  setErrorDateOfBirth(false);
-                  setUserData((prev) => ({
-                    ...prev,
-                    birthday: e.target.value,
-                  }));
-                }}
-              />
-            </div>
-            <div className="flex flex-col">
-              <div className="flex justify-between">
-                <span>On/Off</span>
-                <label className="switch">
+        <div className={`flex flex-col items-center justify-center w-screen  `}>
+          <div
+            className="h-screen flex justify-center items-center"
+          >
+            <div
+              style={{ width: 466, height: 570, marginTop: 20 }}
+              className="overflow-auto hide-scrollbar text-xs gap-2 p-4 flex flex-col border bg-white rounded-2xl"
+            >
+              <div className="flex gap-2">
+                {/*Name */}
+                <div className="flex-1 flex flex-col">
+                  <label>First Name:</label>
                   <input
-                    type="checkbox"
+                    style={{ height: 30 }}
+                    className={`${
+                      errorFirstName ? "border-red-500" : "border-gray-300"
+                    } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+                    type="text"
+                    placeholder="First Name"
                     onChange={(e) => {
+                      setErrorFirstName(false);
                       setUserData((prev) => ({
                         ...prev,
-                        showInterest: e.target.checked,
+                        firstName: e.target.value,
+                      }));
+                    }}
+                    required
+                  />
+                </div>
+
+                {/*Last Name */}
+                <div className="flex-1 flex flex-col">
+                  <label>Last Name:</label>
+                  <input
+                    style={{ height: 30 }}
+                    className={`${
+                      errorLastName ? "border-red-500" : "border-gray-300"
+                    } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+                    type="text"
+                    placeholder="Last Name"
+                    onChange={(e) => {
+                      setErrorLastName(false);
+                      setUserData((prev) => ({
+                        ...prev,
+                        lastName: e.target.value,
+                      }));
+                    }}
+                    required
+                  ></input>
+                </div>
+              </div>
+              <div>
+                {/*Email */}
+                <div className="flex flex-col">
+                  <label>Email:</label>
+                  <input
+                    style={{ height: 30 }}
+                    className={`${
+                      errorEmail ? "border-red-500" : "border-gray-300"
+                    }mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+                    type="text"
+                    placeholder="firstname@email.com"
+                    onChange={(e) => {
+                      setErrorEmail(false);
+                      setUserData((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }));
+                    }}
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                {/*Password */}
+                <div className="flex flex-col">
+                  <label>Password:</label>
+                  <input
+                    style={{ height: 30 }}
+                    className={`${
+                      errorPassword ? "border-red-500" : " border-gray-300"
+                    } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+                    type="password"
+                    placeholder="*******"
+                    onChange={(e) => {
+                      setErrorPassword(false);
+                      setUserData((prev) => ({
+                        ...prev,
+                        password: e.target.value,
+                      }));
+                    }}
+                    required
+                  />
+                </div>
+                {/**Password strength meter */}
+                <div>
+                  <PasswordStrengthMeter
+                    password={userData.password}
+                    onPasswordStrengthChange={(isStrong, pass) => {
+                      setIsPasswordStrong(isStrong);
+                    }}
+                  />
+                  <p className="text-xs text-gray-500">
+                    Password should be at least 8 characters with lowercase,
+                    uppercase, numbers, and special characters.
+                  </p>
+                </div>
+              </div>
+              <div>
+                {/*Confirm Password */}
+                <div className="flex flex-col">
+                  <label>Confirm Password:</label>
+
+                  <input
+                    style={{ height: 30 }}
+                    className={`${
+                      errorConfirmPassword
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+                    type="password"
+                    placeholder="*******"
+                    onChange={(e) => {
+                      setErrorConfirmPassword(false);
+                      setConfirmPassword(e.target.value);
+                    }}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/**Date of Birth and Toggle On/Off */}
+              <div className="flex gap-4 ">
+                <div className="flex flex-col">
+                  <label>Date of Birth</label>
+                  <input
+                    className={`${
+                      errorDateOfBirth ? "border-red-500" : "border-gray-300"
+                    } mt-1 block w-full px-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+                    type="date"
+                    onChange={(e) => {
+                      setErrorDateOfBirth(false);
+                      setUserData((prev) => ({
+                        ...prev,
+                        birthday: e.target.value,
                       }));
                     }}
                   />
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex justify-between">
+                    <span>On/Off</span>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        onChange={(e) => {
+                          setUserData((prev) => ({
+                            ...prev,
+                            showInterest: e.target.checked,
+                          }));
+                        }}
+                      />
 
-                  <span className="slider round"></span>
-                </label>
+                      <span className="slider round"></span>
+                    </label>
+                  </div>
+                  <p>You want your friends to see your interests</p>
+                </div>
               </div>
-              <p>You want your friends to see your interests</p>
+              {/** Hobbies and interests **/}
+              <div>
+                <span>Hobbies and interests</span>
+                <div>
+                  <textarea
+                    style={{ width: 430, height: 105 }}
+                    className={`${
+                      errorHobbiesInfo ? "border-red-500" : "border-gray-300"
+                    } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+                    onChange={(e) => {
+                      setUserData((prev) => ({
+                        ...prev,
+                        hobbyInfo: e.target.value,
+                      }));
+                    }}
+                  ></textarea>
+                </div>
+              </div>
+              {/**Checkbox for Terms and Conditions */}
+              <div>
+                <div className="flex gap-1">
+                  <input
+                    type="checkbox"
+                    checked={didReadTerms}
+                    onChange={(e) => {
+                      setDidReadTerms(e.target.checked);
+                    }}
+                  />
+                  <p>
+                    I have read and accept the terms and conditions for this
+                    page.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowTermsNConditions(true);
+                  }}
+                  className="text-blue-600 underline"
+                >
+                  Read terms and conditions
+                </button>
+              </div>
+              {/** Buttons */}
+              <div className="flex gap-4 justify-center">
+                {isLoading ? (
+                  <div
+                    style={{ width: 135 }}
+                    className="flex justify-center items-center"
+                  >
+                    <Image src={Loading} height={25} width={25} alt="" />
+                  </div>
+                ) : (
+                  <button
+                    style={{ height: 25, width: 135 }}
+                    onClick={() => {
+                      handleSubmit(isPasswordStrong);
+                    }}
+                    className="bg-blue-600  flex justify-center items-center pl-12 pr-12 rounded-full text-white"
+                  >
+                    Create
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    navigateTo("/login");
+                  }}
+                  style={{ height: 25 }}
+                  className="bg-black pl-12 pr-12 rounded-full text-white"
+                >
+                  Cancel
+                </button>
+              </div>
+              <div className="flex flex-col items-center justify-center h-8">
+                <p className={`${isError && "text-red-500"}`}>
+                  {responseMessage}
+                </p>
+              </div>
             </div>
-          </div>
-          {/** Hobbies and interests **/}
-          <div>
-            <span>Hobbies and interests</span>
-            <div>
-              <textarea
-                style={{ width: 430, height: 105 }}
-                className={`${
-                  errorHobbiesInfo ? "border-red-500" : "border-gray-300"
-                } border p-2`}
-                onChange={(e) => {
-                  setUserData((prev) => ({
-                    ...prev,
-                    hobbyInfo: e.target.value,
-                  }));
-                }}
-              ></textarea>
-            </div>
-          </div>
-          {/**Checkbox for Terms and Conditions */}
-          <div>
-            <div className="flex gap-1">
-              <input type="checkbox" checked={didReadTerms} onChange={(e) => {
-                setDidReadTerms(e.target.checked);
-              }}/>
-              <p>
-                I have read and accept the terms and conditions for this page.
-              </p>
-            </div>
-            <button
-              onClick={() => {
-                setShowTermsNConditions(true);
-              }}
-              className="text-blue-600 underline"
-            >
-              Read terms and conditions
-            </button>
-          </div>
-          {/** Buttons */}
-          <div className="flex gap-4 justify-center">
-            {isLoading ? <div style={{width: 135}} className="flex justify-center items-center"><Image src={Loading} height={25} width={25} alt="" /></div> : <button
-              style={{height: 25, width: 135}}
-              onClick={() => {
-               
-                  handleSubmit(isPasswordStrong);
-                
-                
-              }}
-              className="bg-blue-600  flex justify-center items-center pl-12 pr-12 rounded-full text-white"
-            >
-              Create
-            </button>}
-            <button onClick={() => {navigateTo('/login')}} style={{height: 25}} className="bg-black pl-12 pr-12 rounded-full text-white">
-              Cancel
-            </button>
-          </div>
-          <div className="flex flex-col items-center justify-center h-8">
-            <p className={`${isError && "text-red-500"}`}>{responseMessage}</p>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }

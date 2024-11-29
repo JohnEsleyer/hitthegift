@@ -309,16 +309,7 @@ export default function FriendsSidebar() {
           </button>
 
    
-          {/* <button onClick={() => {
-             dispatch(updateSearchResults([
-              ...searchResults,
-              {
-                id: 'fwefwefwefwefewfewfwef',
-                firstName: 'wefwefewfwefwe',
-                lastName: 'wfewfwefwefwef',
-              }
-            ]));
-          }}>Aijwefeiuwhof</button> */}
+
         </div>
       </div>
     </div>

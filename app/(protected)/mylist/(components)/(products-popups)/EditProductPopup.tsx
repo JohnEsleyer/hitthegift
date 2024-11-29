@@ -33,6 +33,10 @@ import { extractASIN } from "./functions";
 import getProductDetails from "@/app/actions/amazon/getProductDetails";
 import '@/styles/GlowingBorder.css';
 import { getAmazonDomain } from "@/utils/getAmazonDomain";
+import { currencies } from "./constants";
+import CountryFlag from "./CountryFlag";
+import { getCurrency } from "@/utils/getCurrencySymbol";
+import { convertPriceToNumber } from "@/utils/convertPriceToNumber";
 
 type ResponseData = {
   message: string;
@@ -77,6 +81,8 @@ export default function EditProductPopup() {
   );
   const [didInitialize, setDidInitialize] = useState(false);
 
+  const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
+
   useEffect(() => {
     // This code makes sure that the imageUrl of the product being edited is the one displayed
     const handleImageConversion = async () => {
@@ -110,6 +116,7 @@ export default function EditProductPopup() {
               dispatch(updateEditProductTitle(res.title));
               dispatch(updateEditProductDescription(res.description));
               dispatch(updateEditProductPrice(res.price));
+              dispatch(updateEditProductCurrency(getCurrency(domain) || 'USD'))
               dispatch(updateAmazonImageUrl(res.imageUrl));
             }
 
@@ -298,9 +305,9 @@ export default function EditProductPopup() {
         <div className="mt-4 flex justify-center ">
             <div>
               <p>Title</p>
-              <div  style={{width: 250, height: 30}} className={`${isAutoFillPending && 'glowing-border'}`}>
+              <div  style={{width: 240, height: 30}} className={`${isAutoFillPending && 'glowing-border'}`}>
               <input
-                style={{ height: 30}}
+                style={{ height: 30, width: 230}}
                 className={`rounded-full p-2 pl-4 border border-slate-300 `}
                 placeholder={"Product name"}
                 value={title}
@@ -314,15 +321,45 @@ export default function EditProductPopup() {
               <label>Price</label>
               <div className={`flex rounded-full bg-white border border-slate-300 ${isAutoFillPending && 'glowing-border'}`}>
                 <input
-                  style={{ width: 100, height:30}}
-                  className="border-slate-400 rounded-full pl-2 "
-                  type="text"
+                  style={{ width: 60, height:30}}
+                  className="border-slate-400 border-r rounded-l-full pl-2"
+                  type="number"
                   placeholder="1.00"
-                  value={price}
+                  value={convertPriceToNumber(price)}
                   onChange={(e) => {
                     dispatch(updateEditProductPrice(e.target.value));
                   }}
                 />
+                <div className="relative flex items-center pl-2 pr-2">
+                <button
+                    className=" "
+                    onClick={() => {
+                      setShowCurrencyOptions((prev) => !prev);
+                    }}
+                  >
+                    {currency}
+                  </button>
+                  {showCurrencyOptions && (
+                    <ul
+                      style={{ zIndex: 100,width:80, top: 30, right: 1 }}
+                      className="flex flex-col h-52 p-2 overflow-auto absolute mt-2 bg-white rounded shadow-md"
+                    >
+                      {currencies.map((currency) => (
+                        <button
+                        className="flex justify-between hover:bg-gray-200 w-full"
+                          onClick={() => {
+                            dispatch(updateEditProductCurrency(currency));
+                            setShowCurrencyOptions(false);
+                          }}
+                          key={currency}
+                        >
+                            <CountryFlag currency={currency}/> <span>{currency}</span>
+                        </button>
+                      ))}
+                    </ul>
+                  )}
+                  </div>
+              
               </div>
             </div>
         </div>

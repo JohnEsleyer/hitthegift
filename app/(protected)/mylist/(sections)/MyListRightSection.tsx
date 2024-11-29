@@ -129,6 +129,7 @@ export default function MyListRightSection() {
           </button>}
           <button onClick={() => {
             setShowShareInput(false);
+            setDisplayAlreadySent(false);
             setShareInput('');
             }}>
           <Image src={blackxcircle} alt="blackxcircle" width={20} height={20}/> 
@@ -148,7 +149,7 @@ export default function MyListRightSection() {
             <div>
               {isClientMounted && (
                 <div>
-                  {products ? (
+                  {products?.length > 0 ? (
                     <div className="p-2 w-full flex flex-wrap gap-8 h-full">
                       {products.map((product) => (
                         <WishItem

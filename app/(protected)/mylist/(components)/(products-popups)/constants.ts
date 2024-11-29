@@ -6,6 +6,4 @@ export const currencies: string[] = [
     "GBP", // British Pound
     "AUD", // Australian Dollar
     "CAD", // Canadian Dollar
-    "CHF", // Swiss Franc
-    "CNY", // Chinese Renminbi
 ]

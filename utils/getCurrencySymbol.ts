@@ -33,3 +33,20 @@ export function getCurrencySymbol(domain: string): string | null {
     // Return the currency symbol if found in the map, otherwise return null
     return domainCurrencyMap[domain] || null;
   }
+
+
+  export function getCurrency(domain: string): string | null {
+    // Define a mapping of domains to currency symbols
+    const domainCurrencyMap: { [key: string]: string } = {
+      'com': 'USD',        // United States
+      'es': 'EUR',        // Spain
+      'co.uk': 'GBP',     // United Kingdom
+      'ca': 'CAD',        // Canada 
+      'jp': 'JPY',        // Japan
+      'au': 'AUD',        // Australia
+      // Add more mappings for other domains as needed
+    };
+  
+    // Return the currency symbol if found in the map, otherwise return null
+    return domainCurrencyMap[domain] || null;
+  }

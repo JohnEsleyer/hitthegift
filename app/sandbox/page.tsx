@@ -23,5 +23,6 @@ export default function Sandbox(){
         <button onClick={() => {
             dispatch(deleteAllFriendRequestsSender());
         }}>Clear all sender requests</button>
+        
     </RenderClientOnly>
 }
