@@ -7,8 +7,10 @@ import { useSelector } from "react-redux";
 import sendEmailVerification from "../../actions/email/sendEmailVerification";
 import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
 import { navigateTo } from "../../actions/navigateTo";
+import getUserInfo from "@/app/actions/user/getUserInfo";
 
-export default function VerifyEmailPage(){ const userId = useSelector((state: RootState) => state.userData.id);
+export default function VerifyEmailPage(){ 
+    const userId = useSelector((state: RootState) => state.userData.id);
     const userEmail = useSelector((state: RootState) => state.userData.email);
     const firstName = useSelector((state: RootState) => state.userData.firstName);
     const lastName = useSelector((state: RootState) => state.userData.lastName);
@@ -16,12 +18,23 @@ export default function VerifyEmailPage(){ const userId = useSelector((state: Ro
     const verificationToken = useSelector((state: RootState) => state.userData.verificationToken);
     const [enableResend, setEnableResend] = useState(true);
     const [isPending, startTransition] = useTransition();
+
     
     useEffect(()=> {
-      startTransition(() => {
+      startTransition(async () => {
         if (isVerified){
           navigateTo('/mylist');   
-         }
+        }else if (userId){
+          // Fetch latest data
+          try{
+            const res = await getUserInfo(userId);
+            if (res.verified){
+              navigateTo('/mylist');
+            }
+          }catch(e){
+            console.error(`Failed to fetch user data: ${e}`);
+          }
+        }
       })
       
     }, []);

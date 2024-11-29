@@ -77,7 +77,7 @@ function ForgotPassword(){
       <button
         type="submit"
         onClick={handleSendPasswordRequest}
-        className="w-full  text-white bg-blue-500  border hover:from-[#15621F] hover:to-[#CC0D23] font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
+        className="w-full  text-white bg-blue-600  border hover:from-[#15621F] hover:to-[#CC0D23] font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105"
       >
         Send Reset Link
       </button>}
