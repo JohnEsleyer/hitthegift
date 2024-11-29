@@ -41,12 +41,17 @@ export default function DeleteFriendPopup() {
     >
       <p className="mt-4">Are you sure you want to delete this friend?</p>
       <div className="flex gap-4 mt-4">
-        <button
+      {isPending ?  <div className="flex justify-center items-center"><Image
+          src={Loading}
+          alt=""
+          width={30}
+          height={30}
+        /> </div>: <button
           onClick={handleDeleteFriend}
           className="text-white bg-blue-500 rounded-2xl p-2 pl-4 pr-4"
         >
           Yes
-        </button>
+        </button>}
         <button
           onClick={() => {
             dispatch(updateCurrentPopup("friends"));
@@ -60,13 +65,7 @@ export default function DeleteFriendPopup() {
         style={{ height: 40 }}
         className="h-4 mt-2 w-full flex flex-col justify-center items-center"
       >
-        <Image
-          className={`${!isPending && "invisible"} mt-4`}
-          src={Loading}
-          alt=""
-          width={30}
-          height={30}
-        />
+   
         <p className={`${!isPending && "invisible"} text-red-600`}>
           {errorMessage}
         </p>

@@ -89,7 +89,9 @@ export default function LoadMyListData({ children }: LoadMyListDataProps) {
   }
 
   return (
-    <RenderClientOnly loading={<div></div>}>
+    <RenderClientOnly loading={ <div className="h-screen w-screen flex justify-center items-center">
+      <Image src={giftloading} alt="" width={50} height={50} />
+    </div>}>
       <div>{children}</div>
     </RenderClientOnly>
   );

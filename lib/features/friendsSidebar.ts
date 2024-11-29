@@ -6,11 +6,11 @@ export interface FriendsSidebarState {
   toDeleteFriend: string; // ID of friend
   toDeleteFriendRequest: string; // ID of FriendRequest record
   isSidebarOpen: boolean; // used at products section, disable clicking of products while friends sidebar is open
-  
   friends: Friend[];
   friendRequests: FriendRequestServerResponse[];
   friendRequestsReceiver: FriendRequestServerResponse[];
   friendRequestsSender: FriendRequestServerResponse[];
+  searchResults: Friend[];
 }
 
 const initialState: FriendsSidebarState = {
@@ -21,6 +21,7 @@ const initialState: FriendsSidebarState = {
   friendRequests: [],
   friendRequestsReceiver: [],
   friendRequestsSender: [],
+  searchResults: [],
 };
 
 const friendsSidebarSlice = createSlice({
@@ -112,6 +113,12 @@ const friendsSidebarSlice = createSlice({
         friendRequestsReceiver: [],
       };
     },
+    updateSearchResults: (state, action: PayloadAction<Friend[]>) => {
+      return {
+        ...state,
+        searchResults: action.payload,
+      }
+    },
 
     deleteFriendRequestForFriendsSidebar: (
       state,
@@ -167,5 +174,6 @@ export const {
   deleteAllFriendRequestsSender,
   deleteAllFriendRequestsReceiver,
   deleteAllFriendRequests,
+  updateSearchResults,
 } = friendsSidebarSlice.actions;
 export default friendsSidebarSlice.reducer; // Ensure this exports the reducer

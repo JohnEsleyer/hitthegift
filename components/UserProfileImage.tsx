@@ -22,7 +22,7 @@ export default function UserProfileImage({userId, userName ,width, height, alt}:
 
     return hasError? (
         <div>
-            <Image className="border rounded-full" src={user} alt={"profile"} loading="lazy" width={width} height={height}/> 
+            <img className="border rounded-full" src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/user.webp`} alt={"profile"} width={width} height={height}/> 
         </div>
     ) : (
         <img className="border rounded-full " src={`https://${bucketName}.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/${userId}.webp`} alt={alt} width={width} height={height} onError={handleError}/>

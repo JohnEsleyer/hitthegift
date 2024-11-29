@@ -10,6 +10,7 @@ import {
   updateFriendRequests,
   updateFriendRequestsReceiver,
   updateFriendRequestsSender,
+  updateSearchResults,
   updateToDeleteFriend,
   updateToDeleteFriendRequest,
 } from "@/lib/features/friendsSidebar";
@@ -33,7 +34,8 @@ export default function FriendsSidebar() {
   const friends = useSelector(
     (state: RootState) => state.friendsSidebar.friends
   );
-  const [searchResults, setSearchResults] = useState<Friend[]>([]);
+  // const [searchResults, setSearchResults] = useState<Friend[]>([]);
+  const searchResults = useSelector((state: RootState) => state.friendsSidebar.searchResults);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
@@ -43,6 +45,7 @@ export default function FriendsSidebar() {
   const friendRequests = useSelector(
     (state: RootState) => state.friendsSidebar.friendRequests
   );
+
 
   const handleSearch = (query: string) => {
     console.log("start handleSearch");
@@ -54,7 +57,8 @@ export default function FriendsSidebar() {
         friend.lastName.toLowerCase().includes(trimmedQuery)
     );
 
-    setSearchResults(results);
+    // setSearchResults(results);
+    dispatch(updateSearchResults(results));
     // setSearchLoading(false);
     console.log("end handleSearch ");
   };
@@ -64,7 +68,8 @@ export default function FriendsSidebar() {
   };
 
   useEffect(() => {
-    setSearchResults(friends);
+    // setSearchResults(friends);
+    dispatch(updateSearchResults(friends));
     console.log('Friends sidebar');
     if (friendRequests){
       friendRequests.map((request) => {
@@ -143,23 +148,36 @@ export default function FriendsSidebar() {
                     <div className="flex">
                       <button
                         onClick={() => {
+                         
                           handleAcceptFriendRequest(friendRequest.id);
-                          // Remove the accepted friend request from state
-                          setSearchResults((friends) => [
-                            ...friends,
+                          console.log(`friendRequest.sender.id: ${friendRequest.sender.id}`);
+                          console.log(`friendRequest.sender.firstName: ${friendRequest.sender.firstName}`);
+                          console.log(`friendRequest.sender.lastName: ${friendRequest.sender.lastName}`);
+
+                          dispatch(updateSearchResults([
+                            ...searchResults,
                             {
                               id: friendRequest.sender.id,
                               firstName: friendRequest.sender.firstName,
                               lastName: friendRequest.sender.lastName,
-                            },
-                          ]);
-                          dispatch(
-                            updateFriendRequests(
-                              friendRequests.filter(
-                                (element) => element.id !== friendRequest.id
-                              )
+                            }
+                          ]));
+                        
+                        setTimeout(() => {
+                          dispatch(updateFriendRequestsReceiver(
+                            friendRequestsReceiver.filter(
+                              (element) => element.id !== friendRequest.id
                             )
-                          );
+                          ));
+                        
+                          // dispatch(updateFriendRequests(
+                          //   friendRequests.filter(
+                          //     (element) => element.id !== friendRequest.id
+                          //   )
+                          // ));
+                        }, 100); // Adjust the delay (in milliseconds) as needed
+
+                         
                         }}
                       >
                         <Image
@@ -182,6 +200,8 @@ export default function FriendsSidebar() {
                     </div>
                   </div>
                 ))}
+
+                {/**Sent Requests */}
                 {friendRequestsSender?.length > 0 && <p className="mt-2">Sent Requests</p>}
                 {friendRequestsSender?.map((friendRequest, index) => (
                   <div
@@ -190,18 +210,23 @@ export default function FriendsSidebar() {
                     className="flex bg-white border border-gray-400 border rounded-2xl pl-2 pr-2 p-1 mt-2 flex justify-between"
                   >
                     <div className="flex items-center">
-                    <UserProfileImage userId={friendRequest.receiver.id} userName={friendRequest.receiver.firstName} width={30} height={30} alt={"user profile"}/> 
+                    <UserProfileImage 
+                      userId={friendRequest.receiver.id} 
+                      userName={friendRequest.receiver.firstName} 
+                      width={28} 
+                      height={28} 
+                      alt={"user profile"}/> 
                       <LimitText
                         text={isEmail(friendRequest.receiver.id) ? friendRequest.receiver.id : friendRequest.receiver.firstName}
-                        fontSize={13}
+                        fontSize={10}
                         length={11}
                         color={"text-black"}
                       />
                      
                     </div>
                     <div className="flex">
-                      {/* <p style={{fontSize: 9}} className="flex justify-center items-center text-gray-600">Pending</p> */}
-                      <p>{friendRequest.isSeen ? "true" : "false"}</p>
+                      <p style={{fontSize: 9}} className="flex justify-center items-center text-gray-600">Pending</p>
+                      {/* <p>{friendRequest.isSeen ? "true" : "false"}</p> */}
                       <button
                         onClick={() => {
                           dispatch(
@@ -225,7 +250,7 @@ export default function FriendsSidebar() {
 
       {/**Friends Section */}
       <div className="flex-1 flex flex-col justify-between">
-        {searchResults.length > 0 ? (
+        {searchResults?.length > 0 ? (
           <div className="flex-1 flex-col justify-between items-between">
             <div>
               <p>Friends</p>
@@ -282,6 +307,18 @@ export default function FriendsSidebar() {
           >
             Add Friend
           </button>
+
+   
+          {/* <button onClick={() => {
+             dispatch(updateSearchResults([
+              ...searchResults,
+              {
+                id: 'fwefwefwefwefewfewfwef',
+                firstName: 'wefwefewfwefwe',
+                lastName: 'wfewfwefwefwef',
+              }
+            ]));
+          }}>Aijwefeiuwhof</button> */}
         </div>
       </div>
     </div>

@@ -1,7 +1,25 @@
 "use server";
 
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import sendInviteByEmail from "../email/sendInviteByEmail";
+
+
+interface User {
+  _id: ObjectId;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profileImageUrl: string;
+  password: string; 
+  hobbyInfo: string;
+  birthday: string; // Or Date if you store it as a Date object
+  showInterest: boolean;
+  friendsList: ObjectId[];
+  conversations: any[]; // Replace 'any' with the appropriate type if known
+  verified: boolean;
+  // Add any other properties your User schema has
+}
+
 
 export async function sendFriendRequest(senderId: string, receiverEmail: string) {
   const uri = process.env.MONGODB_URI || "";
@@ -23,7 +41,19 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
       receiverId = receiverEmail; 
     }
 
-    // 3. Check for existing friend request (using a compound index for efficiency)
+    // 3. Check if sender and receiver are already friends
+    const sender = await db.collection<User>("users").findOne({ _id: new ObjectId(senderId) });
+    if (sender && receiver) { // Only check if both users exist
+      const areFriends = sender.friendsList.some(friendId => friendId.toString() == receiver._id.toString()); 
+      if (areFriends) {
+        return {
+          status: 400,
+          message: "You are already friends with this user",
+        };
+      }
+    }
+
+    // 4. Check for existing friend request (using a compound index for efficiency)
     const existingRequest = await db.collection("friendRequest").findOne({
       senderId: senderId,
       receiverId: receiverId,
@@ -36,7 +66,7 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
       };
     }
 
-    // 4. Create the friend request
+    // 5. Create the friend request
     const friendRequest = {
       senderId: senderId,
       receiverId: receiverId,
