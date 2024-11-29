@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { EventData, ServerResponseForEvents } from "@/lib/types/event";
+import { ServerResponseForEvents } from "@/lib/types/event";
 import { ProductType } from "@/lib/types/products";
 import { Friend } from "@/lib/types/friend";
 import { FriendRequestServerResponse } from "@/lib/types/friendrequest";

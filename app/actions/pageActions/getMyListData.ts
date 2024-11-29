@@ -155,7 +155,8 @@ export async function getMyListData(userId: string) {
                         firstName: receiverInfo.firstName || '',
                         lastName: receiverInfo.lastName || '',
                         imageUrl: receiverProfileImage.data || '',
-                    }
+                    },
+                    isSeen: friendRequest.isSeen,
                 };
             }));
         }
@@ -171,6 +172,8 @@ export async function getMyListData(userId: string) {
                     getUserInfo(friendRequest.receiverId),
                 ]);
 
+                console.log(`FriendRequest isSeen: ${friendRequest.isSeen}`);
+
                 return {
                     id: friendRequest._id.toString(),
                     sender: {
@@ -182,7 +185,8 @@ export async function getMyListData(userId: string) {
                         id: friendRequest.receiverId,
                         firstName: receiverInfo.firstName || '',
                         lastName: receiverInfo.lastName || '',
-                    }
+                    },
+                    isSeen: friendRequest.isSeen,
                 };
             }));
         }

@@ -22,7 +22,7 @@ export default function MyListRightSection() {
   const products = useSelector((state: RootState) => state.mylist.products);
   const [showShareInput, setShowShareInput] = useState(false);
   const [shareInput, setShareInput] = useState("");
-  const { width, height } = useWindowSize();
+  const { width } = useWindowSize();
   const [sendPending, startSendTransition] = useTransition();
   const userId = useSelector((state: RootState) => state.userData.id);
   const firstName = useSelector((state: RootState) => state.userData.firstName);
@@ -58,7 +58,8 @@ export default function MyListRightSection() {
                     id: shareInput, // Assuming shareInput is receiverId or email
                     firstName: extractNameFromEmail(shareInput) || '',
                     lastName: '', 
-                  }
+                  },
+                  isSeen: false,
                 }));
                 dispatch(updateCurrentPopup('sendWishlist'));
                 // Optionally clear the input here: setShareInput(''); 

@@ -25,6 +25,7 @@ import xicon from "/public/xicon.svg";
 import xicongray from "/public/xicongray.svg";
 import LimitText from "@/components/ui/LimitText";
 import { isEmail } from "@/utils/isEmail";
+import { seenFriendRequests } from "@/app/actions/user/seenFriendRequests";
 
 export default function FriendsSidebar() {
   const dispatch = useDispatch();
@@ -69,14 +70,14 @@ export default function FriendsSidebar() {
       friendRequests.map((request) => {
         if (request?.receiver.id == userId){
           // Check for existing item to avoid duplicate items
-          if (friendRequestsReceiver.includes(request)){
+          if (friendRequestsReceiver.includes(request) || friendRequestsReceiver.some((res) => res.id == request.id)){
             return;
           }
           dispatch(updateFriendRequestsReceiver(friendRequestsReceiver ? [...friendRequestsReceiver, request] : [request]));
         }
         if (request?.sender.id == userId){
           // Check for existing item to avoid duplicate items
-          if (friendRequestsSender.includes(request)){
+          if (friendRequestsSender.includes(request) || friendRequestsSender.some((res) => res.id == request.id)){
             return;
           }
           dispatch(updateFriendRequestsSender(friendRequestsSender ? [...friendRequestsSender, request] : [request]));
@@ -84,7 +85,6 @@ export default function FriendsSidebar() {
       });
     }
   }, [friendRequests]);
-
 
   const handleAcceptFriendRequest = async (friendRequestId: string) => {
     try {
@@ -197,9 +197,11 @@ export default function FriendsSidebar() {
                         length={11}
                         color={"text-black"}
                       />
+                     
                     </div>
                     <div className="flex">
-                      <p style={{fontSize: 9}} className="flex justify-center items-center text-gray-600">Pending</p>
+                      {/* <p style={{fontSize: 9}} className="flex justify-center items-center text-gray-600">Pending</p> */}
+                      <p>{friendRequest.isSeen ? "true" : "false"}</p>
                       <button
                         onClick={() => {
                           dispatch(
