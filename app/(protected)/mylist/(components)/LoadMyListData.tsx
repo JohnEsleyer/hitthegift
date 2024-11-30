@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState, useTransition } from "react";
+import { ReactNode, useEffect, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { ServerResponseForEvents } from "@/lib/types/event";
@@ -44,6 +44,7 @@ export default function LoadMyListData({ children }: LoadMyListDataProps) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("LoadMyListData rendered");
     // Reset local data
     dispatch(deleteAllFriendRequests());
     dispatch(deleteAllFriendRequestsSender());

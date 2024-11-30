@@ -1,12 +1,10 @@
 'use server'
 
 import { EventData } from "@/lib/types/event";
-import getFriendsByIds from "../user/getFriendsByIds";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { ProductType } from "@/lib/types/products";
 import { Conversation } from "@/lib/types/conversation";
 import { Message } from "@/lib/types/message";
-import { ObjectId } from "mongodb";
 import { Friend } from "@/lib/types/friend";
 import { UserData } from "@/lib/types/user";
 import { FriendRequestMongoType, FriendRequestServerResponse } from "@/lib/types/friendrequest";
@@ -30,27 +28,64 @@ export async function getMyListData(userId: string) {
     try {
         const db = mongoClient.db("hitmygift");
 
-        // Fetch events
-        console.log('Fetching events');
-        const events = await db.collection<EventData>("events").find({ userId: userId }).toArray();
-        let eventsData: { id: string; userId: string; date: string; eventTitle: string; invitedFriends: Friend[]; }[] = [];
-        if (events.length > 0) {
-            eventsData = await Promise.all(
-                events.map(async (event) => {
-                    const friendsData = await getFriendsByIds(event.invitedFriends);
-                    return {
-                        id: event._id.toString(),
-                        userId: userId,
-                        date: event.date.toString(),
-                        eventTitle: event.eventTitle,
-                        invitedFriends: friendsData.friends,
-                    };
-                })
-            );
-        }
-        console.log('Fetching events done!');
+        // 1. Fetch user data with friends and events populated
+        console.log('Fetching user data with friends and events');
+        const user = await db.collection<UserData>('users').aggregate([
+            { $match: { _id: new ObjectId(userId) } },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "friendsList",
+                    foreignField: "_id",
+                    as: "friends"
+                }
+            },
+            {
+                $lookup: {
+                    from: "events",
+                    localField: "_id",
+                    foreignField: "userId",
+                    as: "events"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "events.invitedFriends",
+                    foreignField: "_id",
+                    as: "invitedFriends"
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    friends: {
+                        id: { $toString: "$_id" },
+                        firstName: 1,
+                        lastName: 1,
+                    },
+                    events: {
+                        id: { $toString: "$_id" },
+                        userId: { $toString: "$_id" }, 
+                        date: { $toString: "$date" },
+                        eventTitle: 1,
+                        invitedFriends: {
+                            id: { $toString: "$_id" },
+                            firstName: 1,
+                            lastName: 1,
+                        }
+                    }
+                }
+            }
+        ]).toArray();
 
-        // Fetch products
+        console.log('Fetching user data with friends and events done!');
+
+        // Extract friends and events
+        const userFriends: Friend[] = user[0]?.friends || [];
+        const eventsData = user[0]?.events || [];
+
+        // 2. Fetch products
         console.log('Fetching products');
         const products = await db.collection<ProductType>("products").find({ userId: userId }).toArray();
         const productsData: ProductType[] = products.map((product) => ({
@@ -65,151 +100,127 @@ export async function getMyListData(userId: string) {
         }));
         console.log('Fetching products done!');
 
-        // Fetch conversations
+        // 3. Fetch conversations and unread counts
         console.log('Fetching conversations');
-        const conversations = await db
-            .collection<Conversation>("conversations")
-            .find({ participants: userId })
-            .toArray();
-
-        const userConversations = [];
-        for (const conversation of conversations) {
-            const unreadCount = await db
-                .collection<Message>("messages")
-                .countDocuments({
-                    conversationId: conversation._id.toString(),
-                    isRead: false,
-                    sender: { $ne: userId },
-                });
-
-            const friendId = conversation.participants.find((id) => id !== userId);
-            if (!friendId) {
-                console.warn(`Conversation ${conversation._id} has less than 2 participants.`);
-                continue;
+        const conversations = await db.collection<Conversation>("conversations").aggregate([
+            { $match: { participants: userId } },
+            {
+                $lookup: {
+                    from: "messages",
+                    let: { conversationId: { $toString: "$_id" } },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$conversationId", "$$conversationId"] },
+                                        { $eq: ["$isRead", false] },
+                                        { $ne: ["$sender", userId] }
+                                    ]
+                                }
+                            }
+                        },
+                        { $count: "unreadCount" }
+                    ],
+                    as: "unreadMessages"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    let: { friendId: { $arrayElemAt: [{ $filter: { input: "$participants", as: "participant", cond: { $ne: ["$$participant", userId] } } }, 0] } },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_id", { $toObjectId: "$$friendId" }] } } }
+                    ],
+                    as: "friend"
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    conversationId: { $toString: "$_id" },
+                    unreadMessageCount: { $ifNull: [{ $arrayElemAt: ["$unreadMessages.unreadCount", 0] }, 0] },
+                    friend: {
+                        id: { $toString: { $arrayElemAt: ["$friend._id", 0] } },
+                        name: { $concat: [{ $arrayElemAt: ["$friend.firstName", 0] }, " ", { $arrayElemAt: ["$friend.lastName", 0] }] }
+                    }
+                }
             }
+        ]).toArray();
 
-            const friend = await db.collection("users").findOne({ _id: new ObjectId(friendId) });
-            if (!friend) {
-                console.warn(`Friend with ID ${friendId} not found.`);
-                continue;
-            }
-
-            userConversations.push({
-                conversationId: conversation._id.toString(),
-                unreadMessageCount: unreadCount,
-                friend: {
-                    id: friendId,
-                    name: `${friend.firstName} ${friend.lastName}`,
-                },
-            });
-        }
         console.log('Fetching conversations done!');
 
-        // Fetch friends ID
-        console.log('Fetching friends Ids');
-        const user = await db.collection<UserData>('users').findOne({ _id: new ObjectId(userId) });
-        let userFriends: Friend[] = [];
-        if (user) {
-            const userFriendsIdList: string[] = user.friendsList.map((friendId) => friendId.toString());
-            const friendsData = await Promise.all(
-                userFriendsIdList.map(async (friendIdStr) => {
-                    const friend = await db.collection<UserData>('users').findOne({ _id: new ObjectId(friendIdStr) });
-                    if (friend) {
-                        return {
-                            id: friendIdStr,
-                            firstName: friend.firstName,
-                            lastName: friend.lastName,
-                        };
-                    }
-                    return null;
-                })
-            );
-            userFriends = friendsData.filter((friend): friend is Friend => friend !== null);
-        }
-        console.log('Fetching friends Ids done!');
-
-        // Fetch friend requests
+        // 4. Fetch friend requests (both sent and received)
         console.log('Fetching friend requests');
-        const friendRequestsResponse = await db.collection<FriendRequestMongoType>('friendRequest').find({ receiverId: userId }).toArray();
-        console.log(`friendRequestsResponse: ${friendRequestsResponse.length}`);
-        let friendRequests: FriendRequestServerResponse[] = [];
-        if (friendRequestsResponse.length > 0) {
-            friendRequests = await Promise.all(friendRequestsResponse.map(async (friendRequest) => {
-                const [senderInfo, senderProfileImage, receiverInfo, receiverProfileImage] = await Promise.all([
-                    getUserInfo(friendRequest.senderId),
-                    getProfilePicture(friendRequest.senderId),
-                    getUserInfo(friendRequest.receiverId),
-                    getProfilePicture(friendRequest.receiverId)
-                ]);
-
-                return {
-                    id: friendRequest._id.toString(),
+        const friendRequests = await db.collection<FriendRequestMongoType>('friendRequest').aggregate([
+            { $match: { $or: [{ senderId: userId }, { receiverId: userId }] } },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "senderId",
+                    foreignField: "_id",
+                    as: "senderData"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "receiverId",
+                    foreignField: "_id",
+                    as: "receiverData"
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    id: { $toString: "$_id" },
                     sender: {
-                        id: friendRequest.senderId,
-                        firstName: senderInfo.firstName || '',
-                        lastName: senderInfo.lastName || '',
-                        imageUrl: senderProfileImage.data || '',
+                        id: "$senderId",
+                        firstName: { $arrayElemAt: ["$senderData.firstName", 0] },
+                        lastName: { $arrayElemAt: ["$senderData.lastName", 0] },
                     },
                     receiver: {
-                        id: friendRequest.receiverId,
-                        firstName: receiverInfo.firstName || '',
-                        lastName: receiverInfo.lastName || '',
-                        imageUrl: receiverProfileImage.data || '',
+                        id: "$receiverId",
+                        firstName: { $arrayElemAt: ["$receiverData.firstName", 0] },
+                        lastName: { $arrayElemAt: ["$receiverData.lastName", 0] },
                     },
-                    isSeen: friendRequest.isSeen,
-                };
-            }));
-        }
+                    isSeen: 1
+                }
+            }
+        ]).toArray();
 
-        // Fetch all friend requests as the sender
-        const friendRequestsSenderResponse = await db.collection<FriendRequestMongoType>('friendRequest').find({ senderId: userId }).toArray();
-        console.log(`friendRequestsSenderResponse: ${friendRequestsSenderResponse.length}`);
-        let friendRequestsSender: FriendRequestServerResponse[] = [];
-        if (friendRequestsSenderResponse.length > 0) {
-            friendRequestsSender = await Promise.all(friendRequestsSenderResponse.map(async (friendRequest) => {
-                const [senderInfo, receiverInfo] = await Promise.all([
-                    getUserInfo(friendRequest.senderId),
-                    getUserInfo(friendRequest.receiverId),
-                ]);
+        // Fetch profile pictures for senders and receivers
+        const friendRequestsWithImages = await Promise.all(friendRequests.map(async (request) => {
+            const [senderProfileImage, receiverProfileImage] = await Promise.all([
+                getProfilePicture(request.sender.id),
+                getProfilePicture(request.receiver.id)
+            ]);
+            return {
+                ...request,
+                sender: {
+                    ...request.sender,
+                    imageUrl: senderProfileImage.data || '',
+                },
+                receiver: {
+                    ...request.receiver,
+                    imageUrl: receiverProfileImage.data || '',
+                }
+            };
+        }));
 
-                console.log(`FriendRequest isSeen: ${friendRequest.isSeen}`);
-
-                return {
-                    id: friendRequest._id.toString(),
-                    sender: {
-                        id: friendRequest.senderId,
-                        firstName: senderInfo.firstName || '',
-                        lastName: senderInfo.lastName || '',
-                    },
-                    receiver: {
-                        id: friendRequest.receiverId,
-                        firstName: receiverInfo.firstName || '',
-                        lastName: receiverInfo.lastName || '',
-                    },
-                    isSeen: friendRequest.isSeen,
-                };
-            }));
-        }
         console.log('Fetching friend requests done!');
-
-
-        // Combine the two types of friend requests
-        let combinedFriendRequests: FriendRequestServerResponse[] = [
-            ...friendRequests,
-            ...friendRequestsSender,
-        ]
-
         console.log(`events: ${eventsData.length}`);
         console.log(`products: ${products.length}`);
         console.log(`conversations: ${conversations.length}`);
         console.log(`friends: ${userFriends.length}`);
         console.log(`friendRequests: ${friendRequests.length}`);
+
         return {
             events: eventsData,
             products: productsData,
-            conversations: userConversations,
+            conversations: conversations,
             friends: userFriends,
-            friendRequests: combinedFriendRequests,
+            friendRequests: friendRequestsWithImages,
         };
     } catch (e) {
         console.error(e);
