@@ -54,18 +54,28 @@ export default function HomeTemplate({
   const friendRequests = useSelector(
     (state: RootState) => state.friendsSidebar.friendRequests
   );
-
   const [notificationCounter, setNotificationCounter] = useState(0);
-
   const dispatch = useDispatch();
   const { width, height } = useWindowSize();
-
   async function seenAllFriendRequests() {
+     // Update local friend requests
+    dispatch(updateFriendRequests(friendRequests.map((req) => {
+      if (req.sender.id == userId){
+        return {
+          ...req,
+          isSeenSender: true,
+        }
+      }
+      return {
+        ...req,
+        isSeenReceiver: true, 
+      }
+    })));
     try {
-      const res = await seenFriendRequests(friendRequests);
-
+      const res = await seenFriendRequests(friendRequests, userId);
       // Handle the response from the server
       if (res.status === 200) {
+  
         // Successfully updated, potentially update local state or show a success message
         console.log("Friend requests marked as seen");
       } else {
@@ -81,7 +91,7 @@ export default function HomeTemplate({
 
   useEffect(() => {
     if (friendRequests){
-      setNotificationCounter(countUnseenFriendRequests(friendRequests));
+      setNotificationCounter(countUnseenFriendRequests(friendRequests, userId));
     }
     
   },[friendRequests]);
@@ -199,7 +209,7 @@ export default function HomeTemplate({
                   onClick={async () => {
                     dispatch(
                       updateFriendRequests(
-                        friendRequests.map((req) => ({ ...req, isSeen: true }))
+                        friendRequests?.map((req) => ({ ...req, isSeen: true }))
                       )
                     );
                     dispatch(updateCurrentPopup("friends"));

@@ -1,25 +1,12 @@
 'use server'
 
+import { FriendRequestServerResponse } from "@/lib/types/friendrequest";
 import { MongoClient, ObjectId } from "mongodb";
 
 // Data received by the client from the server after creating a new friend request.
-export type FriendRequestServerResponse = {
-  id: string;
-  sender: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  },
-  receiver: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  },
-  isSeen: boolean;
-}
-
 export async function seenFriendRequests(
-  friendRequests: FriendRequestServerResponse[]
+  friendRequests: FriendRequestServerResponse[],
+  userId: string,
 ) {
   const uri = process.env.MONGODB_URI || "";
   const mongoClient = new MongoClient(uri);
@@ -28,29 +15,31 @@ export async function seenFriendRequests(
     const db = mongoClient.db("hitmygift");
     const friendRequestCollection = db.collection("friendRequest");
 
-    const objectIds = friendRequests.map((request) => new ObjectId(request.id));
+    // Instead of updating all requests at once, we'll iterate and update individually
+    const updates = friendRequests.map(async (request) => {
+      const objectId = new ObjectId(request.id);
 
-    // Update multiple documents in one operation
-    const result = await friendRequestCollection.updateMany(
-      { _id: { $in: objectIds } },
-      { $set: { isSeen: true } }
-    );
+      // Determine whether the user is the sender or receiver
+      const updateField = request.sender.id === userId ? 'isSeenSender' : 'isSeenReceiver';
 
-    if (result.modifiedCount === friendRequests.length) {
-      return {
-        status: 200,
-        message: "Friend requests updated successfully",
-      };
-    } else {
-      // Handle the case where not all requests were updated
-      console.warn(
-        `Expected to update ${friendRequests.length} requests, but only updated ${result.modifiedCount}`
+      // Update the correct field
+      const result = await friendRequestCollection.updateOne(
+        { _id: objectId },
+        { $set: { [updateField]: true } } 
       );
-      return {
-        status: 200, // Still success, but with a warning
-        message: "Some friend requests were not updated",
-      };
-    }
+
+      if (result.modifiedCount !== 1) {
+        console.warn(`Failed to update friend request ${request.id}`);
+      }
+    });
+
+    await Promise.all(updates); // Wait for all updates to complete
+
+    return {
+      status: 200,
+      message: "Friend requests updated successfully",
+    };
+
   } catch (e) {
     console.error(e);
     return {

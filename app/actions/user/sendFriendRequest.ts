@@ -70,7 +70,8 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
     const friendRequest = {
       senderId: senderId,
       receiverId: receiverId,
-      isSeen: false,
+      isSeenSender: false,
+      isSeenReceiver: false,
     };
 
     const result = await db.collection("friendRequest").insertOne(friendRequest);

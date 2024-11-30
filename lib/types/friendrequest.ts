@@ -6,7 +6,8 @@ export type FriendRequestMongoType = {
     _id: ObjectId;
     senderId: string;
     receiverId: string;
-    isSeen: boolean;
+    isSeenSender: boolean;
+    isSeenReceiver: boolean;
 }
 
 // Data received by the client from the server after creating a new friend request.
@@ -22,5 +23,6 @@ export type FriendRequestServerResponse = {
         firstName: string;
         lastName: string;
     },
-    isSeen: boolean;
+    isSeenSender: boolean;
+    isSeenReceiver: boolean;
 }

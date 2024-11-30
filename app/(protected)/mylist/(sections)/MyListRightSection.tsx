@@ -59,7 +59,8 @@ export default function MyListRightSection() {
                     firstName: extractNameFromEmail(shareInput) || '',
                     lastName: '', 
                   },
-                  isSeen: false,
+                  isSeenSender: false,
+                  isSeenReceiver: false,
                 }));
                 dispatch(updateCurrentPopup('sendWishlist'));
                 // Optionally clear the input here: setShareInput(''); 
