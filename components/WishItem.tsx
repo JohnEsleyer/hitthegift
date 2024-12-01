@@ -71,7 +71,7 @@ export default function WishItem({
     <div className="relative">
       <AffiliateLink>
         <div
-          style={{ width: 167, height: 329, borderRadius: 5 }}
+          style={{ width: 167, height: owner ? 329 : 345, borderRadius: 5 }}
           className={`p-2 border border-[#d9d9d9] bg-white ${
             !isSidebarOpen && "hover:scale-100"
           }`}

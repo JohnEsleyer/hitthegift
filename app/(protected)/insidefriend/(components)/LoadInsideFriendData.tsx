@@ -47,18 +47,23 @@ export default function LoadInsideFriendData({
         const response = await getInsideFriendData(friendId);
 
         if (response.status === 200) {
+          console.log('friends');
+          console.log(response.friends);
+          console.log('products');
+          console.log(response.products);
           dispatch(updateFriendsForInsideFriend(response.friends || []));
           dispatch(updateProdctsForInsideFriend(response.products || []));
           dispatch(updateFriendData(response.userInfo as FriendData));
         } else {
-            console.error("Failed to fetch /insidefriend data:", response.message); 
+            console.log(response.status);
+            console.log("Failed to fetch /insidefriend data:", response.message); 
         }
       } catch (e) {
         console.error(e);
       }
     });
   }, []);
-
+  
   return (
     <RenderClientOnly loading={<div></div>}>
       <div>

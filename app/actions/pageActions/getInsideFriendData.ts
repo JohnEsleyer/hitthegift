@@ -24,7 +24,7 @@ export default async function getInsideFriendData(userId: string) {
                 $expr: { $in: ['$_id', '$$friends'] }
               }
             },
-            {
+            { 
               $project: {
                 _id: 0,
                 id: { $toString: '$_id' },
@@ -39,11 +39,13 @@ export default async function getInsideFriendData(userId: string) {
       {
         $lookup: {
           from: 'products',
-          let: { userIdObj: { $toObjectId: userId } },
+          let: { userId: '$_id' }, 
           pipeline: [
             {
               $match: {
-                $expr: { $eq: ['$userId', '$$userIdObj'] }
+                $expr: {
+                  $eq: [{ $toObjectId: '$userId' }, '$$userId'] // Convert userId in products to ObjectId
+                }
               }
             },
             {
@@ -89,7 +91,37 @@ export default async function getInsideFriendData(userId: string) {
       };
     }
 
-    return result[0];
+    {/**Start modifying after this comment. */}
+    console.log(result[0]);
+    
+    // return result[0];
+    return {
+      userInfo: {
+        hobbyInfo: result[0].userInfo.hobbyInfo,
+        firstName: result[0].userInfo.firstName,
+        lastName: result[0].userInfo.lastName,
+        verified: result[0].userInfo.verified,
+        verificationToken: result[0].userInfo.verificationToken,
+        email: result[0].userInfo.email,
+        birthday: result[0].userInfo.birthday,
+      },
+      friends: result[0].friends.map((friend: { id: any; firstName: any; lastName: any; }) => ({
+        id: friend.id,
+        firstName: friend.firstName,
+        lastName: friend.lastName,
+      })),
+      products: result[0].products.map((product: { id: any; userId: any; price: any; currency: any; title: any; productUrl: any; imageUrl: any; description: any; }) => ({
+        id: product.id,
+        userId: product.userId,
+        price: product.price,
+        currency: product.currency,
+        title: product.title,
+        productUrl: product.productUrl,
+        imageUrl: product.imageUrl,
+        description: product.description,
+      })),
+      status: 200,
+    };
 
   } catch (e) {
     console.error(e);

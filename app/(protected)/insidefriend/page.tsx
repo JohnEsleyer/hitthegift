@@ -25,7 +25,6 @@ export default function InsideFriendPage() {
     
   }, [pathname, isVerified, userId]);
   return (
-
     <LoadInsideFriendData>
     <HomeTemplate
       leftSide={<InsideFriendLeftSection/>}
