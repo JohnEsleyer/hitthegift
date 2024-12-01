@@ -1,121 +1,130 @@
 'use server'
-
-import { EventData, InvitedEventsResponse } from "@/lib/types/event";
-import { Friend } from "@/lib/types/friend";
-import { ProductType } from "@/lib/types/products";
-import { UserData } from "@/lib/types/user";
+import { InvitedEventsResponse } from "@/lib/types/event";
+import { FriendWithProducts } from "@/lib/types/friend";
 import { MongoClient, ObjectId } from "mongodb";
 
-/**
- * This function combines the functionality of all the provided functions 
- * and returns the following data for a given userId:
- * - User Info
- * - Profile Picture URL
- * - All Invited Events with owner names
- * - All Friends with their products
- */
-export async function getFriendsListData(userId: string) {
+export async function getFriendsListData(userId: string){
   const uri = process.env.MONGODB_URI || '';
   const mongoClient = new MongoClient(uri);
-  
+
   try {
     const db = mongoClient.db('hitmygift');
 
-    // 1. Fetch User Info
-    const user = await db.collection<UserData>('users').findOne({
-      _id: new ObjectId(userId),
+    const events = await db.collection('events').aggregate([
+      {
+        $match: {
+          invitedFriends: { $in: [userId] }, // Use $in to check if userId is in the array
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          let: { userId: { $toObjectId: '$userId' } }, // Convert userId string to ObjectId
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$userId'] } } }, // Match _id in users collection
+          ],
+          as: 'ownerDetails', // Output the matched user data
+        },
+      },
+      {
+        $unwind: {
+          path: '$ownerDetails', // Use the correct field from $lookup
+          preserveNullAndEmptyArrays: false, // Exclude events without owner details
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: { $toString: '$_id' }, // Convert ObjectId to string
+          userId: 1,
+          date: 1,
+          eventTitle: 1,
+          invitedFriends: 1,
+          ownerName: { $concat: ['$ownerDetails.firstName', ' ', '$ownerDetails.lastName'] },
+        },
+      },
+    ]).toArray();
+
+    console.log(events);
+
+    const user = await db.collection('users').findOne({ 
+      _id: new ObjectId(userId) 
     });
 
-    if (!user) {
+    if (user) {
+      // Assuming friendsList contains ObjectIds as strings
+      const friendsList = user.friendsList as string[]; 
+
+    const friendsWithProducts = await db.collection('users').aggregate([
+      {
+        $match: {
+          _id: { $in: friendsList.map(id => new ObjectId(id)) }
+        }
+      },
+      {
+        $lookup: {
+          from: 'products',
+          let: { userId: '$_id' }, 
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: [{ $toObjectId: '$userId' }, '$$userId'] // Convert userId in products to ObjectId
+                }
+              }
+            }
+          ],
+          as: 'products'
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          friendId: { $toString: '$_id' },
+          friendFirstName: '$firstName',
+          products: {
+            $map: {
+              input: '$products',
+              as: 'product',
+              in: {
+                id: { $toString: '$$product._id' },
+                userId: '$$product.userId',
+                price: '$$product.price',
+                currency: '$$product.currency',
+                title: '$$product.title',
+                productUrl: '$$product.productUrl',
+                imageUrl: '$$product.imageUrl',
+                description: '$$product.description'
+              }
+            }
+          }
+        }
+      }
+    ]).toArray();
+
+    console.log(friendsWithProducts);
+
+    // Return statement: Combine events and friendsWithProducts
+    return {
+      events: events as InvitedEventsResponse[], 
+      friendsWithProducts: friendsWithProducts as FriendWithProducts[],
+    };
+
+    } else {
       return {
-        message: 'User not found',
-        status: 404,
+        events: [],
+        friendsWithProducts: [],
       };
     }
 
-    const userInfo = {
-      hobbyInfo: user.hobbyInfo,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      verified: user.verified,
-      verificationToken: user.verificationToken,
-      email: user.email,
-      birthday: user.birthday,
-    }
 
-
-    // 2. Fetch All Invited Events
-    const events = await db.collection<EventData>('events').find({
-      invitedFriends: userId,
-    }).toArray();
-
-    const invitedEvents: InvitedEventsResponse[] = await Promise.all(
-      events.map(async (event) => {
-        const ownerInfo = await db.collection<UserData>('users').findOne({
-          _id: new ObjectId(event.userId),
-        });
-        return {
-          id: event._id.toString(),
-          userId: event.userId,
-          date: event.date,
-          eventTitle: event.eventTitle,
-          invitedFriends: event.invitedFriends,
-          ownerName: ownerInfo ? `${ownerInfo.firstName} ${ownerInfo.lastName}` : 'Unknown Owner',
-        };
-      })
-    );
-
-    // 4. Fetch All Friends and their Products
-    const userFriendsIdList: string[] = user.friendsList.map((friendId) => friendId.toString());
-
-    const friendsWithProducts = await Promise.all(
-      userFriendsIdList.map(async (friendIdStr) => {
-        const friend = await db.collection<UserData>('users').findOne({
-          _id: new ObjectId(friendIdStr),
-        });
-        if (friend) {
-          const friendProducts = await db.collection<ProductType>('products').find({ userId: friendIdStr }).toArray();
-          return {
-            friendId: friendIdStr,
-            friendFirstName: friend.firstName,
-            products: friendProducts.map((product) => ({
-              id: product._id.toString(),
-              userId: product.userId,
-              price: product.price,
-              currency: product.currency,
-              title: product.title,
-              productUrl: product.productUrl,
-              imageUrl: product.imageUrl,
-              description: product.description,
-            })),
-          };
-        }
-        return null;
-      })
-    ).then(friends => friends.filter((friend): friend is { 
-      friendId: string; 
-      friendFirstName: string; 
-      friendImageURL: string; 
-      products: ProductType[]; 
-    } => friend !== null));
-
+  } catch (error) {
+    console.error("Error fetching invited events:", error);
     return {
-      message: "Successfully fetched all user data",
-      data: {
-        userInfo: userInfo,
-        invitedEvents: invitedEvents,
-        friendsWithProducts: friendsWithProducts,
-      },
-      status: 200,
-    };
-
-  } catch (e) {
-    console.error(e);
-    return {
-      message: "Failed to fetch user data",
-      status: 500,
+      events: [],
+      friendsWithProducts: [],
     };
   } finally {
-    mongoClient.close();
+    await mongoClient.close();
   }
 }

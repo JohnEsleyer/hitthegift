@@ -395,6 +395,7 @@ export default function RegisterPage() {
                         ...prev,
                         birthday: e.target.value,
                       }));
+                      console.log(`birthday: ${new Date(e.target.value).toString()}`);
                     }}
                   />
                 </div>

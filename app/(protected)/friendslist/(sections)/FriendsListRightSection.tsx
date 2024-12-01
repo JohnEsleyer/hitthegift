@@ -78,7 +78,7 @@ export default function FriendsListRightSection() {
               style={{ height: 400 }}
               className="text-gray-400 flex justify-center items-center "
             >
-              No friends to show
+              <p>No friends products to show</p>
             </div>
           )}
         </div>

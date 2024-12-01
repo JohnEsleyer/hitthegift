@@ -9,13 +9,14 @@ import chevronLeft from '/public/chevron-left.svg';
 import Image from 'next/image';
 
 interface CalendarProps {
-  selected: Date | null; // The currently selected date
+  selected: Date; // The currently selected date
   onSelect: (date: Date | null) => void; // Callback to update the selected date
 }
 
 export default function DateSelector({ selected, onSelect } : CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [daysArray, setDaysArray] = useState<Date[]>([]);
+  const [showInitialDate, setShowInitialDate] = useState(true);
 
   useEffect(() => {
     const daysInMonth = getDaysInMonth(currentDate);
@@ -63,13 +64,15 @@ export default function DateSelector({ selected, onSelect } : CalendarProps) {
             {day}
           </div>
         ))}
+
         {daysArray.map((day, index) => (
           <div key={index} className="text-center">
           <button
             key={index}
             style={{width: 35, height: 35}}
-            className={` ${isSelected(day) ? "bg-[#d8e6f6] rounded-full text-[#027afe]" : ""}`}
+            className={` ${isSelected(day) && "bg-[#d8e6f6] rounded-full text-[#027afe]"} ${showInitialDate && day.getDate() == selected.getDate() && 'bg-[#d8e6f6] rounded-full text-[#027afe]' }`}
             onClick={() => {
+                setShowInitialDate(false);
                 console.log(`Selected: ${selected?.getDate()}`)
                 console.log(`Day: ${day?.getDate()}`)
                 handleDayClick(day)

@@ -32,40 +32,49 @@ export async function getMyListData(userId: string) {
     const [events, products, conversations, friends, friendRequests] =
       await Promise.all([
         // Fetch events with invited friends data
-        db
-          .collection<EventData>("events")
-          .aggregate([
-            { $match: { userId: userId } },
-            {
-              $lookup: {
-                from: "users",
-                localField: "invitedFriends",
-                foreignField: "_id",
-                as: "invitedFriendsData",
-              },
+        db.collection<EventData>("events").aggregate([
+          { $match: { userId: userId } },
+          { 
+            $addFields: { 
+              invitedFriends: { 
+                $cond: [ 
+                  { $isArray: "$invitedFriends" }, // Check if it's already an array
+                  { $map: { input: "$invitedFriends", as: "friendId", in: { $toObjectId: "$$friendId" } } }, // If array, convert to ObjectIds
+                  { $map: { input: ["$invitedFriends"], as: "friendId", in: { $toObjectId: "$$friendId" } } }  // If string, create array and convert to ObjectId
+                ] 
+              } 
+            } 
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "invitedFriends",
+              foreignField: "_id",
+              as: "invitedFriendsData",
             },
-            {
-              $project: {
-                _id: 0,
-                id: { $toString: "$_id" },
-                userId: 1,
-                date: { $toString: "$date" },
-                eventTitle: 1,
-                invitedFriends: {
-                  $map: {
-                    input: "$invitedFriendsData",
-                    as: "friend",
-                    in: {
-                      id: { $toString: "$$friend._id" },
-                      firstName: "$$friend.firstName",
-                      lastName: "$$friend.lastName",
-                    },
+          },
+          {
+            $project: {
+              _id: 0,
+              id: { $toString: "$_id" },
+              userId: 1,
+              date: { $toString: "$date" },
+              eventTitle: 1,
+              invitedFriends: {
+                $map: {
+                  input: "$invitedFriendsData",
+                  as: "friend",
+                  in: {
+                    id: { $toString: "$$friend._id" },
+                    firstName: "$$friend.firstName",
+                    lastName: "$$friend.lastName",
                   },
                 },
               },
             },
-          ])
-          .toArray(),
+          },
+        ])
+        .toArray(),
 
         // Fetch products
         db
@@ -363,6 +372,9 @@ export async function getMyListData(userId: string) {
         isSeenReceiver: friendRequest.isSeenReceiver as boolean || false,
     }));
     console.log(friendRequests);
+
+    console.log('Events');
+    console.log(events);
 
     return {
       events: eventsResponse,

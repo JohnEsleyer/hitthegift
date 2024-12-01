@@ -7,7 +7,7 @@ export type Friend = {
 }
 
 
-export interface FriendWithProducts {
+export type FriendWithProducts = {
     friendId: string;
     friendFirstName: string;
     products: ProductType[];

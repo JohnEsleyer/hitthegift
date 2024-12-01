@@ -8,7 +8,7 @@ import EditableHobbyArea from "../(components)/EditableHobbyArea";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import EventsCalendar from "@/components/EventsCalendar";
 import { HomeLeftTemplate } from "@/components/HomeLeftTemplate";
-import { updateEditEventAll } from "@/lib/features/editEventsPopup";
+import { updateEditEventAll, updateEditEventDate } from "@/lib/features/editEventsPopup";
 import UserProfileImage from "@/components/UserProfileImage";
 import "@/styles/calendar.css";
 import "@/styles/skeletons.css";
@@ -65,7 +65,6 @@ export default function MyListLeftSection() {
                             invitedFriends: event.invitedFriends,
                           })
                         );
-
                         dispatch(updateCurrentPopup("editEvent"));
                       }}
                       key={event.id}

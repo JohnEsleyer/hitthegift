@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-
 import LoadMyListData from "./(components)/LoadMyListData";
 import MyListLeftSection from "./(sections)/MyListLeftSection";
 import MyListRightSection from "./(sections)/MyListRightSection";
@@ -21,7 +20,7 @@ export default function MyListPage() {
 
   useEffect(() => {
     authMiddleware(pathname, isVerified, dispatch, userId); 
-  }, [pathname, isVerified, dispatch, userId]); // Include dependencies
+  }, [pathname, isVerified, userId]); // Include dependencies
 
   return (
       <LoadMyListData>

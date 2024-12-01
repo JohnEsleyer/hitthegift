@@ -92,6 +92,7 @@ export default function EditEventPopup() {
           eventTitle: eventTitle,
           invitedFriends: friendsId,
         });
+        
         if (responseData.data) {
           dispatch(updateEventStore(responseData.data));
           

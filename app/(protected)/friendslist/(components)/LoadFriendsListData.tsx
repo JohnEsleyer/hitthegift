@@ -27,16 +27,17 @@ export default function LoadFriendsListData({children}: LoadFriendsListDataProps
         try{
             const res = await getFriendsListData(userId);
             
-            if (res.status === 200 && res.data){
-                 
-                dispatch(updateFriendsListEvents(res.data?.invitedEvents));
-            
-                dispatch(updateFriendsWithProducts(res.data?.friendsWithProducts));
+            if (res){
+                console.log(res.events);
+                dispatch(updateFriendsListEvents(res.events));
+                console.log(res.friendsWithProducts);
+                dispatch(updateFriendsWithProducts(res.friendsWithProducts));
                 
-                const dates: Date[] =  res.data.invitedEvents.map((event) => new Date(event.date));
+                const dates: Date[] =  res.events.map((event: { date: string | number | Date; }) => new Date(event.date));
+                console.log(dates);
                 dispatch(updateHighlightedDatesFriendsList(dates))
             }else {
-                console.error("Failed to fetch /friendslist data:", res.message); 
+                console.error("Failed to fetch /friendslist data"); 
             }
         }catch(e){
             console.error(e);
