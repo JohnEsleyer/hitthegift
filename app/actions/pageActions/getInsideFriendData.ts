@@ -6,86 +6,98 @@ import { ProductType } from "@/lib/types/products";
 import { MongoClient, ObjectId } from "mongodb";
 
 export default async function getInsideFriendData(userId: string) {
-    const uri = process.env.MONGODB_URI || '';
-    const mongoClient = new MongoClient(uri);
+  const uri = process.env.MONGODB_URI || '';
+  const mongoClient = new MongoClient(uri);
 
-    try {
-        const db = mongoClient.db('hitmygift');
+  try {
+    const db = mongoClient.db('hitmygift');
 
-        // Fetch user info
-        const user = await db.collection<UserData>('users').findOne({
-            _id: new ObjectId(userId)
-        });
-
-        if (!user) {
-            return {
-                message: 'User not found',
-                status: 400,
-            };
-        }
-
-        // Fetch friends
-        const userFriendsIdList: string[] = user.friendsList.map((friendId) => friendId.toString());
-        let userFriends: Friend[] = [];
-
-        const friendsData = await Promise.all(
-            userFriendsIdList.map(async (friendIdStr) => {
-                const friend = await db.collection<UserData>('users').findOne({
-                    _id: new ObjectId(friendIdStr),
-                });
-
-                if (friend) {
-                    return {
-                        id: friendIdStr,
-                        firstName: friend.firstName,
-                        lastName: friend.lastName,
-                    };
-                }
-                return null; 
-            })
-        );
-
-        userFriends = friendsData.filter((friend): friend is Friend => friend !== null);
-
-        // Fetch products
-        const products = await db.collection<ProductType>('products').find({ userId: userId }).toArray();
-        let userProducts: ProductType[] = [];
-
-        products.map((product) => {
-            userProducts.push({
-                id: product._id.toString(),
-                userId: product.userId,
-                price: product.price,
-                currency: product.currency,
-                title: product.title,
-                productUrl: product.productUrl,
-                imageUrl: product.imageUrl,
-                description: product.description,
-            });
-        });
-
-        return {
-            userInfo: {
-                hobbyInfo: user.hobbyInfo,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                verified: user.verified,
-                verificationToken: user.verificationToken,
-                email: user.email,
-                birthday: user.birthday,
+    const result = await db.collection<UserData>('users').aggregate([
+      { $match: { _id: new ObjectId(userId) } },
+      {
+        $lookup: {
+          from: 'users',
+          let: { friends: { $map: { input: '$friendsList', as: 'friendId', in: { $toObjectId: '$$friendId' } } } },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ['$_id', '$$friends'] }
+              }
             },
-            friends: userFriends,
-            products: userProducts,
-            status: 200,
-        };
+            {
+              $project: {
+                _id: 0,
+                id: { $toString: '$_id' },
+                firstName: 1,
+                lastName: 1
+              }
+            }
+          ],
+          as: 'friendsData'
+        }
+      },
+      {
+        $lookup: {
+          from: 'products',
+          let: { userIdObj: { $toObjectId: userId } },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$userId', '$$userIdObj'] }
+              }
+            },
+            {
+              $project: {
+                _id: 0,
+                id: { $toString: '$_id' },
+                userId: { $toString: '$userId' },
+                price: 1,
+                currency: 1,
+                title: 1,
+                productUrl: 1,
+                imageUrl: 1,
+                description: 1
+              }
+            }
+          ],
+          as: 'productsData'
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          userInfo: {
+            hobbyInfo: '$hobbyInfo',
+            firstName: '$firstName',
+            lastName: '$lastName',
+            verified: '$verified',
+            verificationToken: '$verificationToken',
+            email: '$email',
+            birthday: '$birthday'
+          },
+          friends: '$friendsData',
+          products: '$productsData',
+          status: 200
+        }
+      }
+    ]).toArray();
 
-    } catch (e) {
-        console.error(e);
-        return {
-            message: 'Server failed to access data',
-            status: 500,
-        };
-    } finally {
-        mongoClient.close();
+    if (result.length === 0) {
+      return {
+        message: 'User not found',
+        status: 400
+      };
     }
+
+    return result[0];
+
+  } catch (e) {
+    console.error(e);
+    return {
+      message: 'Server failed to access data',
+      status: 500
+    };
+  } finally {
+    mongoClient.close();
+  }
 }
