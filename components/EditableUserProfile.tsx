@@ -78,7 +78,6 @@ export default function EditableUserProfile({width, height}:EditableUserProfileP
         } catch (error: any) {
           setUploadStatus(`Upload failed: ${error.message}`);
         }
-        
       };
 
     return (
@@ -86,7 +85,7 @@ export default function EditableUserProfile({width, height}:EditableUserProfileP
             {isPending ? <div className="profile-skeleton" style={{ width: width, height: height }}></div>
              : 
              <div>
-                {imageUrl == "" ? <Avvvatars value={userName} size={width}/> : <img className="rounded-full" src={imageUrl} alt={imageUrl} width={width} height={height}/>}
+                {imageUrl == "" ?  <img className="border rounded-full" src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/user.webp`} alt={"profile"} width={width} height={height}/>  : <img className="rounded-full" src={imageUrl} alt={imageUrl} width={width} height={height}/>}
             </div>}
           <div style={{zIndex: 99, bottom:10, right:10}} className="absolute">
                 <button className="bg-white rounded-full border p-2" onClick={()=>{setShowProfileOptions((prev) => !prev)}}><Pencil size={15}/></button>

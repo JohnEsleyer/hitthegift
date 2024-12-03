@@ -26,13 +26,12 @@ export default function MyListLeftSection() {
     setIsClientMounted(true);
   }, []);
 
-  <p className="w-64 pb-4" style={{fontSize: 14}}>My hobbies and interests</p>;
   return (
     <HomeLeftTemplate highlight="mylist">
       <div className="flex flex-col justify-center ">
-        <p className="w-64 pl-4 pt-2 pb-2">My hobbies and interests</p>
+        <p className="w-full pl-4 pt-2 pb-2">My hobbies and interests</p>
         <EditableHobbyArea />
-        <div className="flex w-full justify-between pr-2 pl-2">
+        <div className="flex w-full justify-between pr-2 pl-2 bg-white">
           <p style={{fontSize: 14}}>My Events</p>
           <button
             style={{ width: 75, fontSize: 12, paddingLeft:5, paddingRight: 5 }}
@@ -47,11 +46,11 @@ export default function MyListLeftSection() {
 
         <div
           style={{height: 100 }}
-          className=" overflow-auto bg-white rounded-2xl m-2 pb-2"
+          className="overflow-auto hide-scrollbar rounded-2xl  pb-2 mr-2"
         >
           <div className=" flex flex-col items-center">
             {isClientMounted && (
-              <div style={{ width: 240 }} className="h-full">
+              <div className="h-full">
                 {events?.length > 0 ? (
                   events?.map((event) => (
                     <button
@@ -68,7 +67,7 @@ export default function MyListLeftSection() {
                         dispatch(updateCurrentPopup("editEvent"));
                       }}
                       key={event.id}
-                      style={{ width: 240 }}
+                      style={{ width: 270}}
                       className="hover:bg-gray-300 flex items-center p-2 bg-[#F5F5F5] rounded mt-1 mb-1"
                     >
                       <div
@@ -121,12 +120,14 @@ export default function MyListLeftSection() {
         </div>
         {/**Calendar Section */}
         <div
-          style={{ width: 332 }}
-          className=" transformCalendar flex pr-4 items-center justify-center bg-white rounded-2xl mt-2 "
+
+          className="w-full  flex pr-4 items-center justify-center bg-white rounded-2xl mt-2 "
         >
+          <div className="">
           <EventsCalendar
             events={events}
           />
+          </div>
         </div>
       </div>
     </HomeLeftTemplate>

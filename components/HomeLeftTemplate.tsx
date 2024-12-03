@@ -17,10 +17,10 @@ export function HomeLeftTemplate({
   return (
     <div
       style={{ paddingLeft: 40 }}
-      className="h-screen w-full flex flex-col pl-2"
+      className="h-screen w-full flex flex-col pl-2 "
     >
       <div style={{ height: 15 }} className="flex justify-center "></div>
-      <div style={{ height: 20 }} className="flex justify-center  ">
+      <div style={{width: 300, height: 20 }} className="flex justify-center  ">
         {/**My List */}
         <div
           className={`flex items-center justify-center border-b ${highlight == "mylist" ? "border-[#007AFF]" : "border-[#b1b1b1]"}`}
@@ -50,7 +50,7 @@ export function HomeLeftTemplate({
           )}
         </div>
       </div>
-      <div className="flex-1 mb-2 ml-1 overflow-auto hide-scrollbar border rounded-xl mt-4 ">
+      <div style={{width: 300}}className=" flex-1 mb-2 overflow-auto hide-scrollbar border rounded-xl mt-4 ">
         {children}
       </div>
     </div>

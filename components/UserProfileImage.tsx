@@ -20,7 +20,7 @@ export default function UserProfileImage({userId, userName ,width, height, alt}:
         setHasError(true);
     }
 
-    return hasError? (
+    return hasError ? (
         <div>
             <img className="border rounded-full" src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/user.webp`} alt={"profile"} width={width} height={height}/> 
         </div>
