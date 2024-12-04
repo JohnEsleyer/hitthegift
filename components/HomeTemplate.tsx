@@ -26,6 +26,7 @@ import {
 import { navigateTo } from "@/app/actions/navigateTo";
 import { seenFriendRequests } from "@/app/actions/user/seenFriendRequests";
 import { countUnseenFriendRequests } from "@/utils/countUnseenFriendRequests";
+import loading from '/public/loading.svg';
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -57,6 +58,9 @@ export default function HomeTemplate({
   const [notificationCounter, setNotificationCounter] = useState(0);
   const dispatch = useDispatch();
   const { width, height } = useWindowSize();
+  const [isLogout, setIsLogout] = useState(false);
+
+
   async function seenAllFriendRequests() {
      // Update local friend requests
     dispatch(updateFriendRequests(friendRequests.map((req) => {
@@ -143,13 +147,14 @@ export default function HomeTemplate({
                       My Profile
                     </button>
                     <button
-                      className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
+                      className="flex justify-center hover:bg-gray-100 p-4 rounded-2xl text-xs"
                       onClick={() => {
+                        setIsLogout(true);
                         document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
                         navigateTo("/login");
                       }}
                     >
-                      Log out
+                      {isLogout ? <Image src={loading} alt="loading" width={20} height={20}/> : <span>Log out</span>}
                     </button>
                   </ul>
                 )}

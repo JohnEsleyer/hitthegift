@@ -155,196 +155,100 @@ export default function LoginPage() {
   }, []);
   return (
     <div>
-    <div style={{height:720}} className={`bg-[#31241e] w-screen bg-[url("https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/background.webp")] bg-cover bg-center flex items-center justify-center`}>
-      {/*Hero */}
-      <div style={{width: 600, height: 600}} className="text-white ml-16  mr-40 " >
-      <img className="mb-8" src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/logo.png`} alt={"profile"} width={200} height={200}/> 
-        <p style={{ fontSize: 112, lineHeight: 1 }} className="font-bold">Share your <span className="text-[#027afe]">wishes</span></p>
-        <p style={{fontSize: 64, lineHeight:1}} className="font-bold">the easiest way to get it right</p>
-      </div>
-      {/**Login Form */}
-      <div style={{ fontSize: 14 }} className="flex flex-col bg-white rounded-2xl p-8">
-      <label>Email:</label>
-      <input
-        className={`${errorEmail ? "border-red-500" : "border-gray-300"
-          } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
-        type="text"
-        placeholder="firstname@email.com"
-        value={loginData.email}
-        onChange={(e) => {
-          setErrorEmail(false);
-          setLoginData((prev) => ({
-            ...prev,
-            email: e.target.value,
-          }));
-        }}
-        onKeyDown={handleKeyDown} // Add this line
-      />
-      <label className="pt-8">Password:</label>
-      <div className={`relative`}>
-        <input
-          type={showPassword ? "text" : "password"}
-          className={`${errorPassword ? "border-red-500" : "border-gray-300"
-            } mt-1 block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
-          placeholder="******"
-          value={loginData.password}
-          onChange={(e) => {
-            setErrorPassword(false);
-            setLoginData((prev) => ({
-              ...prev,
-              password: e.target.value,
-            }));
-          }}
-          onKeyDown={handleKeyDown} // Add this line
-        />
-        <button
-          type="button"
-          className="absolute right-2 top-3 text-gray-500 hover:text-gray-700"
-          onClick={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? "Hide" : "Show"}
-        </button>
-      </div>
-      {/*Check box */}
-      <div className=" flex items-center pt-2">
-        <input
-          type="checkbox"
-          onChange={(e) => {
-            if (e.target.checked) {
-              Cookies.set("rememberMe", "true", { expires: 30 });
-            } else {
-              Cookies.set("rememberMe", "false");
-            }
-          }}
-        />
-        <span className="pl-2">Remember me</span>
-      </div>
-      <div style={{ width: 300 }} className="pt-4 flex gap-2 flex justify-center">
-        <div style={{ width: 200, height: 35 }}>
-          {isLoading ? <div style={{ width: 110 }} className="flex justify-center"><Image
-            src={Loading}
-            alt=""
-            width={30}
-            height={30}
-          /> </div> : <button
-            style={{ fontSize: 13 }}
-            onClick={handleSubmit}
-            className="h-full w-full bg-blue-600 text-white rounded border-black rounded-2xl"
+      <div className={`bg-[#31241e] w-screen bg-[url("https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/background.webp")] bg-cover bg-center flex flex-col md:flex-row items-center justify-center min-h-screen`}>
+
+        {/**Login Form */}
+        <div className="w-full max-w-sm flex flex-col bg-white rounded-2xl p-8 mt-8 md:mt-0">
+          <label>Email:</label>
+          <input
+            className={`${errorEmail ? "border-red-500" : "border-gray-300"
+              } mt-1 block w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+            type="text"
+            placeholder="firstname@email.com"
+            value={loginData.email}
+            onChange={(e) => {
+              setErrorEmail(false);
+              setLoginData((prev) => ({
+                ...prev,
+                email: e.target.value,
+              }));
+            }}
+            onKeyDown={handleKeyDown}
+          />
+          <label className="pt-8">Password:</label>
+          <div className={`relative`}>
+            <input
+              type={showPassword ? "text" : "password"}
+              className={`${errorPassword ? "border-red-500" : "border-gray-300"
+                } mt-1 block w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent`}
+              placeholder="******"
+              value={loginData.password}
+              onChange={(e) => {
+                setErrorPassword(false);
+                setLoginData((prev) => ({
+                  ...prev,
+                  password: e.target.value,
+                }));
+              }}
+              onKeyDown={handleKeyDown}
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-3 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+          {/* Check box */}
+          <div className="flex items-center pt-2">
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                if (e.target.checked) {
+                  Cookies.set("rememberMe", "true", { expires: 30 });
+                } else {
+                  Cookies.set("rememberMe", "false");
+                }
+              }}
+            />
+            <span className="pl-2">Remember me</span>
+          </div>
+          <div className="pt-4 flex gap-2 justify-center">
+            <div className="w-full">
+              {isLoading ? (
+                <div className="flex justify-center">
+                  <Image src={Loading} alt="" width={30} height={30} />
+                </div>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  className="h-full w-full bg-blue-600 text-white rounded border-black rounded-2xl py-2"
+                >
+                  Log In
+                </button>
+              )}
+            </div>
+            <div className="w-full">
+              <Link
+                href="/register"
+                className="h-full flex justify-center items-center rounded bg-black text-white rounded-2xl py-2"
+              >
+                Create an Account
+              </Link>
+            </div>
+          </div>
+          <p
+            className={`h-4 ${
+              !errorMessage && "invisible"
+              } flex justify-center text-red-500`}
           >
-            Log In
-          </button>}
-        </div>
-        <div style={{ width: 200, height: 35 }}>
-          <Link
-            style={{ fontSize: 13 }}
-            href="/register"
-            className="h-full flex justify-center items-center  rounded bg-black text-white rounded-2xl"
-          >
-            Create an Account
-          </Link>
+            {errorMessage}
+          </p>
+          <Link href={"/forgot-password"} className="mt-8 underline">Forgot Password</Link>
         </div>
       </div>
-      <p
-        className={`h-4 ${
-          !errorMessage && "invisible"
-          } flex justify-center text-red-500`}
-      >
-        {errorMessage}
-      </p>
-      <Link style={{ width: 120 }} href={"/forgot-password"} className="mt-8 underline">Forgot Password</Link>
-    </div>
-    </div>
-    <div style={{height: 500}} className="text-gray-500 font-bold bg-[#ffffff] p-16">
-      <p style={{fontSize: 52}} className="text-black">What is HitMyGift?</p>
-      <p style={{fontSize: 24, marginBottom: '20px', textAlign: 'justify'}}>At HitMyGift we offer you an innovative platform where you can easily create and share your wish lists. Do you have a birthday, christening, wedding or any special occasion coming up? Don't worry! You can also organize your events and share them with your friends and family, so they know what to give you and when to give it.
-</p>
-<p style={{fontSize: 24, textAlign: 'justify'}}>With HitMyGift, gift giving becomes an error-free and satisfying experience for everyone. Start creating your lists and events today and enjoy a modern and practical way to celebrate life!</p>
-    </div>
-    {/**Benefits */}
-    <div style={{height: 530}} className="bg-[#f5f5f5]">
-      <p style={{fontSize: 52}} className="font-bold flex justify-center items-center">Benefits</p>
-      <div className="flex w-full justify-between pr-12 pl-12 mt-4">
-      <div style={{width: 200}}>
-        <img src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/landing-page/check.png`} alt={"profile"} width={200} height={200}/> 
-        <div className="flex justify-center">
-        <p style={{fontSize: 24, width: 150}} className="font-bold text-center">
-          You will always like your gift
-        </p>
-        </div>
-      </div>
-      <div style={{width: 200}}>
-        <img src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/landing-page/target.png`} alt={"profile"} width={200} height={200}/> 
-        <div className="flex justify-center">
-        <p style={{fontSize: 24, width: 150}} className="font-bold text-center">
-          You will always give the right thing
-        </p>
-        </div>
-      </div>
-      <div style={{width: 200}}>
-        <img src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/landing-page/reminder.png`} alt={"profile"} width={200} height={200}/> 
-        <div className="flex justify-center">
-        <p style={{fontSize: 24, width: 150}} className="font-bold text-center">
-          You will never forget your friends events
-        </p>
-        </div>
-      </div>
-      <div style={{width: 200}}>
-        <img src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/landing-page/chat_dialog.png`} alt={"profile"} width={200} height={200}/> 
-        <div className="flex justify-center">
-        <p style={{fontSize: 24, width: 150}} className="font-bold text-center">
-          You can do a group gift with others
-        </p>
-        </div>
-      </div>
-      
-      </div>
-    </div>
-    {/**Features */}
-    <div style={{height: 530}} className="bg-[#ffffff]">
-      <p style={{fontSize: 52}} className="font-bold flex justify-center items-center">Features</p>
-      <div className="flex w-full justify-between pr-12 pl-12 mt-4">
-      <div style={{width: 200}}>
-        <img src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/landing-page/wishlist.png`} alt={"profile"} width={200} height={200}/> 
-        <div className="flex justify-center">
-        <p style={{fontSize: 24, width: 150}} className="font-bold text-center">
-          You will always like your gift
-        </p>
-        </div>
-      </div>
-      <div style={{width: 200}}>
-        <img src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/landing-page/buynow.png`} alt={"profile"} width={200} height={200}/> 
-        <div className="flex justify-center">
-        <p style={{fontSize: 24, width: 150}} className="font-bold text-center">
-          You will always give the right thing
-        </p>
-        </div>
-      </div>
-      <div style={{width: 200}}>
-        <img src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/landing-page/calendar.png`} alt={"profile"} width={200} height={200}/> 
-        <div className="flex justify-center">
-        <p style={{fontSize: 24, width: 150}} className="font-bold text-center">
-          You will never forget your friends events
-        </p>
-        </div>
-      </div>
-      <div style={{width: 200}}>
-        <img src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/landing-page/communication.png`} alt={"profile"} width={200} height={200}/> 
-        <div className="flex justify-center">
-        <p style={{fontSize: 24, width: 150}} className="font-bold text-center">
-          You can do a group gift with others
-        </p>
-        </div>
-      </div>
-      
-      </div>
-    </div>
-    <div style={{height: 250}} className="bg-[#027afe] text-white p-4">
-    <p className="flex justify-center" style={{fontSize: 50}}>HitMyGift.com <span style={{fontSize: 24}}>&copy;</span></p>
-    <p className="flex justify-center" style={{fontSize: 30}}>Terms & conditions</p>
-    <p className="flex justify-center" style={{fontSize: 25}}>Contact Us</p>
-    <p className="flex justify-center" style={{fontSize: 25}}>Cookies</p>
-    </div>
-  
+     
     </div>
   );
 }

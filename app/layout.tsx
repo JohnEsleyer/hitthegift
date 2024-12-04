@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Hit My Gift",
+  title: "HitMyGift - Share your wishes",
   description: "",
 };
 
