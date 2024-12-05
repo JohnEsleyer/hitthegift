@@ -101,6 +101,10 @@ export default function HomeTemplate({
     }
   }
 
+  const delay = (ms: number): Promise<void> => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
   useEffect(() => {
     if (friendRequests) {
       setsidebarNotificationCounter(
@@ -141,9 +145,15 @@ export default function HomeTemplate({
                     <div key={conversation.conversationId}>
                       <button
                         className="flex items-center gap-4 p-2 hover:bg-gray-100 rounded-lg"
-                        onClick={() => {
+                        onClick={async () => {
+                          setShowInbox(false);
+                          dispatch(updateShowLoading(true));
+                          dispatch(updateConversations([])); // reset conversations
+                          dispatch(updateConversationId(conversation.conversationId));
                           dispatch(updateFriendId(conversation.friend.id));
                           dispatch(updateIsOpenChatbox(true));
+                          await delay(2000);
+                          dispatch(updateShowLoading(false));
                         }}
                       >
                         <UserProfileImage

@@ -9,6 +9,7 @@ import MyListRightSection from "./(sections)/MyListRightSection";
 import HomeTemplate from "@/components/HomeTemplate";
 import authMiddleware from "@/app/actions/pageActions/authMiddleware";
 import { RootState } from "@/lib/store";
+import { updateConversations } from "@/lib/features/chat";
 
 export default function MyListPage() {
   const pathname = usePathname();
@@ -17,8 +18,14 @@ export default function MyListPage() {
   const userId = useSelector((state: RootState) => state.userData.id);
 
   console.log("MyListPage rendered");
+  
+
+  function reset() {
+    dispatch(dispatch(updateConversations([])));
+  }
 
   useEffect(() => {
+    reset(); // Reset in the persisted redux store
     authMiddleware(pathname, isVerified, dispatch, userId); 
   }, [pathname, isVerified, userId]); // Include dependencies
 
