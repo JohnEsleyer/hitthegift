@@ -3,8 +3,8 @@
 import { MongoClient, ObjectId } from "mongodb";
 import { FilterQuery } from "mongoose";
 
-// Deletes the friend from the current user's  and friend's friendsList
-export default async function deleteFriend(userId: string, friendId: string) {
+// removes the friend from the current user's  and friend's friendsList
+export default async function removeFriend(userId: string, friendId: string) {
   const uri = process.env.MONGODB_URI || '';
   const mongoClient = new MongoClient(uri);
   try {

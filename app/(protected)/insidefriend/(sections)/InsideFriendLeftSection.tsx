@@ -32,14 +32,14 @@ export default function InsideFriendLeftSection() {
                 alt="Friend Profile Picture"
               />
             </div>
-            <div className="">
+            <div className="ml-2">
               <p>
                 {friendData?.firstName} {friendData?.lastName}
               </p>
               <p className="text-xs text-gray-400">{friendData?.email}</p>
             </div>
           </div>
-          <span className="text-xl pl-2">Interests and hobbies</span>
+          <p className="text-xl pl-2 mt-2">Interests and hobbies</p>
           <div
             style={{ height: 217}}
             className="m-2 shadow-md border border-b-4 border-[#c7c7c7] overflow-auto rounded-2xl p-2"

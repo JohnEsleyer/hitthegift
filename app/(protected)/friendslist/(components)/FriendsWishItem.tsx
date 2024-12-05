@@ -40,7 +40,7 @@ export default function FriendsWishItem({
   return (
     <a href={"/insidefriend"} onClick={handleClick}>
       <div
-        style={{ width: 167, height: 245 }}
+        style={{ width: 167, height: 260 }}
         className="relative p-2 border border-[#d9d9d9] bg-white rounded"
       >
         {products.length > 0 ? (

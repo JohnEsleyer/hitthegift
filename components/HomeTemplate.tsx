@@ -18,7 +18,7 @@ import { Popups } from "@/components/Popups";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
 import Friends from "/public/friends.png";
 import UserProfileImage from "./UserProfileImage";
-import { updateShowLoading } from "@/lib/features/chat";
+import { updateConversations, updateShowLoading } from "@/lib/features/chat";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
 import {
   updateFriendRequests,
@@ -267,6 +267,7 @@ export default function HomeTemplate({
                   <button
                     onClick={() => {
                       async function startConversation() {
+                        dispatch(updateConversations([])); // reset conversations
                         try {
                           const res = await findOrCreateConversation(
                             userId,

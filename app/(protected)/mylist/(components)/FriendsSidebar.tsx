@@ -5,9 +5,7 @@ import acceptFriendRequest from "@/app/actions/user/acceptFriendRequest";
 import { DebouncedInput } from "@/components/DebounceInput";
 import UserProfileImage from "@/components/UserProfileImage";
 import {
-  deleteAllFriendRequestsReceiver,
-  deleteAllFriendRequestsSender,
-  updateFriendRequests,
+
   updateFriendRequestsReceiver,
   updateFriendRequestsSender,
   updateSearchResults,
@@ -16,8 +14,7 @@ import {
 } from "@/lib/features/friendsSidebar";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
-import { Friend } from "@/lib/types/friend";
-import Avvvatars from "avvvatars-react";
+
 import { useEffect, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";

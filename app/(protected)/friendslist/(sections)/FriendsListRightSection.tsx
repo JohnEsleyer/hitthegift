@@ -30,9 +30,9 @@ export default function FriendsListRightSection() {
   }, [searchTerm]);
 
   return (
-    <div className="ml-8 h-screen">
+    <div style={{marginLeft: 50}} className=" h-screen">
       {/**Search bar */}
-      <div style={{ position: "relative", width: 250 }}>
+      <div style={{ position: "relative", width: 250, marginLeft: 15}}>
         <input
           style={{
             height: 40,

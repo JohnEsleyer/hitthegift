@@ -98,6 +98,13 @@ export default function Chatbox() {
     }
   }, [messages]);
 
+  useEffect(() => {
+    console.log('useEffect');
+
+
+  }, []);
+
+
   const handleFetchMessages = () => {
     console.log("Fetching messages for conversationId:", conversationId); // Log the conversation ID
 
@@ -151,7 +158,7 @@ export default function Chatbox() {
   return (
     <div
       style={{ height: 400, width: 300 }}
-      className="flex flex-col shadow-md bg-white"
+      className="flex flex-col shadow-md bg-white border" 
     >
       <div className="w-full flex justify-between shadow-md p-2 h-12 ">
         <div className="flex items-center gap-2">
@@ -213,9 +220,9 @@ export default function Chatbox() {
           </div>
         )}
       </div>
-      <div className="shadow-md border-t border-gray-400 flex p-2 h-12">
+      <div className="w-full flex shadow-md border-t border-gray-400 flex p-2 h-12">
         <input
-          className="border border-gray-400 p-2 rounded-2xl"
+          className="flex-1 border border-gray-400 p-2 rounded-2xl"
           value={messageContent}
           onChange={(e) => {
             setMessageContent(e.target.value);
@@ -226,7 +233,7 @@ export default function Chatbox() {
             }
           }}
         />
-        <button onClick={handleSend}>
+        <button className="w-8 "onClick={handleSend}>
           <Send color="#4298f5" />
         </button>
       </div>

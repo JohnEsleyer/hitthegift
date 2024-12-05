@@ -88,7 +88,7 @@ export default function MyListRightSection() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col" style={{marginLeft: 30}}>
       <div
         style={{ height: 75, marginTop: 20 }}
         className="ml-8 flex items-end pb-4 gap-2"
