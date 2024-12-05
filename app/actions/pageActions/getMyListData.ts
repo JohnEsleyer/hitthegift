@@ -315,7 +315,9 @@ export async function getMyListData(userId: string) {
     console.log(`conversations: ${conversations.length}`);
     console.log(`friends: ${friends.length}`);
     console.log(`friendRequests: ${friendRequests.length}`);
-
+    console.log(`all conversations}`);
+    console.log(conversations);
+    
     (friendRequests as FriendRequestServerResponse[]).map((req) => {
       console.log(`friendRequest Id: ${req.id}`);
       console.log(`friendRequest Sender: ${req.sender.firstName}`);

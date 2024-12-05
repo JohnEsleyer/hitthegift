@@ -3,8 +3,6 @@ import {ServerResponseForEvents } from '../types/event';
 import { UserConversation } from '../types/conversation';
 
 
-  
-
 export interface ChatState {
    showLoading: boolean; // This loading flag is used by the HomeTemplate component to make sure we get the correct conversation Id
    conversations: UserConversation[];

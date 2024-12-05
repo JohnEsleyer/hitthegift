@@ -9,10 +9,11 @@ import Image from "next/image";
 import { RootState } from "@/lib/store";
 import {
   updateConversationId,
+  updateFriendId,
   updateIsOpenChatbox,
 } from "@/lib/features/insideFriend";
 import Chatbox from "@/components/Chatbox";
-import { Mail, MessageSquareText } from "lucide-react";
+import { Inbox, Mail, MessageSquareText } from "lucide-react";
 import { Popups } from "@/components/Popups";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
 import Friends from "/public/friends.png";
@@ -26,7 +27,7 @@ import {
 import { navigateTo } from "@/app/actions/navigateTo";
 import { seenFriendRequests } from "@/app/actions/user/seenFriendRequests";
 import { countUnseenFriendRequests } from "@/utils/countUnseenFriendRequests";
-import loading from '/public/loading.svg';
+import loading from "/public/loading.svg";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -55,31 +56,38 @@ export default function HomeTemplate({
   const friendRequests = useSelector(
     (state: RootState) => state.friendsSidebar.friendRequests
   );
-  const [notificationCounter, setNotificationCounter] = useState(0);
+  const [sidebarNotificationCounter, setsidebarNotificationCounter] =
+    useState(0);
   const dispatch = useDispatch();
   const { width, height } = useWindowSize();
   const [isLogout, setIsLogout] = useState(false);
-
+  const conversations = useSelector(
+    (state: RootState) => state.chat.conversations
+  );
+  const [showInbox, setShowInbox] = useState(false);
 
   async function seenAllFriendRequests() {
-     // Update local friend requests
-    dispatch(updateFriendRequests(friendRequests.map((req) => {
-      if (req.sender.id == userId){
-        return {
-          ...req,
-          isSeenSender: true,
-        }
-      }
-      return {
-        ...req,
-        isSeenReceiver: true, 
-      }
-    })));
+    // Update local friend requests
+    dispatch(
+      updateFriendRequests(
+        friendRequests.map((req) => {
+          if (req.sender.id == userId) {
+            return {
+              ...req,
+              isSeenSender: true,
+            };
+          }
+          return {
+            ...req,
+            isSeenReceiver: true,
+          };
+        })
+      )
+    );
     try {
       const res = await seenFriendRequests(friendRequests, userId);
       // Handle the response from the server
       if (res.status === 200) {
-  
         // Successfully updated, potentially update local state or show a success message
         console.log("Friend requests marked as seen");
       } else {
@@ -94,11 +102,12 @@ export default function HomeTemplate({
   }
 
   useEffect(() => {
-    if (friendRequests){
-      setNotificationCounter(countUnseenFriendRequests(friendRequests, userId));
+    if (friendRequests) {
+      setsidebarNotificationCounter(
+        countUnseenFriendRequests(friendRequests, userId)
+      );
     }
-    
-  },[friendRequests]);
+  }, [friendRequests]);
 
   return (
     <div className="bg-white w-screen h-screen flex overflow-auto overflow-x-hidden">
@@ -111,55 +120,141 @@ export default function HomeTemplate({
               <div className="flex-1">{rightSide}</div>
             </div>
 
-            {/**Profile */}
-            {width > 800 && (
+            {/**Inbox Popup */}
+            {showInbox && (
               <div
-                style={{ zIndex: 90, right: 30 }}
-                className="absolute p-2 pr-8  flex justify-between "
+                className={`absolute bg-white border-gray-300 border shadow-md rounded-lg p-4 flex flex-col gap-4 ${
+                  conversations.length > 0
+                    ? "items-start"
+                    : "items-center justify-center"
+                }`}
+                style={{
+                  zIndex: 100,
+                  top: 40,
+                  right: 30,
+                  width: 250,
+                  height: 300,
+                }}
               >
-                {/**Profile */}
-                <button
-                  className="absolute"
-                  onClick={() => {
-                    setShowProfileOptions((prev) => !prev);
-                  }}
-                >
-                  <UserProfileImage
-                    userId={userId}
-                    userName={userName}
-                    width={30}
-                    height={30}
-                    alt={""}
-                  />
-                </button>
-                {showProfileOptions && (
-                  <ul
-                    style={{ zIndex: 100, right: 20, top: 38, width: 100 }}
-                    className="flex flex-col gap-2 absolute bg-white shadow-md rounded-2xl "
-                  >
-                    <button
-                      className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
-                      onClick={() => {
-                        setShowProfileOptions(false);
-                        dispatch(updateCurrentPopup("profile"));
-                      }}
-                    >
-                      My Profile
-                    </button>
-                    <button
-                      className="flex justify-center hover:bg-gray-100 p-4 rounded-2xl text-xs"
-                      onClick={() => {
-                        setIsLogout(true);
-                        document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                        navigateTo("/login");
-                      }}
-                    >
-                      {isLogout ? <Image src={loading} alt="loading" width={20} height={20}/> : <span>Log out</span>}
-                    </button>
-                  </ul>
+                {conversations.length > 0 ? (
+                  conversations.map((conversation) => (
+                    <div key={conversation.conversationId}>
+                      <button
+                        className="flex items-center gap-4 p-2 hover:bg-gray-100 rounded-lg"
+                        onClick={() => {
+                          dispatch(updateFriendId(conversation.friend.id));
+                          dispatch(updateIsOpenChatbox(true));
+                        }}
+                      >
+                        <UserProfileImage
+                          userId={conversation.friend.id}
+                          userName={conversation.friend.name}
+                          width={30}
+                          height={30}
+                          alt={conversation.friend.name}
+                        />
+                        <div className="flex-1 text-sm font-medium">
+                          {conversation.friend.name}
+                        </div>
+                        {conversation.unreadMessageCount > 0 && (
+                          <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                            {conversation.unreadMessageCount}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-gray-500 text-sm font-medium text-center">
+                    You have no conversations
+                  </div>
                 )}
               </div>
             )}
+
+            {/**Profile and Inbox button Section */}
+            {width > 800 && (
+              <div
+                style={{ zIndex: 90, right: 30 }}
+                className=" absolute p-2 pr-8 flex items-center justify-between"
+              >
+                {/**Inbox */}
+                <div className="flex items-center gap-4 relative">
+                  <div className="relative" style={{marginTop: 10}}>
+                    <button
+                      onClick={() => setShowInbox((prev) => !prev)}
+                      className="relative"
+                    >
+                      <Inbox color="gray"/>
+                      {/**Notification Badge */}
+                      {conversations.reduce(
+                        (total, convo) => total + convo.unreadMessageCount,
+                        0
+                      ) > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                          {conversations.reduce(
+                            (total, convo) => total + convo.unreadMessageCount,
+                            0
+                          )}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+
+                  {/**Profile */}
+                  <button
+                    className="relative"
+                    onClick={() => {
+                      setShowProfileOptions((prev) => !prev);
+                    }}
+                  >
+                    <UserProfileImage
+                      userId={userId}
+                      userName={userName}
+                      width={30}
+                      height={30}
+                      alt={"User Profile"}
+                    />
+                  </button>
+                  {showProfileOptions && (
+                    <ul
+                      style={{ zIndex: 100, right: -30, top: 38, width: 100 }}
+                      className="flex flex-col gap-2 absolute bg-white shadow-md rounded-2xl"
+                    >
+                      <button
+                        className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
+                        onClick={() => {
+                          setShowProfileOptions(false);
+                          dispatch(updateCurrentPopup("profile"));
+                        }}
+                      >
+                        My Profile
+                      </button>
+                      <button
+                        className="flex justify-center hover:bg-gray-100 p-4 rounded-2xl text-xs"
+                        onClick={() => {
+                          setIsLogout(true);
+                          document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                          navigateTo("/login");
+                        }}
+                      >
+                        {isLogout ? (
+                          <Image
+                            src={loading}
+                            alt="loading"
+                            width={20}
+                            height={20}
+                          />
+                        ) : (
+                          <span>Log out</span>
+                        )}
+                      </button>
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/** Chat box */}
             {allowChat && (
               <div
@@ -224,8 +319,9 @@ export default function HomeTemplate({
                 >
                   <Image alt="" width={25} src={Friends} />
                 </button>
+
                 {/**Red notification */}
-                {notificationCounter > 0 && (
+                {sidebarNotificationCounter > 0 && (
                   <div
                     style={{
                       zIndex: 99,
@@ -236,7 +332,7 @@ export default function HomeTemplate({
                     }}
                     className="absolute bg-red-500  flex justify-center items-center rounded-full"
                   >
-                    {notificationCounter}
+                    {sidebarNotificationCounter}
                   </div>
                 )}
               </div>

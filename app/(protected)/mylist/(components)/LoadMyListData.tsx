@@ -54,6 +54,7 @@ export default function LoadMyListData({ children }: LoadMyListDataProps) {
       try {
         const res = (await getMyListData(userId)) as MyListData;
         if (res) {
+          
           dispatch(updateMyListEvents(res.events));
           dispatch(updateConversations(res.conversations));
           dispatch(updateFriends(res.friends));

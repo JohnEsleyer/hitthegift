@@ -17,7 +17,6 @@ import "@/styles/utilities.css";
 
 export default function MyListLeftSection() {
   const events = useSelector((state: RootState) => state.mylist.events);
-  const highlightedDates = useSelector((state: RootState) => state.mylist.highlightedDates);
   const [isClientMounted, setIsClientMounted] = useState(false);
 
   const dispatch = useDispatch();
