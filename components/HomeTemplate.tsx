@@ -9,6 +9,7 @@ import Image from "next/image";
 import { RootState } from "@/lib/store";
 import {
   updateConversationId,
+  updateFriendFirstName,
   updateFriendId,
   updateIsOpenChatbox,
 } from "@/lib/features/insideFriend";
@@ -183,6 +184,7 @@ export default function HomeTemplate({
                             // Set friend data and open chatbox
                             dispatch(updateConversationId(conversation.conversationId));
                             dispatch(updateFriendId(conversation.friend.id));
+                            dispatch(updateFriendFirstName(conversation.friend.name));
                             dispatch(updateIsOpenChatbox(true));
                           }}
                         >

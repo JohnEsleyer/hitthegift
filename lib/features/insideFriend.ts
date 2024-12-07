@@ -23,7 +23,7 @@ export interface InsideFriendState {
 }
 
 const initialState: InsideFriendState = {
-friendId: '',
+   friendId: '',
    friends: [],
    products: [],
    friendData: undefined,
@@ -72,7 +72,20 @@ const insideFriendSlice = createSlice({
                 ...state,
                 friendId: action.payload,
             }
-        }
+        },
+        updateFriendFirstName: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                friendData: {...state.friendData, firstName: action.payload} as FriendData,
+            }
+        },
+        updateFriendLastName: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                friendData: {...state.friendData, lastName: action.payload} as FriendData,
+            }
+        },
+
     }
 });
 
@@ -83,5 +96,7 @@ export const {
     updateProdctsForInsideFriend,
     updateFriendData,
     updateFriendId, 
+    updateFriendFirstName,
+    updateFriendLastName,
 } = insideFriendSlice.actions;
 export default insideFriendSlice.reducer; // Ensure this exports the reducer
