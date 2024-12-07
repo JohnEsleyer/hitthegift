@@ -40,6 +40,7 @@ interface LoadMyListDataProps {
 
 export default function LoadMyListData({ children }: LoadMyListDataProps) {
   const userId = useSelector((state: RootState) => state.userData.id);
+  const userEmail = useSelector((state: RootState) => state.userData.email);
   const [isPending, startTransition] = useTransition();
   const dispatch = useDispatch();
 
@@ -49,37 +50,38 @@ export default function LoadMyListData({ children }: LoadMyListDataProps) {
     dispatch(deleteAllFriendRequests());
     dispatch(deleteAllFriendRequestsSender());
     dispatch(deleteAllFriendRequestsReceiver());
-
-    startTransition(async () => {
-      try {
-        const res = (await getMyListData(userId)) as MyListData;
-        if (res) {
-          
-          dispatch(updateMyListEvents(res.events));
-          dispatch(updateConversations(res.conversations));
-          dispatch(updateFriends(res.friends));
-          dispatch(updateFriendRequests(res.friendRequests));
-          dispatch(updateMyListProducts(res.products));
-
-          console.log(`loading events /mylist data: ${res.events?.length}`);
-          console.log(`loading products /mylist data: ${res.products?.length}`);
-          console.log(`loading friends /friends data: ${res.friends?.length}`);
-          console.log(
-            `loading friend requests /mylist data: ${res.friendRequests?.length}`
-          );
-          console.log(
-            `loading conversations  /mylist data: ${res.conversations?.length}`
-          );
-
-          const dates: Date[] = res.events?.map((event) => new Date(event.date));
-          dispatch(updateHighlightedDates(dates));
-        } else {
-          console.error("Failed to fetch /mylist data");
+    if (userId){
+      startTransition(async () => {
+        try {
+          const res = (await getMyListData(userId, userEmail)) as MyListData;
+          if (res) {
+            dispatch(updateMyListEvents(res.events));
+            dispatch(updateConversations(res.conversations));
+            dispatch(updateFriends(res.friends));
+            dispatch(updateFriendRequests(res.friendRequests));
+            dispatch(updateMyListProducts(res.products));
+  
+            console.log(`loading events /mylist data: ${res.events?.length}`);
+            console.log(`loading products /mylist data: ${res.products?.length}`);
+            console.log(`loading friends /friends data: ${res.friends?.length}`);
+            console.log(
+              `loading friend requests /mylist data: ${res.friendRequests?.length}`
+            );
+            console.log(
+              `loading conversations  /mylist data: ${res.conversations?.length}`
+            );
+  
+            const dates: Date[] = res.events?.map((event) => new Date(event.date));
+            dispatch(updateHighlightedDates(dates));
+          } else {
+            console.error("Failed to fetch /mylist data");
+          }
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
-      }
-    });
+      });
+    }
+    
   }, []);
 
   if (isPending) {

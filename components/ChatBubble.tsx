@@ -4,6 +4,8 @@ import { RootState } from "@/lib/store";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import UserProfileImage from "./UserProfileImage";
+import loading from '/public/loading.svg';
+import Image from 'next/image';
 
 interface ChatBubbleProps {
   timestamp: string;
@@ -53,7 +55,7 @@ export function ChatBubble({
       </p>
       </div>
       </div>
-      <div style={{width: 250}} className={`flex ${isSender ? 'justify-start pl-4' : 'justify-end pr-4'} text-xs  text-sm font-normal text-gray-400 dark:text-gray-400`}>{deliveryStatus} {" "} {timestamp}</div>
+      <div style={{width: 250}} className={`flex ${isSender ? 'justify-start pl-4' : 'justify-end pr-4'} text-xs  text-sm font-normal text-gray-400 dark:text-gray-400`}>{deliveryStatus == 'sending' ? <Image src={loading} alt="loading" width={15} height={15}/> : <span>{deliveryStatus}</span>} <span className='pl-2'>{timestamp}</span></div>
       </div>
       {/**User's Profile Image */}      
       {isSender && (

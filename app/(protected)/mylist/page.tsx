@@ -19,7 +19,6 @@ export default function MyListPage() {
 
   console.log("MyListPage rendered");
   
-
   function reset() {
     dispatch(dispatch(updateConversations([])));
   }
@@ -36,6 +35,7 @@ export default function MyListPage() {
         leftSide={<MyListLeftSection/>}
         rightSide={<MyListRightSection/>}
         allowChat={true}
+        allowInbox={true}
         showChatButton={false} 
       />
       </LoadMyListData>

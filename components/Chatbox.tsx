@@ -1,182 +1,160 @@
 "use client";
 
-import createMessage from "@/app/actions/chat/createMessage";
-import fetchMessages from "@/app/actions/chat/fetchMessages";
-import { ChatBubble } from "@/components/ChatBubble";
-import ChatboxSkeleton from "@/components/skeletons/ChatBubbleSkeleton";
-import UserProfileImage from "@/components/UserProfileImage";
-import { updateShowLoading } from "@/lib/features/chat";
-import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
+import { useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/store";
 import { ChatMessage, Message } from "@/lib/types/message";
-import { getLastElement } from "@/utils/getLastElement";
-import { Minus, RotateCcw, Send } from "lucide-react";
-import { useEffect, useRef, useState, useTransition } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { UserConversation } from "@/lib/types/conversation";
+import { updateShowLoading } from "@/lib/features/chat";
+import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
+
+import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
+import fetchMessages from "@/app/actions/chat/fetchMessages";
+import createMessage from "@/app/actions/chat/createMessage";
+import markMessagesAsRead from "@/app/actions/chat/markMessagesAsRead";
+
+import UserProfileImage from "@/components/UserProfileImage";
+import { ChatBubble } from "@/components/ChatBubble";
+import ChatboxSkeleton from "@/components/skeletons/ChatBubbleSkeleton";
+
+import { Send, RotateCcw, Minus } from "lucide-react";
 
 export default function Chatbox() {
   const dispatch = useDispatch();
-  const friendData = useSelector(
-    (state: RootState) => state.insideFriend.friendData
-  );
-  const friendId = useSelector(
-    (state: RootState) => state.insideFriend.friendId
-  );
-  const [messageContent, setMessageContent] = useState("");
+  
+  // From the Redux store, we get the necessary IDs and flags
   const userId = useSelector((state: RootState) => state.userData.id);
-  const conversationId = useSelector(
-    (state: RootState) => state.insideFriend.conversationId
-  );
+  const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
+  const friendData = useSelector((state: RootState) => state.insideFriend.friendData);
+  const conversationId = useSelector((state: RootState) => state.insideFriend.conversationId);
+  
+  // Local states
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isChatPending, startChatTransition] = useTransition();
-  const [isSending, startSendingTransition] = useTransition();
-  const showLoading = useSelector((state: RootState) => state.chat.showLoading);
+  const [messageContent, setMessageContent] = useState("");
+  
+  // Loading states
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = () => {
-    if (messageContent.length !== 0) {
-      console.log("Sending message:", messageContent); // Log the message being sent
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          message: {
-            id: "",
-            sender: userId,
-            conversationId: conversationId,
-            content: messageContent,
-            timestamp: new Date(),
-            isRead: false,
-          },
-          status: "sending",
-        },
-      ]);
-
-      startSendingTransition(async () => {
-        try {
-          await createMessage(
-            userId,
-            conversationId,
-            messageContent
-          );
-        } catch (e) {
-          console.log(e);
-        }
-      });
-      setMessageContent("");
-    }
-  };
-
+  // Scroll to bottom whenever messages change
   useEffect(() => {
-    if (!isSending) {
-      // Display sent on the latest message
-
-      //Delete the last message and replace it with the updated one
-      const temp: ChatMessage | undefined = getLastElement(messages);
-      if (temp) {
-        setMessages((messages) =>
-          messages.filter((message, index) => index !== messages.length - 1)
-        );
-
-        setMessages((messages) => [
-          ...messages,
-          {
-            ...temp,
-            status: "sent",
-          },
-        ]);
-      } else {
-        console.log("undefined last message");
-      }
-    }
-  }, [isSending]);
-
-  useEffect(() => {
-    if (messagesEndRef.current){
+    if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
   }, [messages]);
 
-  useEffect(() => {
-    console.log('useEffect');
+  // Fetch messages from server
+  const loadMessages = async () => {
+    if (!conversationId) return;
+    setLoading(true);
+    try {
+      const results = await fetchMessages(conversationId);
+      if (results?.data) {
+        const fetchedMessages = results.data.map((m: Message): ChatMessage => ({
+          message: {
+            ...m,
+            timestamp: new Date(m.timestamp)
+          },
+          status: "sent"
+        }));
 
+        // Mark as read
+        await markMessagesAsRead(userId, conversationId);
 
-  }, []);
+        // Adjust the read status locally if needed
+        // (You can do this if you want to ensure UI shows updated read states)
 
-
-  const handleFetchMessages = () => {
-    console.log("Fetching messages for conversationId:", conversationId); // Log the conversation ID
-
-    startChatTransition(async () => {
-      try {
-        const results = await fetchMessages(conversationId);
-        console.log("Fetch messages result status:", results.status); // Log the status of the fetchMessages result
-        if (results) {
-          console.log("Fetched messages:", results.data); // Log the fetched messages
-
-          const messagesList: ChatMessage[] = (results.data as Message[]).map(
-            (message) => ({
-              message: {
-                id: message.id,
-                sender: message.sender,
-                conversationId: message.conversationId,
-                content: message.content,
-                timestamp: message.timestamp,
-              },
-              status: "sent" as "sent" | "sending" | "failed",
-            })
-          );
-
-          // Sort the messages from oldest to latest
-          const sortedMessages = [...messagesList].sort((a, b) => {
-            return (
-              new Date(a.message.timestamp).getTime() -
-              new Date(b.message.timestamp).getTime()
-            );
-          });
-          setMessages(sortedMessages);
-        }
-      } catch (e) {
-        console.log(e);
+        setMessages(fetchedMessages);
       }
+    } catch (e) {
+      console.log("Failed to fetch messages:", e);
+    } finally {
+      setLoading(false);
       dispatch(updateShowLoading(false));
-    });
+    }
   };
 
+  // Load messages whenever conversationId changes or when component mounts
   useEffect(() => {
-    console.log("useEffect triggered with showLoading:", showLoading, "and conversationId:", conversationId); // Log showLoading and conversationId
-    handleFetchMessages();
-  }, [showLoading, conversationId]);
+    loadMessages();
+  }, [conversationId]);
 
+  // Handle sending a message
+  const handleSend = async () => {
+    const content = messageContent.trim();
+    if (!content || sending || !conversationId) return;
 
-  useEffect(() => {
-    console.log("Initial useEffect triggered"); // Log initial useEffect
-    handleFetchMessages();
-  }, []);
-  
+    // Optimistically add the message to the UI
+    const tempMessage: ChatMessage = {
+      message: {
+        id: "",
+        sender: userId,
+        conversationId: conversationId,
+        content: content,
+        timestamp: new Date(),
+        senderIsRead: true,
+        receiverIsRead: false,
+      },
+      status: "sending",
+    };
+
+    setMessages((prev) => [...prev, tempMessage]);
+    setMessageContent("");
+    setSending(true);
+
+    try {
+      await createMessage(userId, conversationId, content);
+
+      // Replace last message with a "sent" version
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          ...updated[updated.length - 1],
+          status: "sent",
+        };
+        return updated;
+      });
+    } catch (e) {
+      console.error("Failed to send message:", e);
+      // If failed, mark the message as "failed"
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          ...updated[updated.length - 1],
+          status: "failed",
+        };
+        return updated;
+      });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  // Handle refetching messages from UI
+  const handleRefetch = () => {
+    loadMessages();
+  };
+
   return (
     <div
       style={{ height: 400, width: 300 }}
-      className="flex flex-col shadow-md bg-white border" 
+      className="flex flex-col shadow-md bg-white border"
     >
-      <div className="w-full flex justify-between shadow-md p-2 h-12 ">
+      <div className="w-full flex justify-between shadow-md p-2 h-12">
         <div className="flex items-center gap-2">
           <UserProfileImage
             userId={friendId}
-            userName={friendData?.firstName || ''}
+            userName={friendData?.firstName || ""}
             alt={""}
             width={30}
             height={30}
           />
-          <span>{friendData?.firstName || ''}</span>
+          <span>{friendData?.firstName || ""}</span>
         </div>
         <div className="flex items-center gap-1 p-2">
-          <button
-            onClick={() => {
-              handleFetchMessages();
-            }}
-          >
+          <button onClick={handleRefetch}>
             <RotateCcw size={20} />
           </button>
           <button
@@ -188,52 +166,46 @@ export default function Chatbox() {
           </button>
         </div>
       </div>
-      <div ref={messagesEndRef} className="flex-1 overflow-auto overflow-x-hidden hide-scrollbar ">
-        {!isChatPending && !showLoading ? (
+
+      <div
+        ref={messagesEndRef}
+        className="flex-1 overflow-auto overflow-x-hidden hide-scrollbar"
+      >
+        {loading ? (
+          <ChatboxSkeleton />
+        ) : messages.length > 0 ? (
           <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-            {messages.length > 0 ? (
-              <div>
-                {messages.map((chatMessage, index) => {
-                  return (
-                    <ChatBubble
-                      key={index}
-                      timestamp={`${chatMessage.message.timestamp.getFullYear()}/${chatMessage.message.timestamp.getMonth()}/${chatMessage.message.timestamp.getDate()} `}
-                      message={chatMessage.message.content}
-                      deliveryStatus={chatMessage.status}
-                      isSender={chatMessage.message.sender == userId}
-                    />
-                  );
-                })}
-              </div>
-            ) : (
-              <div
-                style={{ height: 250 }}
-                className="w-full flex justify-center items-center text-gray-400"
-              >
-                No Messages
-              </div>
-            )}
+            {messages.map((chatMessage, index) => (
+              <ChatBubble
+                key={index}
+                timestamp={chatMessage.message.timestamp.toLocaleString()}
+                message={chatMessage.message.content}
+                deliveryStatus={chatMessage.status}
+                isSender={chatMessage.message.sender === userId}
+              />
+            ))}
           </div>
         ) : (
-          <div className="flex-1 overflow-auto overflow-x-hidden">
-            <ChatboxSkeleton />
+          <div
+            style={{ height: 250 }}
+            className="w-full flex justify-center items-center text-gray-400"
+          >
+            No Messages
           </div>
         )}
       </div>
-      <div className="w-full flex shadow-md border-t border-gray-400 flex p-2 h-12">
+
+      <div className="w-full flex shadow-md border-t border-gray-400 p-2 h-12">
         <input
           className="flex-1 border border-gray-400 p-2 rounded-2xl"
           value={messageContent}
-          onChange={(e) => {
-            setMessageContent(e.target.value);
-          }}
+          onChange={(e) => setMessageContent(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSend();
-            }
+            if (e.key === "Enter") handleSend();
           }}
+          placeholder="Type your message..."
         />
-        <button className="w-8 "onClick={handleSend}>
+        <button className="w-8" onClick={handleSend}>
           <Send color="#4298f5" />
         </button>
       </div>

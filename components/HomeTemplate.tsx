@@ -13,28 +13,28 @@ import {
   updateIsOpenChatbox,
 } from "@/lib/features/insideFriend";
 import Chatbox from "@/components/Chatbox";
-import { Inbox, Mail, MessageSquareText } from "lucide-react";
+import { Inbox, MessageSquareText } from "lucide-react";
 import { Popups } from "@/components/Popups";
 import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
+import { fetchUserConversations } from "@/app/actions/chat/fetchUserConversations"; // Import your server action here
 import Friends from "/public/friends.png";
 import UserProfileImage from "./UserProfileImage";
-import { updateConversations, updateShowLoading } from "@/lib/features/chat";
-import { useWindowSize } from "@/utils/hooks/useWindowSize";
-import {
-  updateFriendRequests,
-  updateIsSidebarOpen,
-} from "@/lib/features/friendsSidebar";
+import { updateFriendRequests, updateIsSidebarOpen } from "@/lib/features/friendsSidebar";
 import { navigateTo } from "@/app/actions/navigateTo";
 import { seenFriendRequests } from "@/app/actions/user/seenFriendRequests";
 import { countUnseenFriendRequests } from "@/utils/countUnseenFriendRequests";
+import { UserConversation } from "@/lib/types/conversation";
 import loading from "/public/loading.svg";
+import { useWindowSize } from "@/utils/hooks/useWindowSize";
+import whiteloading from '/public/whiteloading.svg';
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
   rightSide: ReactNode;
-  allowChat?: boolean; // Allow chatbox popups
-  showChatButton?: boolean; // Show button for opening the chatbox
+  allowChat?: boolean; 
+  showChatButton?: boolean; 
   showFriends?: boolean;
+  allowInbox?: boolean;
 }
 
 export default function HomeTemplate({
@@ -43,35 +43,40 @@ export default function HomeTemplate({
   allowChat,
   showFriends,
   showChatButton,
+  allowInbox,
 }: HomeTemplateProps) {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
-  const isOpenChatbox = useSelector(
-    (state: RootState) => state.insideFriend.isOpenChatbox
-  );
+  const isOpenChatbox = useSelector((state: RootState) => state.insideFriend.isOpenChatbox);
   const userId = useSelector((state: RootState) => state.userData.id);
   const userName = useSelector((state: RootState) => state.userData.firstName);
-  const friendId = useSelector(
-    (state: RootState) => state.insideFriend.friendId
-  );
-  const friendRequests = useSelector(
-    (state: RootState) => state.friendsSidebar.friendRequests
-  );
-  const [sidebarNotificationCounter, setsidebarNotificationCounter] =
-    useState(0);
-  const dispatch = useDispatch();
-  const { width, height } = useWindowSize();
+  const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
+  const friendRequests = useSelector((state: RootState) => state.friendsSidebar.friendRequests);
+
+  // Initially closed inbox and chatbox
+  const [showInbox, setShowInbox] = useState(false); 
+
+  const [sidebarNotificationCounter, setsidebarNotificationCounter] = useState(0);
   const [isLogout, setIsLogout] = useState(false);
-  const conversations = useSelector(
-    (state: RootState) => state.chat.conversations
-  );
-  const [showInbox, setShowInbox] = useState(false);
+  const { width, height } = useWindowSize();
+  const dispatch = useDispatch();
+
+  const [inboxConversations, setInboxConversations] = useState<UserConversation[]>([]);
+  const [inboxLoading, setInboxLoading] = useState(false);
+  const [chatButtonLoading, setChatButtonLoading] = useState(false);
+
+  useEffect(() => {
+    initialFetchInbox();
+    dispatch(updateIsOpenChatbox(false));
+    if (friendRequests) {
+      setsidebarNotificationCounter(countUnseenFriendRequests(friendRequests, userId));
+    }
+  }, [friendRequests, userId]);
 
   async function seenAllFriendRequests() {
-    // Update local friend requests
     dispatch(
       updateFriendRequests(
         friendRequests.map((req) => {
-          if (req.sender.id == userId) {
+          if (req.sender.id === userId) {
             return {
               ...req,
               isSeenSender: true,
@@ -86,39 +91,63 @@ export default function HomeTemplate({
     );
     try {
       const res = await seenFriendRequests(friendRequests, userId);
-      // Handle the response from the server
       if (res.status === 200) {
-        // Successfully updated, potentially update local state or show a success message
         console.log("Friend requests marked as seen");
       } else {
-        // Handle errors or partial updates
         console.error("Error updating friend requests:", res.message);
       }
     } catch (e) {
       console.error("Error marking friend requests as seen:", e);
-      // Example: Show a generic error message
-      // alert("An error occurred.");
     }
   }
 
-  const delay = (ms: number): Promise<void> => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  const startConversation = async () => {
+    setChatButtonLoading(true);
+    try {
+      const res = await findOrCreateConversation(userId, friendId);
+      if (res.status === 200 && res.data?.id) {
+        dispatch(updateConversationId(res.data.id));
+        dispatch(updateIsOpenChatbox(true)); // Open chatbox after conversationId is set
+      } else {
+        console.log("Failed to find/create conversation");
+      }
+    } catch (e) {
+      console.log(`Failed to fetch conversation: ${e}`);
+    }
+    setChatButtonLoading(false);
   };
 
-  useEffect(() => {
-    if (friendRequests) {
-      setsidebarNotificationCounter(
-        countUnseenFriendRequests(friendRequests, userId)
-      );
+  const initialFetchInbox = async () => {
+      const result = await fetchUserConversations(userId);
+      if (result.status === 200 && result.data) {
+        setInboxConversations(result.data);
+      } else {
+        console.error("Failed to fetch inbox conversations");
+      }
+  }
+
+  const handleToggleInbox = async () => {
+    const newValue = !showInbox;
+    setShowInbox(newValue);
+    if (newValue) {
+      // Fetch inbox data when opened
+      setInboxLoading(true);
+      const result = await fetchUserConversations(userId);
+      if (result.status === 200 && result.data) {
+        setInboxConversations(result.data);
+      } else {
+        console.error("Failed to fetch inbox conversations");
+      }
+      setInboxLoading(false);
     }
-  }, [friendRequests]);
+  };
 
   return (
     <div className="bg-white w-screen h-screen flex overflow-auto overflow-x-hidden">
       <RenderClientOnly loading={<div></div>}>
         <Popups>
-          <div className="flex h-full ">
-            {/**Layout */}
+          <div className="flex h-full">
+            {/** Layout */}
             <div className="flex">
               <div style={{ width: 315 }}>{leftSide}</div>
               <div className="flex-1">{rightSide}</div>
@@ -127,11 +156,7 @@ export default function HomeTemplate({
             {/**Inbox Popup */}
             {showInbox && (
               <div
-                className={`absolute bg-white border-gray-300 border shadow-md rounded-lg p-4 flex flex-col gap-4 ${
-                  conversations.length > 0
-                    ? "items-start"
-                    : "items-center justify-center"
-                }`}
+                className="flex flex-col absolute bg-white border-gray-300 border shadow-md rounded-lg p-4 flex flex-col gap-4"
                 style={{
                   zIndex: 100,
                   top: 40,
@@ -140,69 +165,71 @@ export default function HomeTemplate({
                   height: 300,
                 }}
               >
-                {conversations.length > 0 ? (
-                  conversations.map((conversation) => (
-                    <div key={conversation.conversationId}>
-                      <button
-                        className="flex items-center gap-4 p-2 hover:bg-gray-100 rounded-lg"
-                        onClick={async () => {
-                          setShowInbox(false);
-                          dispatch(updateShowLoading(true));
-                          dispatch(updateConversations([])); // reset conversations
-                          dispatch(updateConversationId(conversation.conversationId));
-                          dispatch(updateFriendId(conversation.friend.id));
-                          dispatch(updateIsOpenChatbox(true));
-                          await delay(2000);
-                          dispatch(updateShowLoading(false));
-                        }}
-                      >
-                        <UserProfileImage
-                          userId={conversation.friend.id}
-                          userName={conversation.friend.name}
-                          width={30}
-                          height={30}
-                          alt={conversation.friend.name}
-                        />
-                        <div className="flex-1 text-sm font-medium">
-                          {conversation.friend.name}
-                        </div>
-                        {conversation.unreadMessageCount > 0 && (
-                          <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                            {conversation.unreadMessageCount}
-                          </span>
-                        )}
-                      </button>
+                <div className="flex h-4 justify-start text-xl">
+                  <p>Messages</p>
+                </div>
+                <div className="flex-1 flex flex-col">
+                  {inboxLoading ? (
+                    <div className="flex items-center justify-center flex-1 text-gray-500">
+                      Loading...
                     </div>
-                  ))
-                ) : (
-                  <div className="text-gray-500 text-sm font-medium text-center">
-                    You have no conversations
-                  </div>
-                )}
+                  ) : inboxConversations.length > 0 ? (
+                    inboxConversations.map((conversation) => (
+                      <div key={conversation.conversationId}>
+                        <button
+                          className="flex items-center gap-4 p-2 hover:bg-gray-100 rounded-lg w-full text-left"
+                          onClick={async () => {
+                            setShowInbox(false);
+                            // Set friend data and open chatbox
+                            dispatch(updateConversationId(conversation.conversationId));
+                            dispatch(updateFriendId(conversation.friend.id));
+                            dispatch(updateIsOpenChatbox(true));
+                          }}
+                        >
+                          <UserProfileImage
+                            userId={conversation.friend.id}
+                            userName={conversation.friend.name}
+                            width={30}
+                            height={30}
+                            alt={conversation.friend.name}
+                          />
+                          <div className="flex-1 text-sm font-medium">
+                            {conversation.friend.name}
+                          </div>
+                          {conversation.unreadMessageCount > 0 && (
+                            <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                              {conversation.unreadMessageCount}
+                            </span>
+                          )}
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="pb-4 text-gray-500 text-sm font-medium text-center flex-1 flex items-center justify-center">
+                      You have no messages
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
             {/**Profile and Inbox button Section */}
             {width > 800 && (
               <div
-                style={{ zIndex: 90, right: 30 }}
-                className=" absolute p-2 pr-8 flex items-center justify-between"
+                style={{ zIndex: 90, right: 20 }}
+                className="absolute p-2 pr-8 flex items-center justify-between"
               >
                 {/**Inbox */}
-                <div className="flex items-center gap-4 relative">
-                  <div className="relative" style={{marginTop: 10}}>
-                    <button
-                      onClick={() => setShowInbox((prev) => !prev)}
-                      className="relative"
-                    >
-                      <Inbox color="gray"/>
-                      {/**Notification Badge */}
-                      {conversations.reduce(
+                {allowInbox && (
+                  <div className="relative" style={{ marginTop: 10, marginRight: 10 }}>
+                    <button onClick={handleToggleInbox} className="relative">
+                      <Inbox color="gray" />
+                      {inboxConversations.reduce(
                         (total, convo) => total + convo.unreadMessageCount,
                         0
-                      ) > 0 && (
+                      ) > 0 && showInbox === false && (
                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                          {conversations.reduce(
+                          {inboxConversations.reduce(
                             (total, convo) => total + convo.unreadMessageCount,
                             0
                           )}
@@ -210,58 +237,53 @@ export default function HomeTemplate({
                       )}
                     </button>
                   </div>
+                )}
 
-                  {/**Profile */}
-                  <button
-                    className="relative"
-                    onClick={() => {
-                      setShowProfileOptions((prev) => !prev);
-                    }}
+                {/**Profile */}
+                <button
+                  className="relative"
+                  onClick={() => {
+                    setShowProfileOptions((prev) => !prev);
+                  }}
+                >
+                  <UserProfileImage
+                    userId={userId}
+                    userName={userName}
+                    width={30}
+                    height={30}
+                    alt={"User Profile"}
+                  />
+                </button>
+                {showProfileOptions && (
+                  <ul
+                    style={{ zIndex: 100, right: 10, top: 50, width: 100 }}
+                    className="flex flex-col gap-2 absolute bg-white shadow-md rounded-2xl"
                   >
-                    <UserProfileImage
-                      userId={userId}
-                      userName={userName}
-                      width={30}
-                      height={30}
-                      alt={"User Profile"}
-                    />
-                  </button>
-                  {showProfileOptions && (
-                    <ul
-                      style={{ zIndex: 100, right: -30, top: 38, width: 100 }}
-                      className="flex flex-col gap-2 absolute bg-white shadow-md rounded-2xl"
+                    <button
+                      className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
+                      onClick={() => {
+                        setShowProfileOptions(false);
+                        dispatch(updateCurrentPopup("profile"));
+                      }}
                     >
-                      <button
-                        className="hover:bg-gray-100 p-4 rounded-2xl text-xs"
-                        onClick={() => {
-                          setShowProfileOptions(false);
-                          dispatch(updateCurrentPopup("profile"));
-                        }}
-                      >
-                        My Profile
-                      </button>
-                      <button
-                        className="flex justify-center hover:bg-gray-100 p-4 rounded-2xl text-xs"
-                        onClick={() => {
-                          setIsLogout(true);
-                          document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                          navigateTo("/login");
-                        }}
-                      >
-                        {isLogout ? (
-                          <Image
-                            src={loading}
-                            alt="loading"
-                            width={20}
-                            height={20}
-                          />
-                        ) : (
-                          <span>Log out</span>
-                        )}
-                      </button>
-                    </ul>
-                  )}
-                </div>
+                      My Profile
+                    </button>
+                    <button
+                      className="flex justify-center hover:bg-gray-100 p-4 rounded-2xl text-xs"
+                      onClick={() => {
+                        setIsLogout(true);
+                        document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                        navigateTo("/login");
+                      }}
+                    >
+                      {isLogout ? (
+                        <Image src={loading} alt="loading" width={20} height={20} />
+                      ) : (
+                        <span>Log out</span>
+                      )}
+                    </button>
+                  </ul>
+                )}
               </div>
             )}
 
@@ -275,40 +297,18 @@ export default function HomeTemplate({
                   <Chatbox />
                 ) : (
                   <button
-                    onClick={() => {
-                      async function startConversation() {
-                        dispatch(updateConversations([])); // reset conversations
-                        try {
-                          const res = await findOrCreateConversation(
-                            userId,
-                            friendId
-                          );
-                          console.log(`friendId: ${friendId}`);
-                          console.log(
-                            `conversationId: ${res.data?.id as string}`
-                          );
-                          console.log(res.status);
-                          dispatch(
-                            updateConversationId(res.data?.id as string)
-                          );
-                          dispatch(updateShowLoading(false));
-                        } catch (e) {
-                          console.log(`Failed to fetch conversation: ${e}`);
-                        }
-                      }
-                      dispatch(updateShowLoading(true));
-                      dispatch(updateIsOpenChatbox(true));
-                      startConversation();
-                    }}
+                    disabled={chatButtonLoading}
+                    onClick={startConversation}
                     className={`bg-blue-500 shadow-md rounded-full p-4 ${
                       !showChatButton && "invisible"
                     }`}
-                  >
-                    <MessageSquareText color={"#ffffff"} />
+                  > 
+                    {chatButtonLoading ? <Image src={whiteloading} alt="white-loading" height={30} width={30}/> : <MessageSquareText color={"#ffffff"} />}
                   </button>
                 )}
               </div>
             )}
+
             {/**Friends sidebar*/}
             {showFriends && (
               <div
@@ -331,7 +331,6 @@ export default function HomeTemplate({
                   <Image alt="" width={25} src={Friends} />
                 </button>
 
-                {/**Red notification */}
                 {sidebarNotificationCounter > 0 && (
                   <div
                     style={{
@@ -341,7 +340,7 @@ export default function HomeTemplate({
                       marginBottom: 120,
                       marginRight: 2,
                     }}
-                    className="absolute bg-red-500  flex justify-center items-center rounded-full"
+                    className="absolute bg-red-500 flex justify-center items-center rounded-full"
                   >
                     {sidebarNotificationCounter}
                   </div>

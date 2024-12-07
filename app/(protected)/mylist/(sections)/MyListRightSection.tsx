@@ -55,10 +55,11 @@ export default function MyListRightSection() {
                     lastName: '', 
                   },
                   receiver: {
-                    id: shareInput, // Assuming shareInput is receiverId or email
+                    id: '',
                     firstName: extractNameFromEmail(shareInput) || '',
                     lastName: '', 
                   },
+                  receiverEmail: shareInput,
                   isSeenSender: false,
                   isSeenReceiver: false,
                 }));

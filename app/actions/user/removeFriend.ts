@@ -2,8 +2,31 @@
 
 import { MongoClient, ObjectId } from 'mongodb';
 
-// Removes the friend from the current user's friendsList and the friend's friendsList,
-// deletes conversations and messages between them, and disassociates the friend from the user's events.
+interface User {
+  _id: ObjectId;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  hobbyInfo: string;
+  birthday: string;
+  showInterest: boolean;
+  verified: boolean;
+  verificationToken: string;
+  friendsList: string[];
+  conversations: string[];
+  resetToken: string;
+}
+
+interface Event {
+  _id: ObjectId;
+  userId: string;
+  date: string;
+  eventTitle: string;
+  invitedFriends: string[]; // Important: this must be an array of strings
+}
+
+
 export default async function removeFriend(userId: string, friendId: string) {
   const uri = process.env.MONGODB_URI || '';
   const mongoClient = new MongoClient(uri);
@@ -11,23 +34,24 @@ export default async function removeFriend(userId: string, friendId: string) {
 
   try {
     const db = mongoClient.db('hitmygift');
+    const usersCollection = db.collection<User>('users');
 
     await session.withTransaction(async () => {
       // Remove the friendId from the user's friendsList
-      await db.collection('users').updateOne(
+      await usersCollection.updateOne(
         { _id: new ObjectId(userId) },
         { $pull: { friendsList: friendId } },
         { session }
       );
 
       // Remove the userId from the friend's friendsList
-      await db.collection('users').updateOne(
+      await usersCollection.updateOne(
         { _id: new ObjectId(friendId) },
         { $pull: { friendsList: userId } },
         { session }
       );
 
-      // Find conversations between the user and friend
+      // Remove conversations and messages
       const conversationFilter = {
         participants: { $all: [userId, friendId] },
         $expr: { $eq: [{ $size: '$participants' }, 2] },
@@ -41,8 +65,8 @@ export default async function removeFriend(userId: string, friendId: string) {
       const conversationIds = conversationsToDelete.map((convo) => convo._id);
       const conversationIdStrings = conversationIds.map((id) => id.toString());
 
-      // Delete conversations
       if (conversationIds.length > 0) {
+        // Delete conversations
         await db.collection('conversations').deleteMany(
           { _id: { $in: conversationIds } },
           { session }
@@ -55,22 +79,28 @@ export default async function removeFriend(userId: string, friendId: string) {
         );
       }
 
-      // Remove friendId from user's events' invitedFriends
-      await db.collection('events').updateMany(
+      const eventsCollection = db.collection<Event>('events');
+      // Remove the friend from all the user's events
+      await eventsCollection.updateMany(
         { userId: userId, invitedFriends: friendId },
         { $pull: { invitedFriends: friendId } },
         { session }
       );
+      // Remove the user from all the friends's events
+      await eventsCollection.updateMany(
+        { userId: friendId, invitedFriends: userId },
+        { $pull: { invitedFriends: userId } },
+        { session }
+      );
+      
     });
 
-    // Transaction committed successfully
     return {
       status: 200,
       message: 'Friend removed successfully',
     };
   } catch (e) {
     console.error(e);
-    // Transaction aborted due to error
     return {
       status: 500,
       message: 'Internal server error',

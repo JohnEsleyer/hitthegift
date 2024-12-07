@@ -5,36 +5,37 @@ import acceptFriendRequest from "@/app/actions/user/acceptFriendRequest";
 import { DebouncedInput } from "@/components/DebounceInput";
 import UserProfileImage from "@/components/UserProfileImage";
 import {
-
+  updateFriendRequests,
   updateFriendRequestsReceiver,
   updateFriendRequestsSender,
+  updateFriends,
   updateSearchResults,
   updateToDeleteFriend,
   updateToDeleteFriendRequest,
 } from "@/lib/features/friendsSidebar";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { RootState } from "@/lib/store";
-
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import checkmark from "/public/checkmark.svg";
 import xicon from "/public/xicon.svg";
 import xicongray from "/public/xicongray.svg";
 import LimitText from "@/components/ui/LimitText";
+import loading from '/public/loading.svg';
 import { isEmail } from "@/utils/isEmail";
-import { seenFriendRequests } from "@/app/actions/user/seenFriendRequests";
 
 export default function FriendsSidebar() {
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.userData.id);
+  const userEmail = useSelector((state: RootState) => state.userData.email);
   const friends = useSelector(
     (state: RootState) => state.friendsSidebar.friends
   );
-  // const [searchResults, setSearchResults] = useState<Friend[]>([]);
   const searchResults = useSelector((state: RootState) => state.friendsSidebar.searchResults);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [loadingRequestId, setLoadingRequestId] = useState<string | null>(null);
 
   const friendRequestsReceiver = useSelector((state: RootState) => state.friendsSidebar.friendRequestsReceiver);
   const friendRequestsSender = useSelector((state: RootState) => state.friendsSidebar.friendRequestsSender);
@@ -43,10 +44,7 @@ export default function FriendsSidebar() {
     (state: RootState) => state.friendsSidebar.friendRequests
   );
 
-
   const handleSearch = (query: string) => {
-    console.log("start handleSearch");
-    // setSearchLoading(true);
     const trimmedQuery = query.trim().toLowerCase();
     const results = friends.filter(
       (friend) =>
@@ -54,10 +52,7 @@ export default function FriendsSidebar() {
         friend.lastName.toLowerCase().includes(trimmedQuery)
     );
 
-    // setSearchResults(results);
     dispatch(updateSearchResults(results));
-    // setSearchLoading(false);
-    console.log("end handleSearch ");
   };
 
   const handleSearchWait = () => {
@@ -65,24 +60,39 @@ export default function FriendsSidebar() {
   };
 
   useEffect(() => {
-    // setSearchResults(friends);
     dispatch(updateSearchResults(friends));
-    console.log('Friends sidebar');
-    if (friendRequests){
+
+    if (friendRequests) {
       friendRequests.map((request) => {
-        if (request?.receiver.id == userId){
-          // Check for existing item to avoid duplicate items
-          if (friendRequestsReceiver.includes(request) || friendRequestsReceiver.some((res) => res.id == request.id)){
+        if (request?.receiverEmail == userEmail) {
+          if (
+            friendRequestsReceiver.includes(request) ||
+            friendRequestsReceiver.some((res) => res.receiverEmail == request.receiverEmail)
+          ) {
             return;
           }
-          dispatch(updateFriendRequestsReceiver(friendRequestsReceiver ? [...friendRequestsReceiver, request] : [request]));
+          dispatch(
+            updateFriendRequestsReceiver(
+              friendRequestsReceiver
+                ? [...friendRequestsReceiver, request]
+                : [request]
+            )
+          );
         }
-        if (request?.sender.id == userId){
-          // Check for existing item to avoid duplicate items
-          if (friendRequestsSender.includes(request) || friendRequestsSender.some((res) => res.id == request.id)){
+        if (request?.sender.id == userId) {
+          if (
+            friendRequestsSender.includes(request) ||
+            friendRequestsSender.some((res) => res.id == request.id)
+          ) {
             return;
           }
-          dispatch(updateFriendRequestsSender(friendRequestsSender ? [...friendRequestsSender, request] : [request]));
+          dispatch(
+            updateFriendRequestsSender(
+              friendRequestsSender
+                ? [...friendRequestsSender, request]
+                : [request]
+            )
+          );
         }
       });
     }
@@ -90,9 +100,50 @@ export default function FriendsSidebar() {
 
   const handleAcceptFriendRequest = async (friendRequestId: string) => {
     try {
+      setLoadingRequestId(friendRequestId);
       await acceptFriendRequest(userId, friendRequestId);
+      
+      const acceptedRequest = friendRequestsReceiver.find(
+        (request) => request.id === friendRequestId
+      );
+
+      if (acceptedRequest) {
+        dispatch(updateFriends([
+          ...friends,
+          {
+            id: acceptedRequest.sender.id,
+            firstName: acceptedRequest.sender.firstName,
+            lastName: acceptedRequest.sender.lastName,
+          }
+        ]));
+        dispatch(
+          updateSearchResults([
+            ...searchResults,
+            {
+              id: acceptedRequest.sender.id,
+              firstName: acceptedRequest.sender.firstName,
+              lastName: acceptedRequest.sender.lastName,
+            },
+          ])
+        );
+
+        dispatch(
+          updateFriendRequestsReceiver(
+            friendRequestsReceiver.filter(
+              (element) => element.id !== friendRequestId
+            )
+          )
+        );
+
+        // Remove the friend request locally
+        dispatch(updateFriendRequests(
+          friendRequests.filter((element) => element.id !== friendRequestId)
+        ));
+      }
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoadingRequestId(null);
     }
   };
 
@@ -143,47 +194,20 @@ export default function FriendsSidebar() {
                       />
                     </div>
                     <div className="flex">
-                      <button
-                        onClick={() => {
-                         
-                          handleAcceptFriendRequest(friendRequest.id);
-                          console.log(`friendRequest.sender.id: ${friendRequest.sender.id}`);
-                          console.log(`friendRequest.sender.firstName: ${friendRequest.sender.firstName}`);
-                          console.log(`friendRequest.sender.lastName: ${friendRequest.sender.lastName}`);
-
-                          dispatch(updateSearchResults([
-                            ...searchResults,
-                            {
-                              id: friendRequest.sender.id,
-                              firstName: friendRequest.sender.firstName,
-                              lastName: friendRequest.sender.lastName,
-                            }
-                          ]));
-                        
-                        setTimeout(() => {
-                          dispatch(updateFriendRequestsReceiver(
-                            friendRequestsReceiver.filter(
-                              (element) => element.id !== friendRequest.id
-                            )
-                          ));
-                        
-                          // dispatch(updateFriendRequests(
-                          //   friendRequests.filter(
-                          //     (element) => element.id !== friendRequest.id
-                          //   )
-                          // ));
-                        }, 100); // Adjust the delay (in milliseconds) as needed
-
-                         
-                        }}
-                      >
-                        <Image
-                          src={checkmark}
-                          alt="checkmark"
-                          width={20}
-                          height={20}
-                        />
-                      </button>
+                      {loadingRequestId === friendRequest.id  ? (
+                        <div className="flex items-center"><Image src={loading} alt="loading" width={20} height={20}/></div>
+                      ) : (
+                        <button
+                          onClick={() => handleAcceptFriendRequest(friendRequest.id)}
+                        >
+                          <Image
+                            src={checkmark}
+                            alt="checkmark"
+                            width={20}
+                            height={20}
+                          />
+                        </button>
+                      )}
                       <button
                         onClick={() => {
                           dispatch(
@@ -214,7 +238,7 @@ export default function FriendsSidebar() {
                       height={28} 
                       alt={"user profile"}/> 
                       <LimitText
-                        text={isEmail(friendRequest.receiver.id) ? friendRequest.receiver.id : friendRequest.receiver.firstName}
+                        text={friendRequest.receiver.firstName == "" ? friendRequest.receiverEmail : friendRequest.receiver.firstName}
                         fontSize={10}
                         length={11}
                         color={"text-black"}
@@ -223,7 +247,6 @@ export default function FriendsSidebar() {
                     </div>
                     <div className="flex">
                       <p style={{fontSize: 9}} className="flex justify-center items-center text-gray-600">Pending</p>
-                      {/* <p>{friendRequest.isSeen ? "true" : "false"}</p> */}
                       <button
                         onClick={() => {
                           dispatch(
@@ -304,9 +327,6 @@ export default function FriendsSidebar() {
           >
             Add Friend
           </button>
-
-   
-
         </div>
       </div>
     </div>

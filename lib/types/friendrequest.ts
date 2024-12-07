@@ -23,6 +23,7 @@ export type FriendRequestServerResponse = {
         firstName: string;
         lastName: string;
     },
+    receiverEmail: string;
     isSeenSender: boolean;
     isSeenReceiver: boolean;
 }

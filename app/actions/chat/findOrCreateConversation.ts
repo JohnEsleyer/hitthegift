@@ -55,12 +55,13 @@ export default async function findOrCreateConversation(userId: string, friendId:
             participants: [userId, friendId],
             createdAt: new Date(),
         };
-         
+        console.log('findOrCreateConversation: Success');
         return {
             status: 200,
             data: conversationSimplified,
         };
     } catch (e) {
+        console.log('findOrCreateConversation: Failed');
         console.log(e);
         return {
             status: 500,

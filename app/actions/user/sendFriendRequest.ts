@@ -36,9 +36,9 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
     if (receiver) {
       receiverId = receiver._id.toString();
     } else {
-      // If receiver not found, send an invite and use email as temporary ID
+      // If receiver not found, send an invite and use a temporary ID
       await sendInviteByEmail(senderId, receiverEmail);
-      receiverId = receiverEmail; 
+      receiverId = new ObjectId().toString(); 
     }
 
     // 3. Check if sender and receiver are already friends
@@ -70,6 +70,7 @@ export async function sendFriendRequest(senderId: string, receiverEmail: string)
     const friendRequest = {
       senderId: senderId,
       receiverId: receiverId,
+      receiverEmail: receiverEmail,
       isSeenSender: false,
       isSeenReceiver: false,
     };

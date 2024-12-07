@@ -20,7 +20,7 @@ import {
  * @param userId The ID of the user.
  * @returns An object containing the fetched data or an error message.
  */
-export async function getMyListData(userId: string) {
+export async function getMyListData(userId: string, userEmail: string) {
   console.log(`getMyListData userId: ${userId}`);
   const uri = process.env.MONGODB_URI || "";
   const mongoClient = new MongoClient(uri);
@@ -32,49 +32,63 @@ export async function getMyListData(userId: string) {
     const [events, products, conversations, friends, friendRequests] =
       await Promise.all([
         // Fetch events with invited friends data
-        db.collection<EventData>("events").aggregate([
-          { $match: { userId: userId } },
-          { 
-            $addFields: { 
-              invitedFriends: { 
-                $cond: [ 
-                  { $isArray: "$invitedFriends" }, // Check if it's already an array
-                  { $map: { input: "$invitedFriends", as: "friendId", in: { $toObjectId: "$$friendId" } } }, // If array, convert to ObjectIds
-                  { $map: { input: ["$invitedFriends"], as: "friendId", in: { $toObjectId: "$$friendId" } } }  // If string, create array and convert to ObjectId
-                ] 
-              } 
-            } 
-          },
-          {
-            $lookup: {
-              from: "users",
-              localField: "invitedFriends",
-              foreignField: "_id",
-              as: "invitedFriendsData",
+        db
+          .collection<EventData>("events")
+          .aggregate([
+            { $match: { userId: userId } },
+            {
+              $addFields: {
+                invitedFriends: {
+                  $cond: [
+                    { $isArray: "$invitedFriends" }, // Check if it's already an array
+                    {
+                      $map: {
+                        input: "$invitedFriends",
+                        as: "friendId",
+                        in: { $toObjectId: "$$friendId" },
+                      },
+                    }, // If array, convert to ObjectIds
+                    {
+                      $map: {
+                        input: ["$invitedFriends"],
+                        as: "friendId",
+                        in: { $toObjectId: "$$friendId" },
+                      },
+                    }, // If string, create array and convert to ObjectId
+                  ],
+                },
+              },
             },
-          },
-          {
-            $project: {
-              _id: 0,
-              id: { $toString: "$_id" },
-              userId: 1,
-              date: { $toString: "$date" },
-              eventTitle: 1,
-              invitedFriends: {
-                $map: {
-                  input: "$invitedFriendsData",
-                  as: "friend",
-                  in: {
-                    id: { $toString: "$$friend._id" },
-                    firstName: "$$friend.firstName",
-                    lastName: "$$friend.lastName",
+            {
+              $lookup: {
+                from: "users",
+                localField: "invitedFriends",
+                foreignField: "_id",
+                as: "invitedFriendsData",
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                id: { $toString: "$_id" },
+                userId: 1,
+                date: { $toString: "$date" },
+                eventTitle: 1,
+                invitedFriends: {
+                  $map: {
+                    input: "$invitedFriendsData",
+                    as: "friend",
+                    in: {
+                      id: { $toString: "$$friend._id" },
+                      firstName: "$$friend.firstName",
+                      lastName: "$$friend.lastName",
+                    },
                   },
                 },
               },
             },
-          },
-        ])
-        .toArray(),
+          ])
+          .toArray(),
 
         // Fetch products
         db
@@ -112,8 +126,8 @@ export async function getMyListData(userId: string) {
                       $expr: {
                         $and: [
                           { $eq: ["$conversationId", "$$conversationId"] },
-                          { $eq: ["$isRead", false] },
                           { $ne: ["$sender", userId] },
+                          { $eq: ["$receiverIsRead", false] },
                         ],
                       },
                     },
@@ -186,24 +200,24 @@ export async function getMyListData(userId: string) {
           .aggregate([
             { $match: { _id: objectId } },
             {
-                $lookup: {
-                  from: "users",
-                  let: { friendsList: "$friendsList" }, // Create a variable to hold the friendsList array
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $in: [
-                            { $toString: "$_id" }, // Convert _id to string for comparison
-                            "$$friendsList" // Access the friendsList variable
-                          ]
-                        }
-                      }
-                    }
-                  ],
-                  as: "friendsData"
-                }
+              $lookup: {
+                from: "users",
+                let: { friendsList: "$friendsList" }, // Create a variable to hold the friendsList array
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $in: [
+                          { $toString: "$_id" }, // Convert _id to string for comparison
+                          "$$friendsList", // Access the friendsList variable
+                        ],
+                      },
+                    },
+                  },
+                ],
+                as: "friendsData",
               },
+            },
             {
               $project: {
                 _id: 0,
@@ -227,87 +241,84 @@ export async function getMyListData(userId: string) {
 
         // Fetch friend requests (both sent and received) with sender and receiver data
         db
-          .collection("friendRequest")
-          .aggregate([
-            {
-              $match: {
-                // Use $or to find requests where userId is sender OR receiver
-                $or: [{ senderId: userId }, { receiverId: userId }],
-              },
+        .collection("friendRequest")
+        .aggregate([
+          {
+            $match: {
+              $or: [{ senderId: userId }, { receiverId: userId }, {receiverEmail: userEmail}],
             },
-            {
-              $lookup: {
-                from: "users",
-                let: { senderId: "$senderId", receiverId: "$receiverId" },
-                pipeline: [
+          },
+          {
+            $lookup: {
+              from: "users",
+              let: { senderId: "$senderId", receiverId: "$receiverId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $or: [
+                        { $eq: ["$_id", { $toObjectId: "$$senderId" }] },
+                        { $eq: ["$_id", { $toObjectId: "$$receiverId" }] },
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "userData",
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              id: { $toString: "$_id" },
+              sender: {
+                $arrayElemAt: [
                   {
-                    $match: {
-                      $expr: {
-                        $or: [
-                          { $eq: ["$_id", { $toObjectId: "$$senderId" }] },
-                          { $eq: ["$_id", { $toObjectId: "$$receiverId" }] },
-                        ],
+                    $filter: {
+                      input: "$userData",
+                      as: "user",
+                      cond: {
+                        $eq: [{ $toString: "$$user._id" }, "$senderId"],
                       },
                     },
                   },
+                  0,
                 ],
-                as: "userData",
               },
-            },
-            {
-              $project: {
-                _id: 0,
-                id: { $toString: "$_id" },
-                sender: {
-                  // Find the sender from userData
-                  $arrayElemAt: [
-                    {
-                      $filter: {
-                        input: "$userData",
-                        as: "user",
-                        cond: {
-                          $eq: [{ $toString: "$$user._id" }, "$senderId"],
-                        },
+              receiver: {
+                $arrayElemAt: [
+                  {
+                    $filter: {
+                      input: "$userData",
+                      as: "user",
+                      cond: {
+                        $eq: [{ $toString: "$$user._id" }, "$receiverId"],
                       },
                     },
-                    0,
-                  ],
-                },
-                receiver: {
-                  // Find the receiver from userData
-                  $arrayElemAt: [
-                    {
-                      $filter: {
-                        input: "$userData",
-                        as: "user",
-                        cond: {
-                          $eq: [{ $toString: "$$user._id" }, "$receiverId"],
-                        },
-                      },
-                    },
-                    0,
-                  ],
-                },
-                isSeenSender: 1, // Include isSeenSender
-                isSeenReceiver: 1, // Include isSeenReceiver
+                  },
+                  0,
+                ],
+              },
+              receiverEmail: 1, // Include the receiver's email
+              isSeenSender: 1,
+              isSeenReceiver: 1,
+            },
+          },
+          {
+            $addFields: {
+              sender: {
+                $ifNull: ["$sender", { id: "", firstName: "", lastName: "" }],
+              },
+              receiver: {
+                $ifNull: [
+                  "$receiver",
+                  { id: "", firstName: "", lastName: "", email: "" },
+                ],
               },
             },
-            {
-              // Optionally, clean up the sender and receiver fields
-              $addFields: {
-                sender: {
-                  $ifNull: ["$sender", { id: "", firstName: "", lastName: "" }],
-                },
-                receiver: {
-                  $ifNull: [
-                    "$receiver",
-                    { id: "", firstName: "", lastName: "" },
-                  ],
-                },
-              },
-            },
-          ])
-          .toArray(),
+          },
+        ])
+        .toArray(),      
       ]);
 
     console.log(`events: ${events.length}`);
@@ -317,11 +328,11 @@ export async function getMyListData(userId: string) {
     console.log(`friendRequests: ${friendRequests.length}`);
     console.log(`all conversations}`);
     console.log(conversations);
-    
+
     (friendRequests as FriendRequestServerResponse[]).map((req) => {
       console.log(`friendRequest Id: ${req.id}`);
       console.log(`friendRequest Sender: ${req.sender.firstName}`);
-      console.log(`friendRequest Receiver: ${req.receiver.firstName}`);
+      console.log(`friendRequest Receiver: ${req.receiver?.firstName || ''}`);
     });
 
     const eventsResponse: ServerResponseForEvents[] = events.map((event) => ({
@@ -359,23 +370,25 @@ export async function getMyListData(userId: string) {
 
     const friendRequestsResponse: FriendRequestServerResponse[] =
     friendRequests.map((friendRequest) => ({
-        id: friendRequest.id.toString() || '', 
-        sender: {
-            firstName: friendRequest.sender.firstName || '',
-            lastName: friendRequest.sender.lastName || '',
-            id: friendRequest.sender._id.toString() || '', // Convert _id to string
-        },
-        receiver: {
-            firstName: friendRequest.receiver.firstName || '',
-            lastName: friendRequest.receiver.lastName || '',
-            id: friendRequest.receiver._id.toString() || '', // Convert _id to string
-        },
-        isSeenSender: friendRequest.isSeenSender as boolean || false,
-        isSeenReceiver: friendRequest.isSeenReceiver as boolean || false,
+      id: friendRequest.id?.toString() || "",
+      sender: {
+        firstName: friendRequest.sender?.firstName || "",
+        lastName: friendRequest.sender?.lastName || "",
+        id: friendRequest.sender?._id?.toString() || "", // Safely access _id
+      },
+      receiver: {
+        firstName: friendRequest.receiver?.firstName || "",
+        lastName: friendRequest.receiver?.lastName || "",
+        id: friendRequest.receiver?._id?.toString() || "", // Safely access _id
+      },
+      receiverEmail: friendRequest.receiverEmail || "", // Ensure receiverEmail is a string
+      isSeenSender: friendRequest.isSeenSender || false,
+      isSeenReceiver: friendRequest.isSeenReceiver || false,
     }));
+
     console.log(friendRequests);
 
-    console.log('Events');
+    console.log("Events");
     console.log(events);
 
     return {

@@ -1,44 +1,65 @@
-import { MongoClient, ObjectId } from "mongodb";
+'use server'
 
-export default async function markMessagesAsRead(messageIds: string[]) {
-    const uri = process.env.MONGODB_URI || '';
+import { MongoClient } from "mongodb";
 
-    const mongoClient = new MongoClient(uri);
+export default async function markMessagesAsRead(userId: string, conversationId: string) {
+  const uri = process.env.MONGODB_URI || '';
+  const mongoClient = new MongoClient(uri);
+  try {
+    const db = mongoClient.db('hitmygift');
+    
+    // Check if user is a sender in this conversation
+    const senderCheck = await db.collection('messages').findOne({
+      conversationId: conversationId,
+      sender: userId
+    });
 
-    try {
-        const db = mongoClient.db('hitmygift');
-        const messagesCollection = db.collection('messages');
+    let updateFilter;
+    let updateQuery;
 
-        // Convert string IDs to ObjectId
-        const objectIds = messageIds.map(id => new ObjectId(id));
-
-        // Update all messages with the given IDs to set isRead to true
-        const result = await messagesCollection.updateMany(
-            { _id: { $in: objectIds } },
-            { $set: { isRead: true } }
-        );
-
-        if (result.modifiedCount > 0) {
-            return {
-                status: 200,
-                updatedCount: result.modifiedCount,
-            };
-        }
-
-        return {
-            status: 404, // No messages found to update
-            message: 'No messages found with the provided IDs.',
-        };
-
-    } catch (e) {
-        console.log(e);
-
-        return {
-            status: 500,
-            error: 'An error occurred while updating messages.',
-        };
-
-    } finally {
-        mongoClient.close();
+    if (senderCheck) {
+      // User is the sender in this conversation
+      updateFilter = {
+        conversationId: conversationId,
+        sender: userId,
+        senderIsRead: false
+      };
+      updateQuery = {
+        $set: { senderIsRead: true }
+      };
+    } else {
+      // User is the receiver in this conversation
+      updateFilter = {
+        conversationId: conversationId,
+        sender: { $ne: userId },
+        receiverIsRead: false
+      };
+      updateQuery = {
+        $set: { receiverIsRead: true }
+      };
     }
+
+    const result = await db.collection('messages').updateMany(updateFilter, updateQuery);
+
+    if (result.modifiedCount > 0) {
+      console.log('Messages marked as read successfully');
+      return {
+        status: 200,
+        message: 'Messages marked as read successfully'
+      };
+    } else {
+      return {
+        status: 400,
+        message: 'No unread messages found for this conversation'
+      };
+    }
+  } catch (e) {
+    console.log(e);
+    return {
+      status: 500,
+      message: 'Internal server error'
+    };
+  } finally {
+    await mongoClient.close();
+  }
 }
