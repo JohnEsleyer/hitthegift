@@ -4,7 +4,6 @@ import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import Image from "next/image";
 import { RootState } from "@/lib/store";
 import {

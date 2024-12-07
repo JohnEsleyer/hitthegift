@@ -300,7 +300,8 @@ export default function LandingPageHero() {
           </div>
         ) : (
           <div className="w-screen flex flex-col items-start justify-start min-h-screen">
-            <div className="pl-8 mt-8 w-full flex justify-between items-center text-2xl ">
+            <div className="w-screen flex flex-col justify-center ">
+            <div className=" pl-8 mt-8 w-full flex justify-between items-center text-2xl ">
               <img
                 style={{ height: 70 }}
                 className="mb-8"
@@ -311,14 +312,14 @@ export default function LandingPageHero() {
                 About
               </a>
             </div>
-            <div className="pl-4">
-              <p className="mt-12 font-bold text-6xl leading-none text-start text-black">
+            <div className="pl-2 w-full flex flex-col items-center">
+              <p className="w-96 mt-12 font-bold text-6xl leading-none text-start text-black">
                 Share your
               </p>
-              <p className="text-[#027afe] font-bold text-6xl leading-none text-start">
+              <p className="w-96 text-[#027afe]font-bold text-6xl leading-none text-start">
                 wishes
               </p>
-              <div className="pl-1">
+              <div className="w-96 pl-1">
                 <p className="font-bold text-3xl leading-none text-start text-black">
                   the easiest way to get it
                 </p>
@@ -326,24 +327,25 @@ export default function LandingPageHero() {
                   right
                 </p>
               </div>
-              <p className=" max-w-96 mt-4 text-start text-black text font-bold text-gray-500">
+              <p className="max-w-96 flex mt-4 text-start text-black text font-bold text-gray-500">
                 Start creating your lists and events today and enjoy a modern
                 and practical way to celebrate life!
               </p>
-              <div className="w-full flex flex items-center justify-center mt-8 gap-2">
+              <div className="w-80 flex flex items-center justify-between mt-8 gap-2">
                 <Link
                   href="/login"
-                  className="w-64 bg-blue-600 text-white rounded-2xl py-2 text-center"
+                  className="mb:w-64 w-32 bg-blue-600 text-white rounded-2xl py-2 text-center"
                 >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="w-64 bg-black text-white rounded-2xl py-2 text-center"
+                  className="mb:w-64 w-40 bg-black text-white rounded-2xl py-2 text-center"
                 >
                   Create an account
                 </Link>
               </div>
+            </div>
             </div>
           </div>
         )}
