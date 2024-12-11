@@ -43,7 +43,7 @@ export default function FriendsWishItem({
         style={{ width: 167, height: 260 }}
         className="relative p-2 border border-[#d9d9d9] bg-white rounded"
       >
-        {products.length > 0 ? (
+        {products[0]?.imageUrl ? (
           <div >
             <img className=" border border-gray-200 rounded-2xl" height={150} width={150} src={products[0].imageUrl} alt={products[0].imageUrl} />
           </div>

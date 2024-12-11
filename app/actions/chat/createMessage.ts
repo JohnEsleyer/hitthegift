@@ -18,6 +18,7 @@ export default async function createMessage(userId: string, conversationId: stri
 
         if (newMessage) {
             return {
+                messageId: newMessage.insertedId.toString(),
                 status: 200,
             };
         }

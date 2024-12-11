@@ -4,39 +4,39 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/store";
 import { ChatMessage, Message } from "@/lib/types/message";
-import { UserConversation } from "@/lib/types/conversation";
 import { updateShowLoading } from "@/lib/features/chat";
 import { updateIsOpenChatbox } from "@/lib/features/insideFriend";
-
-import findOrCreateConversation from "@/app/actions/chat/findOrCreateConversation";
 import fetchMessages from "@/app/actions/chat/fetchMessages";
 import createMessage from "@/app/actions/chat/createMessage";
 import markMessagesAsRead from "@/app/actions/chat/markMessagesAsRead";
-
 import UserProfileImage from "@/components/UserProfileImage";
 import { ChatBubble } from "@/components/ChatBubble";
 import ChatboxSkeleton from "@/components/skeletons/ChatBubbleSkeleton";
-
 import { Send, RotateCcw, Minus } from "lucide-react";
 
 export default function Chatbox() {
   const dispatch = useDispatch();
-  
-  // From the Redux store, we get the necessary IDs and flags
+
   const userId = useSelector((state: RootState) => state.userData.id);
-  const friendId = useSelector((state: RootState) => state.insideFriend.friendId);
-  const friendData = useSelector((state: RootState) => state.insideFriend.friendData);
-  const conversationId = useSelector((state: RootState) => state.insideFriend.conversationId);
-  
-  // Local states
+  const friendId = useSelector(
+    (state: RootState) => state.insideFriend.friendId
+  );
+  const friendData = useSelector(
+    (state: RootState) => state.insideFriend.friendData
+  );
+  const conversationId = useSelector(
+    (state: RootState) => state.insideFriend.conversationId
+  );
+
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [messageContent, setMessageContent] = useState("");
-  
-  // Loading states
+
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasFetchedInitially = useRef(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -45,27 +45,38 @@ export default function Chatbox() {
     }
   }, [messages]);
 
-  // Fetch messages from server
+  // Helper to merge new fetched messages into existing state
+  const mergeMessages = (fetched: ChatMessage[]) => {
+    setMessages((prev) => {
+      const existingIds = new Set(prev.map((m) => m.message.id));
+      const newOnes = fetched.filter(
+        (m) => m.message.id && !existingIds.has(m.message.id)
+      );
+      return [...prev, ...newOnes];
+    });
+  };
+
+  // Load all messages initially
   const loadMessages = async () => {
     if (!conversationId) return;
     setLoading(true);
     try {
       const results = await fetchMessages(conversationId);
       if (results?.data) {
-        const fetchedMessages = results.data.map((m: Message): ChatMessage => ({
-          message: {
-            ...m,
-            timestamp: new Date(m.timestamp)
-          },
-          status: "sent"
-        }));
+        const fetchedMessages: ChatMessage[] = results.data.map(
+          (m: Message) => ({
+            message: {
+              ...m,
+              timestamp: new Date(m.timestamp),
+            },
+            status: "sent",
+          })
+        );
 
         // Mark as read
         await markMessagesAsRead(userId, conversationId);
 
-        // Adjust the read status locally if needed
-        // (You can do this if you want to ensure UI shows updated read states)
-
+        // Initial load: Replace the entire state
         setMessages(fetchedMessages);
       }
     } catch (e) {
@@ -73,23 +84,69 @@ export default function Chatbox() {
     } finally {
       setLoading(false);
       dispatch(updateShowLoading(false));
+      hasFetchedInitially.current = true;
+      startBackgroundPolling();
     }
   };
 
-  // Load messages whenever conversationId changes or when component mounts
+  // Load only new messages without resetting the entire list
+  const loadNewMessages = async () => {
+    if (!conversationId) return;
+    try {
+      const results = await fetchMessages(conversationId);
+      if (results?.data) {
+        const fetchedMessages: ChatMessage[] = results.data.map(
+          (m: Message) => ({
+            message: {
+              ...m,
+              timestamp: new Date(m.timestamp),
+            },
+            status: "sent",
+          })
+        );
+
+        // Mark as read
+        await markMessagesAsRead(userId, conversationId);
+
+        // Merge instead of replacing
+        mergeMessages(fetchedMessages);
+      }
+    } catch (e) {
+      console.log("Failed to fetch new messages:", e);
+    }
+  };
+
+  const startBackgroundPolling = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      if (hasFetchedInitially.current) {
+        loadNewMessages();
+      }
+    }, 5000);
+  };
+
   useEffect(() => {
-    loadMessages();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  // Initial load when conversationId changes
+  useEffect(() => {
+    if (conversationId) {
+      loadMessages();
+    }
   }, [conversationId]);
 
-  // Handle sending a message
+  // Sending a new message
   const handleSend = async () => {
     const content = messageContent.trim();
     if (!content || sending || !conversationId) return;
 
-    // Optimistically add the message to the UI
+    // Optimistic message
     const tempMessage: ChatMessage = {
       message: {
-        id: "",
+        id: "", // Temporary ID
         sender: userId,
         conversationId: conversationId,
         content: content,
@@ -105,15 +162,29 @@ export default function Chatbox() {
     setSending(true);
 
     try {
-      await createMessage(userId, conversationId, content);
+      // Suppose createMessage returns an object with { id: string } but no timestamp
+      const response = await createMessage(userId, conversationId, content);
+      const newMessageFromServer: Message = {
+        id: response?.messageId || "",
+        sender: userId,
+        conversationId,
+        content,
+        timestamp: new Date(), // approximate local time or set to Date.now
+        senderIsRead: true,
+        receiverIsRead: false,
+      };
 
-      // Replace last message with a "sent" version
       setMessages((prev) => {
         const updated = [...prev];
-        updated[updated.length - 1] = {
-          ...updated[updated.length - 1],
-          status: "sent",
-        };
+        const lastMsgIndex = updated.findIndex(
+          (m) => m.status === "sending" && m.message.content === content
+        );
+        if (lastMsgIndex !== -1) {
+          updated[lastMsgIndex] = {
+            message: newMessageFromServer,
+            status: "sent",
+          };
+        }
         return updated;
       });
     } catch (e) {
@@ -121,10 +192,15 @@ export default function Chatbox() {
       // If failed, mark the message as "failed"
       setMessages((prev) => {
         const updated = [...prev];
-        updated[updated.length - 1] = {
-          ...updated[updated.length - 1],
-          status: "failed",
-        };
+        const lastMsgIndex = updated.findIndex(
+          (m) => m.status === "sending" && m.message.content === content
+        );
+        if (lastMsgIndex !== -1) {
+          updated[lastMsgIndex] = {
+            ...updated[lastMsgIndex],
+            status: "failed",
+          };
+        }
         return updated;
       });
     } finally {
@@ -132,7 +208,6 @@ export default function Chatbox() {
     }
   };
 
-  // Handle refetching messages from UI
   const handleRefetch = () => {
     loadMessages();
   };
@@ -177,7 +252,7 @@ export default function Chatbox() {
           <div style={{ maxWidth: "400px", margin: "0 auto" }}>
             {messages.map((chatMessage, index) => (
               <ChatBubble
-                key={index}
+                key={chatMessage.message.id || index} // Use message ID if available
                 timestamp={chatMessage.message.timestamp.toLocaleString()}
                 message={chatMessage.message.content}
                 deliveryStatus={chatMessage.status}
