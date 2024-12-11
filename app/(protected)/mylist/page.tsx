@@ -36,7 +36,7 @@ export default function MyListPage() {
         rightSide={<MyListRightSection/>}
         allowChat={true}
         allowInbox={true}
-        showChatButton={false} 
+        showChatButton={true} 
       />
       </LoadMyListData>
   );

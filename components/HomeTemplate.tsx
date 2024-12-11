@@ -118,12 +118,17 @@ export default function HomeTemplate({
   };
 
   const initialFetchInbox = async () => {
+    try{
+      console.log(`userId: ${userId}`);
       const result = await fetchUserConversations(userId);
       if (result.status === 200 && result.data) {
         setInboxConversations(result.data);
       } else {
         console.error("Failed to fetch inbox conversations");
       }
+    }catch(e){
+      console.log(e);
+    }
   }
 
   const handleToggleInbox = async () => {
@@ -132,11 +137,15 @@ export default function HomeTemplate({
     if (newValue) {
       // Fetch inbox data when opened
       setInboxLoading(true);
+      try{
       const result = await fetchUserConversations(userId);
       if (result.status === 200 && result.data) {
         setInboxConversations(result.data);
       } else {
         console.error("Failed to fetch inbox conversations");
+      }
+      }catch(e){
+        console.log(e);
       }
       setInboxLoading(false);
     }
@@ -288,6 +297,7 @@ export default function HomeTemplate({
               </div>
             )}
 
+          {friendId && <div>
             {/** Chat box */}
             {allowChat && (
               <div
@@ -309,6 +319,7 @@ export default function HomeTemplate({
                 )}
               </div>
             )}
+          </div>}
 
             {/**Friends sidebar*/}
             {showFriends && (

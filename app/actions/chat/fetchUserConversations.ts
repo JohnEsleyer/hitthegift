@@ -18,6 +18,11 @@ export async function fetchUserConversations(userId: string): Promise<{ status: 
       const conversationId = convo._id.toString();
       const friendId = convo.participants.find((p: string) => p !== userId);
       
+      if (!ObjectId.isValid(friendId)) {
+        console.error("Invalid friendId:", friendId);
+        continue; // Skip this conversation if the ID is invalid
+      }
+
       // Fetch friend info
       const friendDoc = await db.collection('users').findOne({ _id: new ObjectId(friendId) });
       const friendName = friendDoc?.firstName || "Unknown";

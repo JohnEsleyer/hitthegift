@@ -11,15 +11,6 @@ import {
   FriendRequestServerResponse,
 } from "@/lib/types/friendrequest";
 
-/**
- * Fetches all data required for the /mylist page.
- *
- * This function retrieves events, products, conversation data, friends, and friend requests for a specific user.
- * It utilizes MongoDB aggregations to optimize data fetching and reduce waiting time.
- *
- * @param userId The ID of the user.
- * @returns An object containing the fetched data or an error message.
- */
 export async function getMyListData(userId: string, userEmail: string) {
   console.log(`getMyListData userId: ${userId}`);
   const uri = process.env.MONGODB_URI || "";
@@ -39,23 +30,22 @@ export async function getMyListData(userId: string, userEmail: string) {
             {
               $addFields: {
                 invitedFriends: {
-                  $cond: [
-                    { $isArray: "$invitedFriends" }, // Check if it's already an array
-                    {
-                      $map: {
-                        input: "$invitedFriends",
-                        as: "friendId",
-                        in: { $toObjectId: "$$friendId" },
-                      },
-                    }, // If array, convert to ObjectIds
-                    {
-                      $map: {
-                        input: ["$invitedFriends"],
-                        as: "friendId",
-                        in: { $toObjectId: "$$friendId" },
-                      },
-                    }, // If string, create array and convert to ObjectId
-                  ],
+                  $map: {
+                    input: "$invitedFriends",
+                    as: "friendId",
+                    in: {
+                      $cond: [
+                        {
+                          $and: [
+                            { $eq: [{ $strLenCP: "$$friendId" }, 24] },
+                            { $regexMatch: { input: "$$friendId", regex: /^[a-fA-F0-9]{24}$/ } },
+                          ],
+                        },
+                        { $toObjectId: "$$friendId" },
+                        null,
+                      ],
+                    },
+                  },
                 },
               },
             },
@@ -157,7 +147,12 @@ export async function getMyListData(userId: string, userEmail: string) {
                 pipeline: [
                   {
                     $match: {
-                      $expr: { $eq: ["$_id", { $toObjectId: "$$friendId" }] },
+                      $expr: {
+                        $and: [
+                          { $eq: [{ $strLenCP: "$$friendId" }, 24] },
+                          { $regexMatch: { input: "$$friendId", regex: /^[a-fA-F0-9]{24}$/ } },
+                        ],
+                      },
                     },
                   },
                 ],
@@ -202,14 +197,14 @@ export async function getMyListData(userId: string, userEmail: string) {
             {
               $lookup: {
                 from: "users",
-                let: { friendsList: "$friendsList" }, // Create a variable to hold the friendsList array
+                let: { friendsList: "$friendsList" },
                 pipeline: [
                   {
                     $match: {
                       $expr: {
                         $in: [
-                          { $toString: "$_id" }, // Convert _id to string for comparison
-                          "$$friendsList", // Access the friendsList variable
+                          { $toString: "$_id" },
+                          "$$friendsList",
                         ],
                       },
                     },
@@ -241,162 +236,89 @@ export async function getMyListData(userId: string, userEmail: string) {
 
         // Fetch friend requests (both sent and received) with sender and receiver data
         db
-        .collection("friendRequest")
-        .aggregate([
-          {
-            $match: {
-              $or: [{ senderId: userId }, { receiverId: userId }, {receiverEmail: userEmail}],
+          .collection("friendRequest")
+          .aggregate([
+            {
+              $match: {
+                $or: [
+                  { senderId: userId },
+                  { receiverId: userId },
+                  { receiverEmail: userEmail },
+                ],
+              },
             },
-          },
-          {
-            $lookup: {
-              from: "users",
-              let: { senderId: "$senderId", receiverId: "$receiverId" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $or: [
-                        { $eq: ["$_id", { $toObjectId: "$$senderId" }] },
-                        { $eq: ["$_id", { $toObjectId: "$$receiverId" }] },
-                      ],
+            {
+              $lookup: {
+                from: "users",
+                let: { senderId: "$senderId", receiverId: "$receiverId" },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $or: [
+                          {
+                            $and: [
+                              { $eq: [{ $strLenCP: "$$senderId" }, 24] },
+                              { $regexMatch: { input: "$$senderId", regex: /^[a-fA-F0-9]{24}$/ } },
+                            ],
+                          },
+                          {
+                            $and: [
+                              { $eq: [{ $strLenCP: "$$receiverId" }, 24] },
+                              { $regexMatch: { input: "$$receiverId", regex: /^[a-fA-F0-9]{24}$/ } },
+                            ],
+                          },
+                        ],
+                      },
                     },
                   },
+                ],
+                as: "userData",
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                id: { $toString: "$_id" },
+                sender: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$userData",
+                        as: "user",
+                        cond: { $eq: [{ $toString: "$$user._id" }, "$senderId"] },
+                      },
+                    },
+                    0,
+                  ],
                 },
-              ],
-              as: "userData",
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              id: { $toString: "$_id" },
-              sender: {
-                $arrayElemAt: [
-                  {
-                    $filter: {
-                      input: "$userData",
-                      as: "user",
-                      cond: {
-                        $eq: [{ $toString: "$$user._id" }, "$senderId"],
+                receiver: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$userData",
+                        as: "user",
+                        cond: { $eq: [{ $toString: "$$user._id" }, "$receiverId"] },
                       },
                     },
-                  },
-                  0,
-                ],
-              },
-              receiver: {
-                $arrayElemAt: [
-                  {
-                    $filter: {
-                      input: "$userData",
-                      as: "user",
-                      cond: {
-                        $eq: [{ $toString: "$$user._id" }, "$receiverId"],
-                      },
-                    },
-                  },
-                  0,
-                ],
-              },
-              receiverEmail: 1, // Include the receiver's email
-              isSeenSender: 1,
-              isSeenReceiver: 1,
-            },
-          },
-          {
-            $addFields: {
-              sender: {
-                $ifNull: ["$sender", { id: "", firstName: "", lastName: "" }],
-              },
-              receiver: {
-                $ifNull: [
-                  "$receiver",
-                  { id: "", firstName: "", lastName: "", email: "" },
-                ],
+                    0,
+                  ],
+                },
+                receiverEmail: 1,
+                isSeenSender: 1,
+                isSeenReceiver: 1,
               },
             },
-          },
-        ])
-        .toArray(),      
+          ])
+          .toArray(),
       ]);
 
-    console.log(`events: ${events.length}`);
-    console.log(`products: ${products.length}`);
-    console.log(`conversations: ${conversations.length}`);
-    console.log(`friends: ${friends.length}`);
-    console.log(`friendRequests: ${friendRequests.length}`);
-    console.log(`all conversations}`);
-    console.log(conversations);
-
-    (friendRequests as FriendRequestServerResponse[]).map((req) => {
-      console.log(`friendRequest Id: ${req.id}`);
-      console.log(`friendRequest Sender: ${req.sender.firstName}`);
-      console.log(`friendRequest Receiver: ${req.receiver?.firstName || ''}`);
-    });
-
-    const eventsResponse: ServerResponseForEvents[] = events.map((event) => ({
-      id: event.id.toString(),
-      date: event.date,
-      userId: event.userId,
-      eventTitle: event.eventTitle,
-      invitedFriends: event.invitedFriends,
-    }));
-
-    const productsResponse: ProductType[] = products.map((product) => ({
-      id: product.id.toString(),
-      userId: product.userId,
-      price: product.price,
-      currency: product.currency,
-      title: product.title,
-      productUrl: product.productUrl,
-      imageUrl: product.imageUrl,
-      description: product.description,
-    }));
-
-    const conversationsResponse: UserConversation[] = conversations.map(
-      (conversation) => ({
-        conversationId: conversation.conversationId,
-        unreadMessageCount: conversation.unreadMessageCount,
-        friend: conversation.friend,
-      })
-    );
-
-    const friendsResponse: Friend[] = friends.map((friend) => ({
-      id: friend.id.toString(),
-      firstName: friend.firstName,
-      lastName: friend.lastName,
-    }));
-
-    const friendRequestsResponse: FriendRequestServerResponse[] =
-    friendRequests.map((friendRequest) => ({
-      id: friendRequest.id?.toString() || "",
-      sender: {
-        firstName: friendRequest.sender?.firstName || "",
-        lastName: friendRequest.sender?.lastName || "",
-        id: friendRequest.sender?._id?.toString() || "", // Safely access _id
-      },
-      receiver: {
-        firstName: friendRequest.receiver?.firstName || "",
-        lastName: friendRequest.receiver?.lastName || "",
-        id: friendRequest.receiver?._id?.toString() || "", // Safely access _id
-      },
-      receiverEmail: friendRequest.receiverEmail || "", // Ensure receiverEmail is a string
-      isSeenSender: friendRequest.isSeenSender || false,
-      isSeenReceiver: friendRequest.isSeenReceiver || false,
-    }));
-
-    console.log(friendRequests);
-
-    console.log("Events");
-    console.log(events);
-
     return {
-      events: eventsResponse,
-      products: productsResponse,
-      conversations: conversationsResponse,
-      friends: friendsResponse,
-      friendRequests: friendRequestsResponse,
+      events,
+      products,
+      conversations,
+      friends,
+      friendRequests,
     };
   } catch (e) {
     console.error(e);

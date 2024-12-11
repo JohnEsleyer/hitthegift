@@ -48,13 +48,10 @@ const myListSlice = createSlice({
         },
         insertMyListProduct: (state, action: PayloadAction<ProductType>) => {
             return {
-                ...state,
-                products: [
-                    ...state.products,
-                    action.payload,
-                ]
-            }
-        },
+              ...state,
+              products: state.products ? [...state.products, action.payload] : [action.payload],
+            };
+          },          
         deleteMyListProductById: (state, action: PayloadAction<string>) => {
             return {
                 ...state,
