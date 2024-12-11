@@ -13,7 +13,7 @@ import { Edit } from "lucide-react";
 import { updateCurrentPopup } from "@/lib/features/popups";
 import { updateEditProductAll } from "@/lib/features/editProductsPopup";
 import { isAmazonUrl } from "@/utils/isAmazonUrl";
-import { formatPriceWithCurrency } from "@/utils/getCurrencySymbol";
+import { formatPriceWithCurrency, getCurrencySymbol } from "@/utils/getCurrencySymbol";
 import { getAmazonDomain } from "@/utils/getAmazonDomain";
 
 interface WishItemProps {
@@ -33,23 +33,23 @@ export default function WishItem({
   const dispatch = useDispatch();
 
   function getProductPrice(product: ProductType) {
-    if (product.productUrl !== null) {
+    if (product.productUrl !== null && isAmazonUrl(product.productUrl)) {
       return formatPriceWithCurrency(
         getAmazonDomain(product.productUrl) || "",
         product.price
       );
     }
-    return "";
+    return `${getCurrencySymbol(product.currency)}${product.price}`;
   }
 
   function AffiliateLink({ children }: { children: ReactNode }) {
     if (!isSidebarOpen) {
       if (isAmazonUrl(product.productUrl)) {
         const asin = extractASIN(product.productUrl);
-        const affiliateLink = `https://www.amazon.com/dp/${asin}/?tag=${process.env.NEXT_PUBLIC_AFFILIATE_ID}`;
+        // const affiliateLink = `https://www.amazon.com/dp/${asin}/?tag=${process.env.NEXT_PUBLIC_AFFILIATE_ID}`;
 
         return (
-          <Link href={affiliateLink} target="_blank">
+          <Link href={product.productUrl} target="_blank">
             {children}
           </Link>
         );
