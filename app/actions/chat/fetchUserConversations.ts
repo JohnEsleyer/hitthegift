@@ -37,6 +37,9 @@ export async function fetchUserConversations(userId: string): Promise<{ status: 
         unreadMessageCount: unreadCount
       });
     }
+
+    console.log('userConversations');
+    console.log(userConversations);
   
     return { status: 200, data: userConversations };
   } catch (e) {

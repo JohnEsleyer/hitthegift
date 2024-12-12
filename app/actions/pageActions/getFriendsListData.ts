@@ -103,6 +103,10 @@ export async function getFriendsListData(userId: string){
     ]).toArray();
 
     console.log(friendsWithProducts);
+    console.log('user');
+    console.log(user);
+    console.log('events');
+    console.log(events);
 
     // Return statement: Combine events and friendsWithProducts
     return {

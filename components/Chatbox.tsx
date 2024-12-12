@@ -104,7 +104,6 @@ export default function Chatbox() {
             status: "sent",
           })
         );
-
         // Mark as read
         await markMessagesAsRead(userId, conversationId);
 
@@ -241,7 +240,6 @@ export default function Chatbox() {
           </button>
         </div>
       </div>
-
       <div
         ref={messagesEndRef}
         className="flex-1 overflow-auto overflow-x-hidden hide-scrollbar"
@@ -269,7 +267,6 @@ export default function Chatbox() {
           </div>
         )}
       </div>
-
       <div className="w-full flex shadow-md border-t border-gray-400 p-2 h-12">
         <input
           className="flex-1 border border-gray-400 p-2 rounded-2xl"

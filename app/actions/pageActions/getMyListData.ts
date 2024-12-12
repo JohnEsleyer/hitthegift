@@ -313,6 +313,17 @@ export async function getMyListData(userId: string, userEmail: string) {
           .toArray(),
       ]);
 
+    console.log('events');
+    console.log(events);
+    console.log('products');
+    console.log(products);
+    console.log('conversations');
+    console.log(conversations);
+    console.log('friends');
+    console.log(friends);
+    console.log('friendRequests');
+    console.log(friendRequests);
+    
     return {
       events,
       products,

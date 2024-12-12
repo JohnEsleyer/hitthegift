@@ -23,10 +23,10 @@ import { updateFriendRequests, updateIsSidebarOpen } from "@/lib/features/friend
 import { navigateTo } from "@/app/actions/navigateTo";
 import { seenFriendRequests } from "@/app/actions/user/seenFriendRequests";
 import { countUnseenFriendRequests } from "@/utils/countUnseenFriendRequests";
-import { UserConversation } from "@/lib/types/conversation";
 import loading from "/public/loading.svg";
 import { useWindowSize } from "@/utils/hooks/useWindowSize";
 import whiteloading from '/public/whiteloading.svg';
+import { updateConversations } from "@/lib/features/chat";
 
 interface HomeTemplateProps {
   leftSide: ReactNode;
@@ -54,13 +54,13 @@ export default function HomeTemplate({
 
   // Initially closed inbox and chatbox
   const [showInbox, setShowInbox] = useState(false); 
-
   const [sidebarNotificationCounter, setsidebarNotificationCounter] = useState(0);
   const [isLogout, setIsLogout] = useState(false);
   const { width, height } = useWindowSize();
   const dispatch = useDispatch();
 
-  const [inboxConversations, setInboxConversations] = useState<UserConversation[]>([]);
+  // const [inboxConversations, setInboxConversations] = useState<UserConversation[]>([]);
+  const inboxConversations = useSelector((state: RootState) => state.chat.conversations);
   const [inboxLoading, setInboxLoading] = useState(false);
   const [chatButtonLoading, setChatButtonLoading] = useState(false);
 
@@ -73,6 +73,7 @@ export default function HomeTemplate({
   }, [friendRequests, userId]);
 
   async function seenAllFriendRequests() {
+    console.log('seenAllFriendRequests executed');
     dispatch(
       updateFriendRequests(
         friendRequests.map((req) => {
@@ -89,6 +90,7 @@ export default function HomeTemplate({
         })
       )
     );
+
     try {
       const res = await seenFriendRequests(friendRequests, userId);
       if (res.status === 200) {
@@ -118,11 +120,13 @@ export default function HomeTemplate({
   };
 
   const initialFetchInbox = async () => {
+    console.log(`initialFetchInbox executed`);
     try{
       console.log(`userId: ${userId}`);
       const result = await fetchUserConversations(userId);
       if (result.status === 200 && result.data) {
-        setInboxConversations(result.data);
+        // setInboxConversations(result.data);
+        dispatch(updateConversations(result.data));
       } else {
         console.error("Failed to fetch inbox conversations");
       }
@@ -140,7 +144,8 @@ export default function HomeTemplate({
       try{
       const result = await fetchUserConversations(userId);
       if (result.status === 200 && result.data) {
-        setInboxConversations(result.data);
+        // setInboxConversations(result.data);
+        dispatch(updateConversations(result.data));
       } else {
         console.error("Failed to fetch inbox conversations");
       }

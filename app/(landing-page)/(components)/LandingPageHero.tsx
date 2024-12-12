@@ -16,6 +16,9 @@ import getUserInfo from "@/app/actions/user/getUserInfo";
 import useIsDesktop from "@/utils/hooks/useIsDesktop";
 import RenderClientOnly from "@/components/utilityComponents/RenderClientOnly";
 
+import '@/styles/LandingPageHero.css';
+
+
 type ResponseData = {
   message: string;
   status: number;
@@ -45,6 +48,11 @@ export default function LandingPageHero() {
   const [showPassword, setShowPassword] = useState(false);
   const isVerified = useSelector((state: RootState) => state.userData.verified);
   const isDesktop = useIsDesktop();
+
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [currentView, setCurrentView] = useState<"desktop" | "mobile">(
+    useIsDesktop() ? "desktop" : "mobile"
+  );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -155,35 +163,45 @@ export default function LandingPageHero() {
     }
     validateToken();
   }, []);
+
+  useEffect(() => {
+    if ((isDesktop && currentView !== "desktop") ||  (!isDesktop && currentView !== "mobile")){
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentView(isDesktop ? "desktop" : "mobile");
+        setIsTransitioning(false);
+      }, 300);
+    }
+  },[isDesktop]);
+
   return (
     <RenderClientOnly loading={<div className="h-screen w-screen"></div>}>
-      <div>
-        {isDesktop ? (
-          <div
-            style={{ height: 720 }}
-            className={`bg-[#31241e] w-screen bg-[url("https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/background.webp")] bg-cover bg-center flex flex-col md:flex-row items-start justify-center min-h-screen`}
-          >
-            {/* Hero */}
-            <div className="w-full md:w-fit md:h-screen text-white p-2 md:p-0 flex flex-col items-center md:items-start">
+    <div className={`fade-container ${isTransitioning ? "fade-out" : "fade-in"}`}>
+      {currentView === "desktop" ? (
+        <div
+          style={{ height: 720 }}
+          className={`bg-[#31241e] w-screen bg-[url("https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/background.webp")] bg-cover bg-center flex flex-col md:flex-row items-start justify-center min-h-screen`}
+        >
+          {/* Desktop View Content */}
+          {/* Hero */}
+          <div className="w-full md:w-fit md:h-screen text-white p-2 md:p-0 flex flex-col items-center md:items-start">
               <img
                 style={{ height: 80 }}
-                className="mt-12 mb-8 mx-auto md:mx-0"
+                className="mt-32 mb-8 mx-auto md:mx-0"
                 src={`https://imageassets-hitmygift.${process.env.NEXT_PUBLIC_SPACES_CDN_ENDPOINT}/logo.png`}
                 alt={"profile"}
               />
-              <p className="pr-24 font-bold text-4xl md:text-9xl leading-none text-center md:text-left">
+              <p className="pr-24 font-bold text-7xl leading-none text-center md:text-left">
                 Share your
               </p>
-              <p className="text-[#027afe] font-bold text-4xl md:text-8xl leading-none text-center md:text-left">
+              <p className="text-[#027afe] font-bold text-7xl leading-none text-center md:text-left">
                 wishes
               </p>
 
-              <p className="font-bold text-2xl md:text-5xl leading-none text-center md:text-left">
-                the easiest way to get it
+              <p className="font-bold text-2xl md:text-3xl leading-none text-center md:text-left">
+                the easiest way to get it <span className="text-[#027afe]">right</span>
               </p>
-              <p className="text-[#027afe] font-bold text-2xl md:text-5xl leading-none text-center md:text-left">
-                right
-              </p>
+        
             </div>
             {/* Login Form */}
             <div className="h-screen flex items-center">
@@ -298,9 +316,10 @@ export default function LandingPageHero() {
               </Link>
             </div>
           </div>
-        ) : (
-          <div className="w-screen flex flex-col items-start justify-start min-h-screen">
-            <div className="w-screen flex flex-col justify-center ">
+      ) : (
+        <div className="w-screen flex flex-col items-start justify-start min-h-screen">
+          {/* Mobile View Content */}
+          <div className="w-screen flex flex-col justify-center ">
             <div className=" pl-8 mt-8 w-full flex justify-between items-center text-2xl ">
               <img
                 style={{ height: 70 }}
@@ -347,9 +366,9 @@ export default function LandingPageHero() {
               </div>
             </div>
             </div>
-          </div>
-        )}
-      </div>
-    </RenderClientOnly>
-  );
+        </div>
+      )}
+    </div>
+  </RenderClientOnly>
+);
 }
