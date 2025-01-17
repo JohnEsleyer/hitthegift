@@ -37,6 +37,7 @@ export default function Chatbox() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasFetchedInitially = useRef(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const inboxConversations = useSelector((state: RootState) => state.chat.conversations);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -106,7 +107,7 @@ export default function Chatbox() {
         );
         // Mark as read
         await markMessagesAsRead(userId, conversationId);
-
+        
         // Merge instead of replacing
         mergeMessages(fetchedMessages);
       }

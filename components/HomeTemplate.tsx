@@ -65,6 +65,10 @@ export default function HomeTemplate({
   const [chatButtonLoading, setChatButtonLoading] = useState(false);
 
   useEffect(() => {
+    dispatch(updateFriendId('')); // Reset the friendId used by the chat box whenever the page is initiated.
+  }, []);
+
+  useEffect(() => {
     initialFetchInbox();
     dispatch(updateIsOpenChatbox(false));
     if (friendRequests) {
